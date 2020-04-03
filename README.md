@@ -1,2 +1,2 @@
 # syncapod
-This is the backend service for syncapod
+syncapod is a simple in the cloud podcast manager
