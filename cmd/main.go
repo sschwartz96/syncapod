@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/syncapod/internal/handler"
 )
 
 func main() {
@@ -17,8 +19,17 @@ func main() {
 	fmt.Println("Running syncapd version: ", config.Version)
 
 	// connect to db
-	dbClient, err := database.Connect(config.DbUser, config.DbPass, config.URI)
+	dbClient, err := database.Connect(config.DbUser, config.DbPass, config.DbURI)
+	if err != nil {
+		log.Fatal("couldn't connect to db: ", err)
+	}
 
-	fmt.Println("connected to db: ", dbClient)
+	// setup handler
+	handler, err := handler.CreateHandler(dbClient)
 
+	// start server
+	err = http.ListenAndServe(":8080", handler)
+	if err != nil {
+		log.Fatal("couldn't not start server: ", err)
+	}
 }
