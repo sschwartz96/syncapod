@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/rand"
+	"encoding/base64"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -36,7 +37,7 @@ func Compare(hash, password string) bool {
 // CreateSession creates a session and stores into database
 func CreateSession(dbClient *database.Client, userID primitive.ObjectID) (string, error) {
 	// Create key
-	key := createSessionKey()
+	key := CreateKey(32)
 
 	// Create Session object
 	session := models.Session{
@@ -56,14 +57,18 @@ func CreateSession(dbClient *database.Client, userID primitive.ObjectID) (string
 	return key, nil
 }
 
-func createSessionKey() string {
-	keyLength := 25
-	key := make([]byte, keyLength)
+// CreateKey takes in a key length and returns base64 encoding
+func CreateKey(l int) string {
+	key := make([]byte, l)
 	_, err := rand.Read(key)
 	if err != nil {
 		fmt.Printf("Could not make key with err: %v\n", err)
 	}
-	return hex.EncodeToString(key)
+	hex := hex.EncodeToString(key)
+	b64 := base64.URLEncoding.EncodeToString(key)
+	fmt.Println("hex: ", hex)
+	fmt.Println("b64: ", b64)
+	return base64.URLEncoding.EncodeToString(key)
 }
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user

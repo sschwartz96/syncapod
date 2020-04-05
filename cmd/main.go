@@ -5,12 +5,17 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
 )
 
 func main() {
+	// test create key
+	length := 32
+	auth.CreateKey(length)
+
 	// read config
 	config, err := config.ReadConfig("config.json")
 	if err != nil {
