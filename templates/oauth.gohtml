@@ -1,27 +1,24 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+	<head>
+		<meta charset="utf-8">
 
-  <title>The HTML5 Herald</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+		<title>syncapod oauth login</title>
+		<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
+	</head>
 
-</head>
+	<body>
+		<h1>syncapod oauth2.0 login</h1>
+		<form action="/oauth/authenticate" method="post">
+			<label for="uname">Username or Email</label>
+			<input type="text" placeholder="Enter username or emal" name="uname" required>
 
-<body>
-    <h1>syncapod oauth2.0 authorization</h1>
-    <form action="/oauth/authenticate" method="post">
-      <label for="uname">Username or Email</label>
-      <input type="text" placeholder="Enter username or emal" name="uname" required>
+			<label for="pass">Password</label>
+			<input type="password" placeholder="Enter password" name="pass" required>
 
-      <label for="pass">Password</label>
-      <input type="password" placeholder="Enter password" name="pass" required>
-
-      <button type="submit">Login</button>
-    </form>    
-</body>
+			<button type="submit">Login</button>
+		</form>    
+	</body>
 </html>

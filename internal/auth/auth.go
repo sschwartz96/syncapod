@@ -3,7 +3,6 @@ package auth
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"time"
@@ -64,11 +63,7 @@ func CreateKey(l int) string {
 	if err != nil {
 		fmt.Printf("Could not make key with err: %v\n", err)
 	}
-	hex := hex.EncodeToString(key)
-	b64 := base64.URLEncoding.EncodeToString(key)
-	fmt.Println("hex: ", hex)
-	fmt.Println("b64: ", b64)
-	return base64.URLEncoding.EncodeToString(key)
+	return base64.URLEncoding.EncodeToString(key)[:l]
 }
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user

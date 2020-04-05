@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
+	"path"
+	"strings"
 
 	"github.com/sschwartz96/syncapod/internal/database"
 )
@@ -28,10 +29,23 @@ func CreateHandler(dbClient *database.Client) (*Handler, error) {
 
 // ServeHTTP handles all requests
 func (h *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-	keys := req.URL.Query()
-	user := keys.Get("user")
+	var head string
+	head, req.URL.Path = ShiftPath(req.URL.Path)
 
-	fmt.Println("user trying to access: ", user)
+	switch head {
+	case "oauth":
+		h.oauthHandler.ServeHTTP(res, req)
+	}
+}
 
-	fmt.Fprintln(res, "user: ", user)
+// ShiftPath splits off the first component of p, which will be cleaned of
+// relative components before processing. head will never contain a slash and
+// tail will always be a rooted path without trailing slash.
+func ShiftPath(p string) (head, tail string) {
+	p = path.Clean("/" + p)
+	i := strings.Index(p[1:], "/") + 1
+	if i <= 0 {
+		return p[1:], "/"
+	}
+	return p[1:i], p[i:]
 }
