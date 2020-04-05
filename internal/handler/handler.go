@@ -7,18 +7,31 @@ import (
 	"github.com/sschwartz96/syncapod/internal/database"
 )
 
-// Handler is the main handler for syncapod
-// all routes go through it
+// Handler is the main handler for syncapod, all routes go through it
 type Handler struct {
-	dbClient *database.Client
+	dbClient     *database.Client
+	oauthHandler *OauthHandler
 }
 
 // CreateHandler sets up the main handler
 func CreateHandler(dbClient *database.Client) (*Handler, error) {
-	return &Handler{dbClient: dbClient}, nil
+	handler := &Handler{}
+	var err error
+
+	handler.oauthHandler, err = CreateOauthHandler()
+	if err != nil {
+		return nil, err
+	}
+
+	return handler, nil
 }
 
 // ServeHTTP handles all requests
 func (h *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "hello")
+	keys := req.URL.Query()
+	user := keys.Get("user")
+
+	fmt.Println("user trying to access: ", user)
+
+	fmt.Fprintln(res, "user: ", user)
 }

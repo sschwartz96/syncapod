@@ -26,10 +26,14 @@ func main() {
 
 	// setup handler
 	handler, err := handler.CreateHandler(dbClient)
+	if err != nil {
+		log.Fatal("could not setup handlers: ", err)
+	}
 
 	// start server
 	err = http.ListenAndServe(":8080", handler)
 	if err != nil {
 		log.Fatal("couldn't not start server: ", err)
 	}
+
 }
