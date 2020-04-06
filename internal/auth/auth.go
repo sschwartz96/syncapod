@@ -13,14 +13,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Hash takes pwd []byte and returns hash type []byte
-func Hash(password []byte) ([]byte, error) {
-	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.MinCost)
+// Hash takes pwd string and returns hash type string
+func Hash(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 	if err != nil {
 		fmt.Printf("Error hashing password: %v", err)
-		return nil, err
+		return "", err
 	}
-	return hash, nil
+	return string(hash), nil
 }
 
 // Compare takes a []byte password and hash compares and returns true for match
@@ -34,17 +34,18 @@ func Compare(hash, password string) bool {
 }
 
 // CreateSession creates a session and stores into database
-func CreateSession(dbClient *database.Client, userID primitive.ObjectID) (string, error) {
+func CreateSession(dbClient *database.Client, userID primitive.ObjectID, expires time.Duration) (string, error) {
 	// Create key
 	key := CreateKey(32)
 
 	// Create Session object
 	session := models.Session{
+		ID:           primitive.NewObjectID(),
 		UserID:       userID,
 		SessionKey:   key,
 		LoginTime:    time.Now(),
 		LastSeenTime: time.Now(),
-		Expires:      time.Now().Add(time.Hour * 24 * 30),
+		Expires:      time.Now().Add(expires),
 	}
 
 	// Store session in database
@@ -72,18 +73,27 @@ func ValidateSession(dbClient *database.Client, key string) (*models.User, error
 	var sesh models.Session
 	err := dbClient.Find(database.ColSession, "session_key", key, &sesh)
 	if err != nil {
+		fmt.Println("validate sesion, couldn't find session key")
 		return nil, err
 	}
 
 	// Check if expired
-	if sesh.Expires.After(time.Now()) {
+	if sesh.Expires.Before(time.Now()) {
+		err := dbClient.Delete(database.ColSession, "_id", sesh.ID)
+		if err != nil {
+			fmt.Println("couldn't delete session: ", err)
+		}
 		return nil, errors.New("session expired")
+	} else {
+		// TODO: update database with session time
+		sesh.Expires.Add(time.Minute * 5)
 	}
 
 	// Find the user
 	var user models.User
 	err = dbClient.FindByID(database.ColUser, sesh.UserID, &user)
 	if err != nil {
+		fmt.Println("validate sesion, couldn't find user")
 		return nil, err
 	}
 

@@ -11,15 +11,19 @@
 		<style type="text/css" rel="stylesheet">
 			.wrapper { width: 80%; margin: auto; text-align: center; }
 			input { margin-left: auto !important; margin-right: auto !important;}
-			button { width: 216px; }
+			button { width: 220px; }
+			.incorrect { color: red; }
 		</style>
 	</head>
 
 	<body>
 		<div class="wrapper">
 			<h1>syncapod oauth2.0 login</h1>
-			<form class="pure-form pure-form-stacked" action="/oauth/login" method="post">
+			<form class="pure-form pure-form-stacked" method="post">
 				<fieldset>
+					{{if .}}
+						<p class="incorrect">Incorrect username or password</p>
+					{{end}}
 					<input type="text" placeholder="Enter username or email" name="uname" required>
 					<br/>
 					<input type="password" placeholder="Enter password" name="pass" required>

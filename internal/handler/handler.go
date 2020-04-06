@@ -19,7 +19,7 @@ func CreateHandler(dbClient *database.Client) (*Handler, error) {
 	handler := &Handler{}
 	var err error
 
-	handler.oauthHandler, err = CreateOauthHandler()
+	handler.oauthHandler, err = CreateOauthHandler(dbClient)
 	if err != nil {
 		return nil, err
 	}

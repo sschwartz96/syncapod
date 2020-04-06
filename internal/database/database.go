@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
+	"github.com/sschwartz96/syncapod/internal/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,8 +20,10 @@ const (
 	DBsyncapod = "syncapod"
 
 	// Collections
-	ColSession = "session"
-	ColUser    = "user"
+	ColSession     = "session"
+	ColUser        = "user"
+	ColAuthCode    = "auth_code"
+	ColAccessToken = "access_token"
 )
 
 // Client holds the connection to the database
@@ -65,13 +69,28 @@ func (c *Client) Insert(collection string, object interface{}) error {
 	return nil
 }
 
+// Delete deletes the certain document based on param and value
+func (c *Client) Delete(collection, param string, value interface{}) error {
+	filter := bson.D{{
+		Key:   param,
+		Value: value,
+	}}
+
+	res, err := c.Database(DBsyncapod).Collection(collection).DeleteOne(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("successfully deleted: %v documents\n", res.DeletedCount)
+	return nil
+}
+
 // FindByID takes collection name and pointer to object
 func (c *Client) FindByID(collection string, objID primitive.ObjectID, object interface{}) error {
 	return c.Find(collection, "_id", objID, object)
 }
 
 // Find takes collection, param & value to build fitler, and object pointer
-func (c *Client) Find(collection string, param string, value interface{}, object interface{}) error {
+func (c *Client) Find(collection, param string, value interface{}, object interface{}) error {
 	filter := bson.D{{
 		Key:   param,
 		Value: value,
@@ -85,4 +104,20 @@ func (c *Client) Find(collection string, param string, value interface{}, object
 	}
 
 	return nil
+}
+
+// FindUser attempts to find user by username/email returns pointer to user or error if not found
+func (c *Client) FindUser(username string) (*models.User, error) {
+	var param string
+	if strings.Contains(username, "@") {
+		param = "email"
+		username = strings.ToLower(username)
+	} else {
+		param = "username"
+	}
+
+	var user models.User
+	err := c.Find(ColUser, param, username, &user)
+
+	return &user, err
 }

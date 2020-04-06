@@ -1,19 +1,28 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
+	"net/url"
+	"strings"
+	"time"
+
+	"github.com/sschwartz96/syncapod/internal/auth"
+	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/syncapod/internal/models"
 )
 
 // OauthHandler handles authorization and authentication to oauth clients
 type OauthHandler struct {
+	dbClient      *database.Client
 	loginTemplate *template.Template
 	authTemplate  *template.Template
 }
 
 // CreateOauthHandler just intantiates an OauthHandler
-func CreateOauthHandler() (*OauthHandler, error) {
+func CreateOauthHandler(dbClient *database.Client) (*OauthHandler, error) {
 	loginT, err := template.ParseFiles("templates/oauth/login.gohtml")
 	authT, err := template.ParseFiles("templates/oauth/auth.gohtml")
 	if err != nil {
@@ -21,27 +30,179 @@ func CreateOauthHandler() (*OauthHandler, error) {
 	}
 
 	return &OauthHandler{
+		dbClient:      dbClient,
 		loginTemplate: loginT,
 		authTemplate:  authT,
 	}, nil
 }
 
 func (h *OauthHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	// path: /oauth/*
 	if req.Method == http.MethodGet {
-		var head string
-		var err error
-
-		head, req.URL.Path = ShiftPath(req.URL.Path)
-
-		switch head {
-		case "login":
-			err = h.loginTemplate.Execute(res, nil)
-		case "authorize":
-			err = h.authTemplate.Execute(res, nil)
-		}
-
-		if err != nil {
-			fmt.Println("error executing template: ", err)
-		}
+		h.Get(res, req)
+	} else if req.Method == http.MethodPost {
+		h.Post(res, req)
 	}
+}
+
+func (h *OauthHandler) Get(res http.ResponseWriter, req *http.Request) {
+	var head string
+	var err error
+
+	head, req.URL.Path = ShiftPath(req.URL.Path)
+
+	// path: /oauth/*
+	switch head {
+	case "login":
+		err = h.loginTemplate.Execute(res, nil)
+	case "authorize":
+		key := strings.TrimSpace(req.URL.Query().Get("sesh_key"))
+		_, err := auth.ValidateSession(h.dbClient, key)
+		if err != nil {
+			fmt.Println("couldn't not validate, redirecting to login page: ", err)
+			http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
+			return
+		}
+		err = h.authTemplate.Execute(res, nil)
+	}
+
+	if err != nil {
+		fmt.Println("error executing template: ", err)
+	}
+}
+
+func (h *OauthHandler) Post(res http.ResponseWriter, req *http.Request) {
+	var head string
+
+	head, req.URL.Path = ShiftPath(req.URL.Path)
+
+	// path: /oauth/*
+	switch head {
+	case "login":
+		h.Login(res, req)
+	case "authorize":
+		h.Authorize(res, req)
+	case "token":
+		h.Token(res, req)
+	}
+}
+
+func (h *OauthHandler) Login(res http.ResponseWriter, req *http.Request) {
+	err := req.ParseForm()
+	if err != nil {
+		fmt.Println("couldn't parse post values: ", err)
+		h.loginTemplate.Execute(res, true)
+		return
+	}
+
+	username := req.FormValue("uname")
+	password := req.FormValue("pass")
+
+	user, err := h.dbClient.FindUser(username)
+	if err != nil {
+		h.loginTemplate.Execute(res, true)
+		return
+	}
+
+	if auth.Compare(user.Password, password) {
+		// create 5 min session and send auth key
+		key, err := auth.CreateSession(h.dbClient, user.ID, time.Minute*5)
+		if err != nil {
+			h.loginTemplate.Execute(res, true)
+			return
+		}
+		req.Method = http.MethodGet
+
+		values := url.Values{}
+
+		values.Add("sesh_key", key)
+		values.Add("client_id", req.URL.Query().Get("client_id"))
+		values.Add("redirect_uri", req.URL.Query().Get("redirect_uri"))
+		values.Add("state", req.URL.Query().Get("state"))
+
+		http.Redirect(res, req, "/oauth/authorize"+"?"+values.Encode(), http.StatusSeeOther)
+		return
+	} else {
+		h.loginTemplate.Execute(res, true)
+	}
+}
+
+func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
+	// get session key, validate and get user info
+	seshKey := strings.TrimSpace(req.URL.Query().Get("sesh_key"))
+	user, err := auth.ValidateSession(h.dbClient, seshKey)
+	if err != nil {
+		fmt.Println("couldn't not validate, redirecting to login page: ", err)
+		http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
+		return
+	}
+
+	// create auth code
+	clientID := strings.TrimSpace(req.URL.Query().Get("client_id"))
+	authCode := auth.CreateAuthorizationCode(h.dbClient, user.ID, clientID)
+
+	// setup redirect url
+	redirectURI := strings.TrimSpace(req.URL.Query().Get("redirect_uri"))
+
+	// add query params
+	values := url.Values{}
+	values.Add("state", req.URL.Query().Get("state"))
+	values.Add("code", authCode)
+
+	// redirect
+	http.Redirect(res, req, redirectURI+"?"+values.Encode(), http.StatusSeeOther)
+}
+
+func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
+	var queryCode string
+
+	// find grant type: refresh_token or authorization_code
+	grantType := req.URL.Query().Get("grant_type")
+
+	if strings.ToLower(grantType) == "refresh_token" {
+		var accessToken models.AccessToken
+		refreshToken := req.URL.Query().Get("refresh_token")
+		err := h.dbClient.Find(database.ColAccessToken, "refresh_token", refreshToken, &accessToken)
+		if err != nil {
+			fmt.Println("couldn't find token based on refresh: ", err)
+			http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
+			//TODO: fail gracefully??
+			return
+		}
+		queryCode = accessToken.AuthCode
+
+		// delete the token
+		defer h.dbClient.Delete(database.ColAccessToken, "token", accessToken.Token)
+	} else {
+		queryCode = req.URL.Query().Get("code")
+	}
+
+	// validate auth code
+	authCode, err := auth.ValidateAuthCode(h.dbClient, queryCode)
+	if err != nil {
+		fmt.Println("couldn't find auth code: ", err)
+		http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
+		// TODO: send more appropriate error response
+		return
+	}
+
+	// create access token
+	token := auth.CreateAccessToken(h.dbClient, authCode)
+
+	// setup json
+	type tokenResponse struct {
+		AccessToken  string
+		RefreshToken string
+		ExpiresIn    int
+	}
+	tRes := &tokenResponse{
+		AccessToken:  token.Token,
+		RefreshToken: token.RefreshToken,
+		ExpiresIn:    3600,
+	}
+
+	// marshal data and send off
+	json, _ := json.Marshal(&tRes)
+	res.Header().Set("content-type", "application/json")
+	res.Write(json)
 }

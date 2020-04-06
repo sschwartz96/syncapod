@@ -13,15 +13,15 @@ import (
 
 func main() {
 	// test create key
-	length := 32
-	auth.CreateKey(length)
+	pass, _ := auth.Hash("qweQWE123!@#")
+	fmt.Println("password hash: ", pass)
 
 	// read config
 	config, err := config.ReadConfig("config.json")
 	if err != nil {
 		log.Fatal("error reading config: ", err)
 	}
-	fmt.Println("Running syncapd version: ", config.Version)
+	fmt.Println("Running syncapod version: ", config.Version)
 
 	// connect to db
 	fmt.Println("connecting to db")
