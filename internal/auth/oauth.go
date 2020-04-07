@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"time"
 
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -46,4 +47,26 @@ func ValidateAuthCode(dbClient *database.Client, code string) (*models.AuthCode,
 	}
 
 	return &authCode, nil
+}
+
+// ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
+func ValidateAccessToken(dbClient *database.Client, token string) (*models.User, error) {
+	var tokenObj models.AccessToken
+	err := dbClient.Find(database.ColAccessToken, "token", token, &tokenObj)
+	if err != nil {
+		return nil, err
+	}
+
+	// if expired
+	if tokenObj.Created.Add(time.Second * time.Duration(tokenObj.Expires).Before(time.Now()) {
+		return nil, errors.New("expired token")
+	}
+
+	var user models.User
+	err = dbClient.FindByID(database.ColUser, tokenObj.UserID, &user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

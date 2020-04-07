@@ -35,6 +35,8 @@ func (h *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	switch head {
 	case "oauth":
 		h.oauthHandler.ServeHTTP(res, req)
+	case "api":
+		
 	}
 }
 
