@@ -13,6 +13,10 @@ type APIHandler struct {
 
 // ServeHTTP handles all requests throught /api/* endpoint
 func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-	accessToken := req.URL.Query().Get("access_token")
-
+	var head string
+	head, req.URL.Path = ShiftPath(req.URL.Path)
+	switch head {
+	case "alexa":
+		h.Alexa(res, req)
+	}
 }

@@ -58,7 +58,7 @@ func ValidateAccessToken(dbClient *database.Client, token string) (*models.User,
 	}
 
 	// if expired
-	if tokenObj.Created.Add(time.Second * time.Duration(tokenObj.Expires).Before(time.Now()) {
+	if tokenObj.Created.Add(time.Second * time.Duration(tokenObj.Expires)).Before(time.Now()) {
 		return nil, errors.New("expired token")
 	}
 
