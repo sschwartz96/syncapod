@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -44,14 +46,26 @@ func main() {
 
 	// start server
 	fmt.Println("starting server")
+	port := strings.TrimSpace(strconv.Itoa(config.Port))
 	if config.Port == 443 {
-		err = http.ListenAndServeTLS(":"+string(config.Port), config.CertFile, config.KeyFile, handler)
+		// setup redirect server
+		go func() {
+			if err = http.ListenAndServe(":80", http.HandlerFunc(redirect)); err != nil {
+				log.Fatalf("redirect server failed %v\n", err)
+			}
+		}()
+
+		err = http.ListenAndServeTLS(":"+port, config.CertFile, config.KeyFile, handler)
 	} else {
-		err = http.ListenAndServe(":"+string(config.Port), handler)
+		err = http.ListenAndServe(":"+port, handler)
 	}
 
 	if err != nil {
 		log.Fatal("couldn't not start server: ", err)
 	}
 
+}
+
+func redirect(res http.ResponseWriter, req *http.Request) {
+	http.Redirect(res, req, "https://syncapod.com"+req.RequestURI, http.StatusMovedPermanently)
 }
