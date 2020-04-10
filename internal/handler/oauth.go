@@ -155,34 +155,32 @@ func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	values.Add("code", authCode)
 
 	// redirect
+	fmt.Println("auth: redirecting to: ", redirectURI+"?"+values.Encode())
 	http.Redirect(res, req, redirectURI+"?"+values.Encode(), http.StatusSeeOther)
 }
 
 func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("token request: ", req.RequestURI)
-
 	// authenticate client
 	id, sec, ok := req.BasicAuth()
 	if !ok {
 		fmt.Println("not using basic authentication?")
 		return
 	}
+	fmt.Printf("id: %v & secret: %v\n", id, sec)
 	if id != h.clientID || sec != h.clientSecret {
-		fmt.Printf("id: %v & secret: %v\n", id, sec)
 		fmt.Println("incorrect credentials")
 		return
 	}
 
 	// ^^^^^^^^^^ client is authenticated after above ^^^^^^^^^^
-
 	var queryCode string
 
 	// find grant type: refresh_token or authorization_code
-	grantType := req.URL.Query().Get("grant_type")
+	grantType := req.FormValue("grant_type")
 
 	if strings.ToLower(grantType) == "refresh_token" {
 		var accessToken models.AccessToken
-		refreshToken := req.URL.Query().Get("refresh_token")
+		refreshToken := req.FormValue("refresh_token")
 		err := h.dbClient.Find(database.ColAccessToken, "refresh_token", refreshToken, &accessToken)
 		if err != nil {
 			fmt.Println("couldn't find token based on refresh: ", err)
@@ -195,7 +193,7 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 		// delete the token
 		defer h.dbClient.Delete(database.ColAccessToken, "token", accessToken.Token)
 	} else {
-		queryCode = req.URL.Query().Get("code")
+		queryCode = req.FormValue("code")
 	}
 
 	// validate auth code
