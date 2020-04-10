@@ -12,6 +12,7 @@ import (
 type Handler struct {
 	dbClient     *database.Client
 	oauthHandler *OauthHandler
+	apiHandler   *APIHandler
 }
 
 // CreateHandler sets up the main handler
@@ -20,6 +21,11 @@ func CreateHandler(dbClient *database.Client) (*Handler, error) {
 	var err error
 
 	handler.oauthHandler, err = CreateOauthHandler(dbClient)
+	if err != nil {
+		return nil, err
+	}
+
+	handler.apiHandler, err = CreateAPIHandler(dbClient)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +42,7 @@ func (h *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	case "oauth":
 		h.oauthHandler.ServeHTTP(res, req)
 	case "api":
-		
+		h.apiHandler.ServeHTTP(res, req)
 	}
 }
 

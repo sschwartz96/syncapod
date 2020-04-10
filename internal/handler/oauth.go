@@ -203,6 +203,6 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 
 	// marshal data and send off
 	json, _ := json.Marshal(&tRes)
-	res.Header().Set("content-type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 	res.Write(json)
 }

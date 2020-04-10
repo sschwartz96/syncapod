@@ -8,7 +8,7 @@ import (
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
-	"github.com/sschwartz96/syncapod/internal/podcast"
+	"github.com/sschwartz96/syncapod/internal/models"
 )
 
 func main() {
@@ -27,6 +27,14 @@ func main() {
 		log.Fatal("couldn't connect to db: ", err)
 	}
 
+	var podcasts []models.Podcast
+	err = dbClient.Search(database.ColPodcast, "architecture", &podcasts)
+	if err != nil {
+		fmt.Println("couldn't perform search: ", err)
+		return
+	}
+	fmt.Println("found: ", len(podcasts))
+
 	fmt.Println("setting up handlers")
 	// setup handler
 	handler, err := handler.CreateHandler(dbClient)
@@ -34,14 +42,6 @@ func main() {
 		log.Fatal("could not setup handlers: ", err)
 	}
 
-	// test podcast
-	podcast, err := podcast.ParseRSS("https://feeds.twit.tv/twit.xml")
-	if err != nil {
-		log.Fatal("error parsing rss feed: ", err)
-	}
-
-	dbClient.Insert(database.ColPodcast, &podcast)
-	
 	// start server
 	fmt.Println("starting server")
 	err = http.ListenAndServe(":8080", handler)

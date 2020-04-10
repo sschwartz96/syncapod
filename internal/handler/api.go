@@ -11,6 +11,12 @@ type APIHandler struct {
 	dbClient *database.Client
 }
 
+func CreateAPIHandler(dbClient *database.Client) (*APIHandler, error) {
+	return &APIHandler{
+		dbClient: dbClient,
+	}, nil
+}
+
 // ServeHTTP handles all requests throught /api/* endpoint
 func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var head string

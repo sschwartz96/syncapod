@@ -20,7 +20,7 @@ type Podcast struct {
 	Link          string             `json:"link"  bson:"link"  xml:"Default link"`
 	Image         Image              `json:"image"  bson:"image"  xml:"image"`
 	Explicit      string             `json:"explicit"  bson:"explicit"  xml:"explicit"`
-	Language      string             `json:"language"  bson:"language"  xml:"language"`
+	Language      string             `json:"locale"  bson:"locale"  xml:"language"`
 	Keywords      string             `json:"keywords"  bson:"keywords"  xml:"keywords"`
 	Category      []Category         `json:"category"  bson:"category"  xml:"category"`
 	PubDate       string             `json:"pubdate"  bson:"pubdate"  xml:"pubDate"`

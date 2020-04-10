@@ -122,3 +122,28 @@ func (c *Client) FindUser(username string) (*models.User, error) {
 
 	return &user, err
 }
+
+func (c *Client) Search(collection, search string, object interface{}) error {
+	col := c.Database(DBsyncapod).Collection(collection)
+	// TODO: maybe dont drop if the index exists?
+	col.Indexes().DropAll(context.Background())
+
+	// create index
+	indexModel := mongo.IndexModel{Keys: bson.D{{"title", "text"}, {"keywords", "text"}, {"subtitle", "text"}}}
+	index, err := col.Indexes().CreateOne(context.Background(), indexModel)
+	if err != nil {
+		fmt.Println("couldn't create index model: ", err)
+	}
+	fmt.Println("our index name: ", index)
+
+	// create search filter
+	filter := bson.M{"$text": bson.M{"$search": search}}
+
+	// run search
+	cur, err := col.Find(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+
+	return cur.All(context.Background(), object)
+}

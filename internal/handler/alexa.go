@@ -7,6 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/sschwartz96/syncapod/internal/auth"
+	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/syncapod/internal/models"
 )
 
 // Intents
@@ -31,21 +35,51 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	var aData AlexaData
 	err = json.Unmarshal(body, &aData)
 	if err != nil {
-		fmt.Println("couldn't unmarshal json to object")
+		fmt.Println("couldn't unmarshal json to object: ", err)
 		// TODO: proper response here
 	}
 
 	// get the person or user accessToken
 	token, err := getAccessToken(&aData)
 	if err != nil {
-		fmt.Println("no accessToken")
+		fmt.Println("no accessToken: ", err)
 		// TODO: proper response here
 	}
 
-	fmt.Println("token: ", token)
+	// validate the token and return user
+	user, err := auth.ValidateAccessToken(h.dbClient, token)
+	if err != nil {
+		fmt.Println("error validating token: ", err)
+	}
+	fmt.Println(user)
+
+	name := aData.Request.Intent.AlexaSlots.Podcast.Value
+	fmt.Println("request name of podcast: ", name)
+
+	response := createAlexaResponse(user.ID.Hex())
 
 	switch aData.Request.Intent.Name {
 	case PlayPodcast:
+		var podcasts []models.Podcast
+		err = h.dbClient.Search(database.ColPodcast, name, &podcasts)
+		if err != nil {
+			fmt.Println("error searching for podcast: ", err)
+		}
+		if len(podcasts) > 0 {
+			response.Response.Directives[0].AudioItem.Stream.URL = podcasts[0].Episodes[0].Enclosure.MP3
+
+			jsonRes, err := json.Marshal(response)
+			if err != nil {
+				fmt.Println("couldn't marshal alexa response: ", err)
+			}
+
+			res.Header().Set("Content-Type", "application/json")
+			res.Write(jsonRes)
+		} else {
+			//TODO: no podcast found
+			fmt.Println("no podcast found")
+		}
+
 	case PlayLatestPodcast:
 	case PlayNthFromLatest:
 
@@ -54,6 +88,27 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 
 	case Pause:
 
+	}
+}
+
+func createAlexaResponse(userID string) *AlexaResponseData {
+	return &AlexaResponseData{
+		Version: "1.0",
+		Response: AlexaResponse{
+			Directives: []AlexaDirective{
+				AlexaDirective{
+					Type:         "AudioPlayer.Play",
+					PlayBehavior: "REPLACE_ALL",
+					AudioItem: AlexaAudioItem{
+						Stream: AlexaStream{
+							URL:                  "",
+							Token:                userID,
+							OffsetInMilliseconds: 0,
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -68,7 +123,7 @@ func getAccessToken(data *AlexaData) (string, error) {
 
 // AlexaData contains all the informatino and data from request sent from alexa
 type AlexaData struct {
-	Version float64      `json:"version"`
+	Version string       `json:"version"`
 	Context AlexaContext `json:"context"`
 	Request AlexaRequest `json:"request"`
 }
@@ -109,18 +164,47 @@ type AlexaRequest struct {
 // AlexaIntent holds information and data of intent sent from alexa
 type AlexaIntent struct {
 	Name       string     `json:"name"`
-	AlexaSlots AlexaSlots `json:"alexa_slot"`
+	AlexaSlots AlexaSlots `json:"slots"`
 }
 
 // AlexaSlots are the container for the slots
 type AlexaSlots struct {
-	Nth     AlexaSlot
-	Episode AlexaSlot
-	Podcast AlexaSlot
+	Nth     AlexaSlot `json:"nth"`
+	Episode AlexaSlot `json:"episode"`
+	Podcast AlexaSlot `json:"podcast"`
 }
 
 // AlexaSlot holds information of the slot for the intent
 type AlexaSlot struct {
-	Name  string
-	Value string
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+// AlexaResponseData contains the version and response
+type AlexaResponseData struct {
+	Version  string        `json:"version"`
+	Response AlexaResponse `json:"response"`
+}
+
+// AlexaResponse contains the actual response
+type AlexaResponse struct {
+	Directives []AlexaDirective `json:"directives"`
+}
+
+// AlexaDirective tells alexa what to do
+type AlexaDirective struct {
+	Type         string         `json:"type"`
+	PlayBehavior string         `json:"playBehavior"`
+	AudioItem    AlexaAudioItem `json:"audioItem"`
+}
+
+// AlexaAudioItem holds information of audio track
+type AlexaAudioItem struct {
+	Stream AlexaStream `json:"stream"`
+}
+
+type AlexaStream struct {
+	Token                string `json:"token"`
+	URL                  string `json:"url"`
+	OffsetInMilliseconds int64  `json:"offsetInMilliseconds"`
 }
