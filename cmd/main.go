@@ -44,7 +44,12 @@ func main() {
 
 	// start server
 	fmt.Println("starting server")
-	err = http.ListenAndServe(":8080", handler)
+	if config.Port == 443 {
+		err = http.ListenAndServeTLS(":"+string(config.Port), config.CertFile, config.KeyFile, handler)
+	} else {
+		err = http.ListenAndServe(":"+string(config.Port), handler)
+	}
+
 	if err != nil {
 		log.Fatal("couldn't not start server: ", err)
 	}
