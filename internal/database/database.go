@@ -20,6 +20,7 @@ const (
 	DBsyncapod = "syncapod"
 
 	// Collections
+	ColPodcast     = "podcast"
 	ColSession     = "session"
 	ColUser        = "user"
 	ColAuthCode    = "auth_code"

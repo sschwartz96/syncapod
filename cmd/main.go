@@ -5,16 +5,13 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
+	"github.com/sschwartz96/syncapod/internal/podcast"
 )
 
 func main() {
-	// test create key
-	pass, _ := auth.Hash("qweQWE123!@#")
-	fmt.Println("password hash: ", pass)
 
 	// read config
 	config, err := config.ReadConfig("config.json")
@@ -37,6 +34,14 @@ func main() {
 		log.Fatal("could not setup handlers: ", err)
 	}
 
+	// test podcast
+	podcast, err := podcast.ParseRSS("https://feeds.twit.tv/twit.xml")
+	if err != nil {
+		log.Fatal("error parsing rss feed: ", err)
+	}
+
+	dbClient.Insert(database.ColPodcast, &podcast)
+	
 	// start server
 	fmt.Println("starting server")
 	err = http.ListenAndServe(":8080", handler)

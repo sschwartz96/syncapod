@@ -30,7 +30,7 @@ func CreateAccessToken(dbClient *database.Client, authCode *models.AuthCode) *mo
 		RefreshToken: CreateKey(32),
 		UserID:       authCode.UserID,
 		Created:      time.Now(),
-		Expires:      time.Now().Add(time.Minute * 6),
+		Expires:      3600,
 	}
 
 	dbClient.Insert(database.ColAccessToken, &token)

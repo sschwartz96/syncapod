@@ -1,0 +1,1988 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cc="http://web.resource.org/cc/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<channel>
+		<atom:link href="http://joeroganexp.joerogan.libsynpro.com/irss" rel="self" type="application/rss+xml"/>
+		<title>The Joe Rogan Experience</title>
+		<pubDate>Thu, 09 Apr 2020 19:00:00 +0000</pubDate>
+		<lastBuildDate>Thu, 09 Apr 2020 19:07:43 +0000</lastBuildDate>
+		<generator>Libsyn WebEngine 2.0</generator>
+		<link>https://www.joerogan.com</link>
+		<language>en</language>
+		<copyright><![CDATA[Copyright © Talking Monkey Productions ]]></copyright>
+		<docs>https://www.joerogan.com</docs>
+		<managingEditor>joe@joerogan.net (joe@joerogan.net)</managingEditor>
+		<itunes:summary><![CDATA[The podcast of Comedian Joe Rogan]]></itunes:summary>
+		<image>
+			<url>http://static.libsyn.com/p/assets/7/1/f/3/71f3014e14ef2722/JREiTunesImage2.jpg</url>
+			<title>The Joe Rogan Experience</title>
+			<link><![CDATA[https://www.joerogan.com]]></link>
+		</image>
+		<itunes:author>Talking Monkey Productions</itunes:author>
+		<itunes:keywords>comedian,joe,monkey,redban,rogan,talking,ufc</itunes:keywords>
+		<itunes:category text="Comedy"></itunes:category>
+		<itunes:category text="Society &amp; Culture"></itunes:category>
+		<itunes:category text="Technology">
+			<itunes:category text="Podcasting"/>
+		</itunes:category>
+		<itunes:image href="http://static.libsyn.com/p/assets/7/1/f/3/71f3014e14ef2722/JREiTunesImage2.jpg" />
+		<itunes:explicit>yes</itunes:explicit>
+		<itunes:owner>
+			<itunes:name><![CDATA[Joe Rogan]]></itunes:name>
+			<itunes:email>joe@joerogan.net</itunes:email>
+		</itunes:owner>
+		<description><![CDATA[The podcast of Comedian Joe Rogan]]></description>
+		<itunes:subtitle><![CDATA[Joe Rogan's Weekly Podcast]]></itunes:subtitle>
+		<itunes:type>episodic</itunes:type>
+				<item>
+			<title>#1456 - Michael Shermer</title>
+			<pubDate>Thu, 09 Apr 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[83d12a7f-77f8-4b44-b61f-efbdd2f3aebb]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1456.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/8/4/8/7/84872565eede1eef/JRE1456.jpg" />
+			<description><![CDATA[Michael Shermer is a science writer, historian of science, founder of The Skeptics Society, and Editor in Chief of its magazine Skeptic. His new book “Giving the Devil His Due: Reflections of a Scientific Humanist” is available now. https://amzn.to/2XmplJY]]></description>
+			<content:encoded><![CDATA[Michael Shermer is a science writer, historian of science, founder of The Skeptics Society, and Editor in Chief of its magazine Skeptic. His new book “Giving the Devil His Due: Reflections of a Scientific Humanist” is available now. https://amzn.to/2XmplJY]]></content:encoded>
+			<enclosure length="116658288" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1456.mp3?dest-id=20651" />
+			<itunes:duration>02:01:06</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,michael,shermer,freak,rogan,deathsquad,jre,1456</itunes:keywords>
+			<itunes:subtitle><![CDATA[Michael Shermer is a science writer, historian of science, founder of The Skeptics Society, and Editor in Chief of its magazine Skeptic. His new book “Giving the Devil His Due: Reflections of a Scientific Humanist” is available now....]]></itunes:subtitle>
+			<itunes:episode>1456</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1455 - Lex Fridman</title>
+			<pubDate>Wed, 08 Apr 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[2773bab4-8847-4536-aea1-02b3ef08aa23]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1455.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/2/8/7/728722ac2d9303b8/JRE1455.jpg" />
+			<description><![CDATA[Lex Fridman is a research scientist at MIT working on human-centered artificial intelligence and autonomous vehicles. Check out is podcast “Artificial Intelligence Podcast” available on Apple Podcast & YouTube – https://www.youtube.com/channel/UCSHZKyawb77ixDdsGog4iWA]]></description>
+			<content:encoded><![CDATA[Lex Fridman is a research scientist at MIT working on human-centered artificial intelligence and autonomous vehicles. Check out is podcast “Artificial Intelligence Podcast” available on Apple Podcast & YouTube – https://www.youtube.com/channel/UCSHZKyawb77ixDdsGog4iWA]]></content:encoded>
+			<enclosure length="198926032" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1455.mp3?dest-id=20651" />
+			<itunes:duration>03:26:52</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,lex,deathsquad,jre,fridman,1455</itunes:keywords>
+			<itunes:subtitle><![CDATA[Lex Fridman is a research scientist at MIT working on human-centered artificial intelligence and autonomous vehicles. Check out is podcast “Artificial Intelligence Podcast” available on Apple Podcast & YouTube –...]]></itunes:subtitle>
+			<itunes:episode>1455</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1454 - Dan Crenshaw</title>
+			<pubDate>Tue, 07 Apr 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[216cac89-068a-4bdb-85be-73b64acc1e62]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1454.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/5/9/b/d59bdcf4acb9808d/JRE1454.jpg" />
+			<description><![CDATA[Dan Crenshaw is a politician and former United States Navy SEAL officer serving as the U.S. Representative for Texas’s 2nd congressional district since 2019. His new book "Fortitude: American Resilience in the Outrage Era" is now available everywhere. https://amzn.to/2wZAdTn]]></description>
+			<content:encoded><![CDATA[Dan Crenshaw is a politician and former United States Navy SEAL officer serving as the U.S. Representative for Texas’s 2nd congressional district since 2019. His new book "Fortitude: American Resilience in the Outrage Era" is now available everywhere. https://amzn.to/2wZAdTn]]></content:encoded>
+			<enclosure length="144659882" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1454.mp3?dest-id=20651" />
+			<itunes:duration>02:30:16</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,dan,joe,party,experience,freak,rogan,crenshaw,deathsquad,jre,1454</itunes:keywords>
+			<itunes:subtitle><![CDATA[Dan Crenshaw is a politician and former United States Navy SEAL officer serving as the U.S. Representative for Texas’s 2nd congressional district since 2019. His new book "Fortitude: American Resilience in the Outrage Era" is now available...]]></itunes:subtitle>
+			<itunes:episode>1454</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1453 - Eric Weinstein</title>
+			<pubDate>Fri, 03 Apr 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[7cd303fc-35ec-438f-a254-104a7b926343]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1453.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/1/5/a/e15a752a47c25c0a/JRE1453.jpg" />
+			<description><![CDATA[Eric Weinstein is a mathematician and economist, and he is also the managing director at Thiel Capital. His new podcast  “The Portal” is available now on Apple Podcasts & Spotify. https://podcasts.apple.com/us/podcast/the-portal/id1469999563]]></description>
+			<content:encoded><![CDATA[Eric Weinstein is a mathematician and economist, and he is also the managing director at Thiel Capital. His new podcast  “The Portal” is available now on Apple Podcasts & Spotify. https://podcasts.apple.com/us/podcast/the-portal/id1469999563]]></content:encoded>
+			<enclosure length="187341854" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1453.mp3?dest-id=20651" />
+			<itunes:duration>03:14:49</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,eric,weinstein,freak,rogan,deathsquad,jre,1453</itunes:keywords>
+			<itunes:subtitle><![CDATA[Eric Weinstein is a mathematician and economist, and he is also the managing director at Thiel Capital. His new podcast  “The Portal” is available now on Apple Podcasts & Spotify....]]></itunes:subtitle>
+			<itunes:episode>1453</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1452 - Greg Fitzsimmons</title>
+			<pubDate>Thu, 02 Apr 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[f8162e40-2686-4b93-a686-88f7fb54a6d2]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1452.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/3/0/6/1/3061012ab47114f0/JRE1452.jpg" />
+			<description><![CDATA[Greg Fitzsimmons is a writer and stand-up comedian. He also hosts a podcast with Alison Rosen called “Childish” that is available now on iTunes & Stitcher.]]></description>
+			<content:encoded><![CDATA[Greg Fitzsimmons is a writer and stand-up comedian. He also hosts a podcast with Alison Rosen called “Childish” that is available now on iTunes & Stitcher.]]></content:encoded>
+			<enclosure length="193757068" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1452.mp3?dest-id=20651" />
+			<itunes:duration>03:21:29</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,greg,freak,fitzsimmons,rogan,deathsquad,jre,1452</itunes:keywords>
+			<itunes:subtitle><![CDATA[Greg Fitzsimmons is a writer and stand-up comedian. He also hosts a podcast with Alison Rosen called “Childish” that is available now on iTunes & Stitcher.]]></itunes:subtitle>
+			<itunes:episode>1452</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1451 - Dr. Peter Hotez</title>
+			<pubDate>Wed, 01 Apr 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[f2f0abb5-f4d0-49e1-b02a-358b40059975]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1451.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/6/4/1/c641e05f7ceff550/JRE1451-2.jpg" />
+			<description><![CDATA[Peter Hotez, M.D., Ph.D. is Dean of the National School of Tropical Medicine and Professor of Pediatrics and Molecular Virology & Microbiology at Baylor College of Medicine where he is also the Director of the Texas Children’s Center for Vaccine Development (CVD) and Texas Children’s Hospital Endowed Chair of Tropical Pediatrics.]]></description>
+			<content:encoded><![CDATA[Peter Hotez, M.D., Ph.D. is Dean of the National School of Tropical Medicine and Professor of Pediatrics and Molecular Virology & Microbiology at Baylor College of Medicine where he is also the Director of the Texas Children’s Center for Vaccine Development (CVD) and Texas Children’s Hospital Endowed Chair of Tropical Pediatrics.]]></content:encoded>
+			<enclosure length="74521313" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1451.mp3?dest-id=20651" />
+			<itunes:duration>01:17:13</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,dr,peter,freak,rogan,deathsquad,hotez,jre,1451</itunes:keywords>
+			<itunes:subtitle><![CDATA[Peter Hotez, M.D., Ph.D. is Dean of the National School of Tropical Medicine and Professor of Pediatrics and Molecular Virology & Microbiology at Baylor College of Medicine where he is also the Director of the Texas Children’s Center for...]]></itunes:subtitle>
+			<itunes:episode>1451</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1450 - Brian Redban</title>
+			<pubDate>Tue, 31 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[e789f767-3ffd-4d6e-aea9-daf81885ea0e]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1450.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/a/f/9/7af9b87e9b9d41de/JRE1450.jpg" />
+			<description><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></description>
+			<content:encoded><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></content:encoded>
+			<enclosure length="203485570" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1450.mp3?dest-id=20651" />
+			<itunes:duration>03:31:35</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,brian,freak,rogan,redban,deathsquad,jre,1450</itunes:keywords>
+			<itunes:subtitle><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></itunes:subtitle>
+			<itunes:episode>1450</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1449 - Bryan Callen</title>
+			<pubDate>Fri, 27 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[6300aa23-207a-48b2-8dca-0fb622c6c2aa]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1449.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/b/8/5/4b853831634c9834/JRE1449.jpg" />
+			<description><![CDATA[Bryan Callen is an actor and stand-up comedian, and together with Brendan Schaub he also hosts “The Fighter & The Kid” podcast. ]]></description>
+			<content:encoded><![CDATA[Bryan Callen is an actor and stand-up comedian, and together with Brendan Schaub he also hosts “The Fighter & The Kid” podcast. ]]></content:encoded>
+			<enclosure length="171139457" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1449.mp3?dest-id=20651" />
+			<itunes:duration>02:57:55</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,bryan,freak,rogan,callen,deathsquad,jre,1449</itunes:keywords>
+			<itunes:subtitle><![CDATA[Bryan Callen is an actor and stand-up comedian, and together with Brendan Schaub he also hosts “The Fighter & The Kid” podcast. ]]></itunes:subtitle>
+			<itunes:episode>1449</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1448 - Joey Diaz</title>
+			<pubDate>Thu, 26 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[436a3487-e55e-4ee1-abdf-5ec037ee251c]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1448.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/a/6/5/da652041b7eb5cf3/JRE1448.jpg" />
+			<description><![CDATA[Joey “CoCo” Diaz is a Cuban-American stand up comedian and actor.  Joey also hosts his own podcast called “The Church of What’s Happening Now”.]]></description>
+			<content:encoded><![CDATA[Joey “CoCo” Diaz is a Cuban-American stand up comedian and actor.  Joey also hosts his own podcast called “The Church of What’s Happening Now”.]]></content:encoded>
+			<enclosure length="183697438" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1448.mp3?dest-id=20651" />
+			<itunes:duration>03:10:59</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,diaz,party,experience,joey,freak,rogan,deathsquad,jre,1448</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joey “CoCo” Diaz is a Cuban-American stand up comedian and actor.  Joey also hosts his own podcast called “The Church of What’s Happening Now”.]]></itunes:subtitle>
+			<itunes:episode>1448</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1447 - Tom Segura</title>
+			<pubDate>Wed, 25 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[1989dbe0-155c-45fb-99cb-cfb558f19d7e]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1447.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/2/b/b/7/2bb763657fb79a66/JRE1447.jpg" />
+			<description><![CDATA[Tom Segura is a stand-up comedian, and hosts his own podcast with his wife, Christina Pazsitzky called Your Mom’s House. His new special “Ball Hog” is now streaming only on Netflix.  http://tomsegura.com/]]></description>
+			<content:encoded><![CDATA[Tom Segura is a stand-up comedian, and hosts his own podcast with his wife, Christina Pazsitzky called Your Mom’s House. His new special “Ball Hog” is now streaming only on Netflix.  http://tomsegura.com/]]></content:encoded>
+			<enclosure length="162465487" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1447.mp3?dest-id=20651" />
+			<itunes:duration>02:48:54</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,tom,freak,rogan,segura,deathsquad,jre,1447</itunes:keywords>
+			<itunes:subtitle><![CDATA[Tom Segura is a stand-up comedian, and hosts his own podcast with his wife, Christina Pazsitzky called Your Mom’s House. His new special “Ball Hog” is now streaming only on Netflix.  http://tomsegura.com/]]></itunes:subtitle>
+			<itunes:episode>1447</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1446 - Bert Kreischer</title>
+			<pubDate>Tue, 24 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[6bbdb472-7afe-49c3-af3b-4d01f0f0040d]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1446.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/4/3/4/4434ae63f2c31dcd/JRE1446.jpg" />
+			<description><![CDATA[Bert Kreischer is a stand-up comedian, actor and podcast host. His new special “Hey Big Boy” is now streaming only on Netflix.]]></description>
+			<content:encoded><![CDATA[Bert Kreischer is a stand-up comedian, actor and podcast host. His new special “Hey Big Boy” is now streaming only on Netflix.]]></content:encoded>
+			<enclosure length="203339765" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1446.mp3?dest-id=20651" />
+			<itunes:duration>03:31:28</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,bert,freak,rogan,kreischer,deathsquad,jre,1446</itunes:keywords>
+			<itunes:subtitle><![CDATA[Bert Kreischer is a stand-up comedian, actor and podcast host. His new special “Hey Big Boy” is now streaming only on Netflix.]]></itunes:subtitle>
+			<itunes:episode>1446</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1445 - Andy Stumpf</title>
+			<pubDate>Sat, 21 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[15c6dbbb-0d25-45da-af2e-8429b49a5d97]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1445.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/1/4/7/c1474900eacf87e1/JRE1445.jpg" />
+			<description><![CDATA[Andy Stumpf is a retired Navy SEAL and was also a two-time wingsuit world record holder. He hosts his own podcast called “Cleared Hot” that can be found on Apple Podcasts & Stitcher.]]></description>
+			<content:encoded><![CDATA[Andy Stumpf is a retired Navy SEAL and was also a two-time wingsuit world record holder. He hosts his own podcast called “Cleared Hot” that can be found on Apple Podcasts & Stitcher.]]></content:encoded>
+			<enclosure length="173729676" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1445.mp3?dest-id=20651" />
+			<itunes:duration>03:00:37</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,andy,freak,rogan,deathsquad,stumpf,jre,1445</itunes:keywords>
+			<itunes:subtitle><![CDATA[Andy Stumpf is a retired Navy SEAL and was also a two-time wingsuit world record holder. He hosts his own podcast called “Cleared Hot” that can be found on Apple Podcasts & Stitcher.]]></itunes:subtitle>
+			<itunes:episode>1445</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1444 - Duncan Trussell</title>
+			<pubDate>Thu, 19 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[c303427b-0701-485e-9848-7c3001b2203a]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1444.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/d/9/a/5d9a6d101a2f0679/JRE1444.jpg" />
+			<description><![CDATA[Duncan Trussell is a stand-up comedian, and host of his own podcast “The Duncan Trussell Family Hour”. Look for his new show "The Midnight Gospel" which starts streaming April 20 on Netflix.]]></description>
+			<content:encoded><![CDATA[Duncan Trussell is a stand-up comedian, and host of his own podcast “The Duncan Trussell Family Hour”. Look for his new show "The Midnight Gospel" which starts streaming April 20 on Netflix.]]></content:encoded>
+			<enclosure length="183994315" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1444.mp3?dest-id=20651" />
+			<itunes:duration>03:11:17</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,duncan,freak,rogan,trussell,deathsquad,jre,1444</itunes:keywords>
+			<itunes:subtitle><![CDATA[Duncan Trussell is a stand-up comedian, and host of his own podcast “The Duncan Trussell Family Hour”. Look for his new show "The Midnight Gospel" which starts streaming April 20 on Netflix.]]></itunes:subtitle>
+			<itunes:episode>1444</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1443 - Jonathan Ward</title>
+			<pubDate>Wed, 18 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[0d956a1f-0c81-42a2-b3a6-74e9e1bb4edc]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1443.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/9/7/7/6/977616565b571244/JRE1443.jpg" />
+			<description><![CDATA[Jonathan Ward is the owner of ICON and a designer and creator of coach-built premium automobiles.]]></description>
+			<content:encoded><![CDATA[Jonathan Ward is the owner of ICON and a designer and creator of coach-built premium automobiles.]]></content:encoded>
+			<enclosure length="141320179" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1443.mp3?dest-id=20651" />
+			<itunes:duration>02:26:51</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,ward,jonathan,freak,rogan,deathsquad,jre,1443</itunes:keywords>
+			<itunes:subtitle><![CDATA[Jonathan Ward is the owner of ICON and a designer and creator of coach-built premium automobiles.]]></itunes:subtitle>
+			<itunes:episode>1443</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1442 - Shannon O'Loughlin</title>
+			<pubDate>Tue, 17 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[0081519d-a1d3-42d1-8f33-9ec1259931c5]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1442.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/d/c/c/4dcc02fddce27343/JRE1442.jpg" />
+			<description><![CDATA[Shannon O'Loughlin is the Executive Director and attorney for the Association on American Indian Affairs, and she is also a citizen of the Choctaw Nation of Oklahoma.]]></description>
+			<content:encoded><![CDATA[Shannon O'Loughlin is the Executive Director and attorney for the Association on American Indian Affairs, and she is also a citizen of the Choctaw Nation of Oklahoma.]]></content:encoded>
+			<enclosure length="160236469" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1442.mp3?dest-id=20651" />
+			<itunes:duration>02:46:34</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,shannon,freak,rogan,deathsquad,jre,oloughlin,1442</itunes:keywords>
+			<itunes:subtitle><![CDATA[Shannon O'Loughlin is the Executive Director and attorney for the Association on American Indian Affairs, and she is also a citizen of the Choctaw Nation of Oklahoma.]]></itunes:subtitle>
+			<itunes:episode>1442</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>Fight Companion - March 14, 2020</title>
+			<pubDate>Sun, 15 Mar 2020 01:49:12 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[7b9374bb-b9aa-4b86-8583-bb7fcbdd48ee]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/fightcomp031420.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/0/d/c/e0dca9e7172443f7/JRE1441A.jpg" />
+			<description><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub to watch the fights on March 14, 2020.]]></description>
+			<content:encoded><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub to watch the fights on March 14, 2020.]]></content:encoded>
+			<enclosure length="169067842" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/fightcomp031420.mp3?dest-id=20651" />
+			<itunes:duration>02:55:49</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,fight,joe,party,experience,eddie,bryan,bravo,brendan,freak,rogan,companion,callen,schaub,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub to watch the fights on March 14, 2020.]]></itunes:subtitle>
+			<itunes:episode>1441</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1441 - Hugo Martin</title>
+			<pubDate>Fri, 13 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[42d43542-4126-4538-ba70-64325ec64066]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1441.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/c/a/8/aca87ce281f73021/JRE1441.jpg" />
+			<description><![CDATA[Hugo Martin is the creative director of Doom Eternal by id Software. Doom Eternal releases everywhere on all platforms on March 20, 2020.]]></description>
+			<content:encoded><![CDATA[Hugo Martin is the creative director of Doom Eternal by id Software. Doom Eternal releases everywhere on all platforms on March 20, 2020.]]></content:encoded>
+			<enclosure length="83646700" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1441.mp3?dest-id=20651" />
+			<itunes:duration>01:26:47</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,martin,freak,rogan,doom,hugo,deathsquad,jre,1441</itunes:keywords>
+			<itunes:subtitle><![CDATA[Hugo Martin is the creative director of Doom Eternal by id Software. Doom Eternal releases everywhere on all platforms on March 20, 2020.]]></itunes:subtitle>
+			<itunes:episode>1441</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1440 - Fortune Feimster</title>
+			<pubDate>Thu, 12 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[09bd2bb6-2530-4d25-a82a-99862f96e110]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1440.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/8/7/a/c/87acbfb466cf189a/JRE1440.jpg" />
+			<description><![CDATA[Fortune Feimster is an American writer, comedian, and actress. Check out her brand new special "Sweet & Salty" now streaming on Netflix. She can also be heard along with Tom Papa on "What A Joke" on the SiriusXM Netflix channel.]]></description>
+			<content:encoded><![CDATA[Fortune Feimster is an American writer, comedian, and actress. Check out her brand new special "Sweet & Salty" now streaming on Netflix. She can also be heard along with Tom Papa on "What A Joke" on the SiriusXM Netflix channel.]]></content:encoded>
+			<enclosure length="173800290" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1440.mp3?dest-id=20651" />
+			<itunes:duration>03:00:41</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,fortune,rogan,feimster,deathsquad,jre,1440</itunes:keywords>
+			<itunes:subtitle><![CDATA[Fortune Feimster is an American writer, comedian, and actress. Check out her brand new special "Sweet & Salty" now streaming on Netflix. She can also be heard along with Tom Papa on "What A Joke" on the SiriusXM Netflix channel.]]></itunes:subtitle>
+			<itunes:episode>1440</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #93 with Alexander Volkanovski</title>
+			<pubDate>Wed, 11 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[6993babf-31b8-4951-ab09-60a52ec492b1]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow093.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/0/f/1/40f1703318258a91/JRE1439A.jpg" />
+			<description><![CDATA[Joe sits down with UFC Featherweight champion Alexander Volkanovski.]]></description>
+			<content:encoded><![CDATA[Joe sits down with UFC Featherweight champion Alexander Volkanovski.]]></content:encoded>
+			<enclosure length="109714209" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow093.mp3?dest-id=20651" />
+			<itunes:duration>01:53:58</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,alexander,mma,show,joe,party,experience,freak,rogan,93,deathsquad,jre,volkanovski</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with UFC Featherweight champion Alexander Volkanovski.]]></itunes:subtitle>
+			<itunes:episode>1439</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1439 - Michael Osterholm</title>
+			<pubDate>Tue, 10 Mar 2020 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[58e30d30-46ea-4a20-b44b-f192bdfe9cb2]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1439.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/f/8/f/d/f8fdc4876e1a463b/JRE1439.jpg" />
+			<description><![CDATA[Michael Osterholm is an internationally recognized expert in infectious disease epidemiology. He is Regents Professor, McKnight Presidential Endowed Chair in Public Health, the director of the Center for Infectious Disease Research and Policy (CIDRAP), Distinguished Teaching Professor in the Division of Environmental Health Sciences, School of Public Health, a professor in the Technological Leadership Institute, College of Science and Engineering, and an adjunct professor in the Medical School, all at the University of Minnesota. Look for his book "Deadliest Enemy: Our War Against Deadly Germs" for more info. https://amzn.to/2IAzeLe]]></description>
+			<content:encoded><![CDATA[Michael Osterholm is an internationally recognized expert in infectious disease epidemiology. He is Regents Professor, McKnight Presidential Endowed Chair in Public Health, the director of the Center for Infectious Disease Research and Policy (CIDRAP), Distinguished Teaching Professor in the Division of Environmental Health Sciences, School of Public Health, a professor in the Technological Leadership Institute, College of Science and Engineering, and an adjunct professor in the Medical School, all at the University of Minnesota. Look for his book "Deadliest Enemy: Our War Against Deadly Germs" for more info. https://amzn.to/2IAzeLe]]></content:encoded>
+			<enclosure length="98462706" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1439.mp3?dest-id=20651" />
+			<itunes:duration>01:42:13</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,michael,freak,rogan,deathsquad,jre,osterholm,1439</itunes:keywords>
+			<itunes:subtitle><![CDATA[Michael Osterholm is an internationally recognized expert in infectious disease epidemiology. He is Regents Professor, McKnight Presidential Endowed Chair in Public Health, the director of the Center for Infectious Disease Research and Policy...]]></itunes:subtitle>
+			<itunes:episode>1439</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1438 - Andrew Santino</title>
+			<pubDate>Fri, 06 Mar 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[8cb76e12-c822-47b0-b7f8-1ff63a345d56]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1438a.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/0/9/8/c098587e2053b007/JRE1438.jpg" />
+			<description><![CDATA[Andrew Santino is a stand up comedian and actor. He will be in the new FXX show "Dave" starting on March 4, also available on Hulu. Check out his podcast “Whiskey Ginger” & also look for his new podcast with comedian Bobby Lee called "Bad Friends" both available on Apple Podcasts & YouTube.]]></description>
+			<content:encoded><![CDATA[Andrew Santino is a stand up comedian and actor. He will be in the new FXX show "Dave" starting on March 4, also available on Hulu. Check out his podcast “Whiskey Ginger” & also look for his new podcast with comedian Bobby Lee called "Bad Friends" both available on Apple Podcasts & YouTube.]]></content:encoded>
+			<enclosure length="169044980" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1438a.mp3?dest-id=20651" />
+			<itunes:duration>02:55:45</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,andrew,freak,rogan,santino,deathsquad,jre,1438</itunes:keywords>
+			<itunes:subtitle><![CDATA[Andrew Santino is a stand up comedian and actor. He will be in the new FXX show "Dave" starting on March 4, also available on Hulu. Check out his podcast “Whiskey Ginger” & also look for his new podcast with comedian Bobby Lee called "Bad...]]></itunes:subtitle>
+			<itunes:episode>1438</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1437 - Stephen Dubner</title>
+			<pubDate>Thu, 05 Mar 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[3e457936-0258-4bfe-9b2f-b5af62dec93d]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1437.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/1/5/5/5/1555da7120d350dd/JRE1437a.jpg" />
+			<description><![CDATA[Stephen Dubner is an award-winning author, journalist, and podcast and radio host. He is co-author of the popular Freakonomics book series and host of Freakonomics Radio and podcast.]]></description>
+			<content:encoded><![CDATA[Stephen Dubner is an award-winning author, journalist, and podcast and radio host. He is co-author of the popular Freakonomics book series and host of Freakonomics Radio and podcast.]]></content:encoded>
+			<enclosure length="166675277" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1437.mp3?dest-id=20651" />
+			<itunes:duration>02:53:16</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,steven,freak,rogan,freakonomics,dubner,deathsquad,jre,1437</itunes:keywords>
+			<itunes:subtitle><![CDATA[Stephen Dubner is an award-winning author, journalist, and podcast and radio host. He is co-author of the popular Freakonomics book series and host of Freakonomics Radio and podcast.]]></itunes:subtitle>
+			<itunes:episode>1437</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1436 - Adam Curry</title>
+			<pubDate>Wed, 04 Mar 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[e3144042-6306-490e-9196-49d00801ec43]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1436.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/6/d/b/a/6dba0443b896e2a6/JRE1436.jpg" />
+			<description><![CDATA[Adam Curry is a podcaster, announcer, internet entrepreneur and media personality, known for his stint as VJ on MTV and being one of the first celebrities personally to create and administer Web sites. Check out his podcast "No Agenda" with new shows available every Sunday and Thursday. http://www.noagendashow.com/]]></description>
+			<content:encoded><![CDATA[Adam Curry is a podcaster, announcer, internet entrepreneur and media personality, known for his stint as VJ on MTV and being one of the first celebrities personally to create and administer Web sites. Check out his podcast "No Agenda" with new shows available every Sunday and Thursday. http://www.noagendashow.com/]]></content:encoded>
+			<enclosure length="184503682" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1436.mp3?dest-id=20651" />
+			<itunes:duration>03:11:50</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,adam,curry,freak,rogan,deathsquad,jre,1436</itunes:keywords>
+			<itunes:subtitle><![CDATA[Adam Curry is a podcaster, announcer, internet entrepreneur and media personality, known for his stint as VJ on MTV and being one of the first celebrities personally to create and administer Web sites. Check out his podcast "No Agenda" with new shows...]]></itunes:subtitle>
+			<itunes:episode>1436</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1435 - Suzanne Santo &amp; Gary Clark Jr.</title>
+			<pubDate>Tue, 03 Mar 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[88ce0f80-e391-4990-b338-96e60567e6bd]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1435.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/8/8/0/488006cd6500c655/JRE1435.jpg" />
+			<description><![CDATA[Suzanne Santo is a singer/songwriter currently touring the world. Her new album releases soon with the single "Fall For That" featuring Grammy award winner, Gary Clark Jr.]]></description>
+			<content:encoded><![CDATA[Suzanne Santo is a singer/songwriter currently touring the world. Her new album releases soon with the single "Fall For That" featuring Grammy award winner, Gary Clark Jr.]]></content:encoded>
+			<enclosure length="231801491" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1435.mp3?dest-id=20651" />
+			<itunes:duration>04:01:07</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,gary,jr,joe,party,experience,clark,suzanne,freak,rogan,santo,deathsquad,jre,1435</itunes:keywords>
+			<itunes:subtitle><![CDATA[Suzanne Santo is a singer/songwriter currently touring the world. Her new album releases soon with the single "Fall For That" featuring Grammy award winner, Gary Clark Jr.]]></itunes:subtitle>
+			<itunes:episode>1435</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1434 - Trevor Thompson</title>
+			<pubDate>Fri, 28 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[129bf992-1e5e-4b3e-9b42-e92aca717942]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1434.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/7/0/e/770e9e31638e2496/JRE1434.jpg" />
+			<description><![CDATA[Trevor Thompson is a former Navy SEAL, B.A.S.E. jumper, cameraman and photographer.]]></description>
+			<content:encoded><![CDATA[Trevor Thompson is a former Navy SEAL, B.A.S.E. jumper, cameraman and photographer.]]></content:encoded>
+			<enclosure length="172982093" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1434.mp3?dest-id=20651" />
+			<itunes:duration>02:59:51</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,thompson,freak,rogan,trevor,deathsquad,jre,1434</itunes:keywords>
+			<itunes:subtitle><![CDATA[Trevor Thompson is a former Navy SEAL, B.A.S.E. jumper, cameraman and photographer.]]></itunes:subtitle>
+			<itunes:episode>1434</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1433 - Michael Yo</title>
+			<pubDate>Thu, 27 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[01c53166-59c4-48fd-885f-3653b093ccfb]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1433.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/b/6/4/db64d9197b210f05/JRE1433.jpg" />
+			<description><![CDATA[Michael Yo is a stand up comedian. Look for him touring this year including March 6-7 Gotham Comedy Club in New York City. http://michaelyo.com]]></description>
+			<content:encoded><![CDATA[Michael Yo is a stand up comedian. Look for him touring this year including March 6-7 Gotham Comedy Club in New York City. http://michaelyo.com]]></content:encoded>
+			<enclosure length="208253314" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1433.mp3?dest-id=20651" />
+			<itunes:duration>03:36:35</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,michael,yo,freak,rogan,deathsquad,jre,1433</itunes:keywords>
+			<itunes:subtitle><![CDATA[Michael Yo is a stand up comedian. Look for him touring this year including March 6-7 Gotham Comedy Club in New York City. http://michaelyo.com]]></itunes:subtitle>
+			<itunes:episode>1433</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1432 - Aubrey de Grey</title>
+			<pubDate>Wed, 26 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[782182ef-1085-4ef1-9d74-160a69e0dc02]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1432.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/2/d/e/d2de410d5d57f420/JRE1432.jpg" />
+			<description><![CDATA[Aubrey de Grey is an English author and theoretician in the field of gerontology and the Chief Science Officer of the SENS Research Foundation.]]></description>
+			<content:encoded><![CDATA[Aubrey de Grey is an English author and theoretician in the field of gerontology and the Chief Science Officer of the SENS Research Foundation.]]></content:encoded>
+			<enclosure length="106518974" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1432.mp3?dest-id=20651" />
+			<itunes:duration>01:50:36</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,de,party,experience,grey,freak,aubrey,rogan,deathsquad,jre,1432</itunes:keywords>
+			<itunes:subtitle><![CDATA[Aubrey de Grey is an English author and theoretician in the field of gerontology and the Chief Science Officer of the SENS Research Foundation.]]></itunes:subtitle>
+			<itunes:episode>1432</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1431 - Owen Smith</title>
+			<pubDate>Tue, 25 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[7959c187-836f-4587-9939-6f212dd37912]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1431.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/6/a/8/e/6a8ee452cd5456e3/JRE1431.jpg" />
+			<description><![CDATA[Owen Smith is a comedian, writer, actor and television producer.]]></description>
+			<content:encoded><![CDATA[Owen Smith is a comedian, writer, actor and television producer.]]></content:encoded>
+			<enclosure length="157239325" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1431.mp3?dest-id=20651" />
+			<itunes:duration>02:43:26</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,owen,smith,freak,rogan,1431,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Owen Smith is a comedian, writer, actor and television producer.]]></itunes:subtitle>
+			<itunes:episode>1431</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>Fight Companion - February 22, 2020</title>
+			<pubDate>Sun, 23 Feb 2020 03:45:21 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[88a39e1a-4603-4f04-a3bd-b9eb0db26ea7]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/fightcomp022220.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/5/0/a/550a0f36e6976d5c/JRE1430b.jpg" />
+			<description><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub to watch the fights on February 22, 2020.]]></description>
+			<content:encoded><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub to watch the fights on February 22, 2020.]]></content:encoded>
+			<enclosure length="175387636" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/fightcomp022220.mp3?dest-id=20651" />
+			<itunes:duration>03:02:17</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,fight,joe,party,experience,eddie,bryan,bravo,22,brendan,freak,february,rogan,companion,2020,callen,schaub,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub to watch the fights on February 22, 2020.]]></itunes:subtitle>
+			<itunes:episode>1430</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1430 - Raghunath Cappo</title>
+			<pubDate>Fri, 21 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[b1cf9102-9626-41ac-8184-83b8ac361a75]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1430.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/9/c/6/79c607c305e4d387/JRE1430.jpg" />
+			<description><![CDATA[Raghunath Cappo was the vocalist for punk bands Youth of Today and Shelter, and after living as a monk is now a yoga teacher and is the host of the "Wisdom of the Sages" podcast.]]></description>
+			<content:encoded><![CDATA[Raghunath Cappo was the vocalist for punk bands Youth of Today and Shelter, and after living as a monk is now a yoga teacher and is the host of the "Wisdom of the Sages" podcast.]]></content:encoded>
+			<enclosure length="178715197" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1430.mp3?dest-id=20651" />
+			<itunes:duration>03:05:49</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,ray,freak,rogan,deathsquad,jre,cappo,1430,raghunath</itunes:keywords>
+			<itunes:subtitle><![CDATA[Raghunath Cappo was the vocalist for punk bands Youth of Today and Shelter, and after living as a monk is now a yoga teacher and is the host of the "Wisdom of the Sages" podcast.]]></itunes:subtitle>
+			<itunes:episode>1430</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1429 - Colin O'Brady</title>
+			<pubDate>Thu, 20 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[ae4fe39f-6161-4170-8515-397ba12f54a9]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1429.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/a/f/6/7af63c4b26daa07e/JRE1429.jpg" />
+			<description><![CDATA[Colin O'Brady is a professional endurance athlete, motivational speaker and adventurer. His new book "The Impossible First" documents his adventure as the first person in the world to travel across Antarctica unassisted. https://amzn.to/2u9mXtG]]></description>
+			<content:encoded><![CDATA[Colin O'Brady is a professional endurance athlete, motivational speaker and adventurer. His new book "The Impossible First" documents his adventure as the first person in the world to travel across Antarctica unassisted. https://amzn.to/2u9mXtG]]></content:encoded>
+			<enclosure length="84577662" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1429.mp3?dest-id=20651" />
+			<itunes:duration>01:27:46</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>joe,party,experience,colin,freak,rogan,deathsquad,jre,obrady,1429</itunes:keywords>
+			<itunes:subtitle><![CDATA[Colin O'Brady is a professional endurance athlete, motivational speaker and adventurer. His new book "The Impossible First" documents his adventure as the first person in the world to travel across Antarctica unassisted. https://amzn.to/2u9mXtG]]></itunes:subtitle>
+			<itunes:episode>1429</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1428 - Brian Greene</title>
+			<pubDate>Wed, 19 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[67fec643-473d-48b4-b888-e5ee619600b3]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1428.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/6/c/7/c6c723c38fb853b1/JRE1428.jpg" />
+			<description><![CDATA[Brian Greene is a theoretical physicist, mathematician, and string theorist. He has been a professor at Columbia University since 1996 and chairman of the World Science Festival since co-founding it in 2008. His new book "Until the End of Time" is now available: https://amzn.to/2ug680o]]></description>
+			<content:encoded><![CDATA[Brian Greene is a theoretical physicist, mathematician, and string theorist. He has been a professor at Columbia University since 1996 and chairman of the World Science Festival since co-founding it in 2008. His new book "Until the End of Time" is now available: https://amzn.to/2ug680o]]></content:encoded>
+			<enclosure length="150464290" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1428.mp3?dest-id=20651" />
+			<itunes:duration>02:36:22</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,brian,greene,freak,rogan,deathsquad,jre,1428</itunes:keywords>
+			<itunes:subtitle><![CDATA[Brian Greene is a theoretical physicist, mathematician, and string theorist. He has been a professor at Columbia University since 1996 and chairman of the World Science Festival since co-founding it in 2008. His new book "Until the End of Time" is now...]]></itunes:subtitle>
+			<itunes:episode>1428</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #92 with Angela Hill</title>
+			<pubDate>Tue, 18 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[8c2b3b61-8340-49e3-a782-41e13ae84bdc]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow092.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/b/f/c/8/bfc874ae5d81ce15/JRE1427A.jpg" />
+			<description><![CDATA[Joe is joined by UFC strawweight fighter Angela Hill.]]></description>
+			<content:encoded><![CDATA[Joe is joined by UFC strawweight fighter Angela Hill.]]></content:encoded>
+			<enclosure length="146582870" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow092.mp3?dest-id=20651" />
+			<itunes:duration>02:32:22</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,hill,mma,show,92,joe,party,experience,angela,freak,rogan,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by UFC strawweight fighter Angela Hill.]]></itunes:subtitle>
+			<itunes:episode>1427</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1427 - Melissa Chen</title>
+			<pubDate>Fri, 14 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[60bc57a3-7011-4606-99bd-36149c9d35b6]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1427.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/9/8/6/d/986d6451dfcb65cd/JRE1427.jpg" />
+			<description><![CDATA[Melissa Chen is the NY editor for Spectator USA and the managing director of Ideas Beyond Borders.]]></description>
+			<content:encoded><![CDATA[Melissa Chen is the NY editor for Spectator USA and the managing director of Ideas Beyond Borders.]]></content:encoded>
+			<enclosure length="149196850" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1427.mp3?dest-id=20651" />
+			<itunes:duration>02:35:05</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,melissa,freak,rogan,chen,deathsquad,jre,1427</itunes:keywords>
+			<itunes:subtitle><![CDATA[Melissa Chen is the NY editor for Spectator USA and the managing director of Ideas Beyond Borders.]]></itunes:subtitle>
+			<itunes:episode>1427</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #91 with Radio Rahim</title>
+			<pubDate>Thu, 13 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[1d844e98-4cc8-4512-b631-3b6ff7d2e718]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow091.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/e/6/9/ee69a0b5a395c309/JRE1426A.jpg" />
+			<description><![CDATA[Joe sits down with boxing reporter and journalist Radio Rahim.]]></description>
+			<content:encoded><![CDATA[Joe sits down with boxing reporter and journalist Radio Rahim.]]></content:encoded>
+			<enclosure length="146839393" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow091.mp3?dest-id=20651" />
+			<itunes:duration>02:32:38</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,radio,mma,show,joe,party,experience,91,freak,rogan,rahim,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with boxing reporter and journalist Radio Rahim.]]></itunes:subtitle>
+			<itunes:episode>1426</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1426 - Justin Martindale</title>
+			<pubDate>Wed, 12 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d58fa36c-caba-4ce1-80e8-04a771ea6107]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1426.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/c/d/5/ecd5767bb6186c43/JRE1426.jpg" />
+			<description><![CDATA[Justin Martindale is a stand-up comic, writer, producer, and actor.]]></description>
+			<content:encoded><![CDATA[Justin Martindale is a stand-up comic, writer, producer, and actor.]]></content:encoded>
+			<enclosure length="134449055" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1426.mp3?dest-id=20651" />
+			<itunes:duration>02:19:43</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,justin,joe,party,experience,freak,rogan,deathsquad,martindale,jre,1426</itunes:keywords>
+			<itunes:subtitle><![CDATA[Justin Martindale is a stand-up comic, writer, producer, and actor.]]></itunes:subtitle>
+			<itunes:episode>1426</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #90 with Rashad Evans</title>
+			<pubDate>Tue, 11 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[ef7bdbf9-0edb-4ad6-840f-b5f9b053f925]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow090.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/2/5/8/e258ef0e0ebd3c98/JRE1425A.jpg" />
+			<description><![CDATA[Joe sits down with former UFC Light Heavyweight Champion, and a 2019 inductee of the UFC Hall of Fame, Rashad Evans.]]></description>
+			<content:encoded><![CDATA[Joe sits down with former UFC Light Heavyweight Champion, and a 2019 inductee of the UFC Hall of Fame, Rashad Evans.]]></content:encoded>
+			<enclosure length="147551031" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow090.mp3?dest-id=20651" />
+			<itunes:duration>02:33:23</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,evans,joe,rashad,party,experience,freak,rogan,90,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with former UFC Light Heavyweight Champion, and a 2019 inductee of the UFC Hall of Fame, Rashad Evans.]]></itunes:subtitle>
+			<itunes:episode>1425</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1425 - Garrett Reisman</title>
+			<pubDate>Fri, 07 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[2ed55758-f403-4d92-a99d-e5e969bffaaf]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1425.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/9/6/a/796a2ccfa9c45856/JRE1425.jpg" />
+			<description><![CDATA[Garrett Reisman is a former NASA Astronaut. He is currently a Professor of Astronautical Engineering at USC and a Senior Advisor at SpaceX.]]></description>
+			<content:encoded><![CDATA[Garrett Reisman is a former NASA Astronaut. He is currently a Professor of Astronautical Engineering at USC and a Senior Advisor at SpaceX.]]></content:encoded>
+			<enclosure length="136864504" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1425.mp3?dest-id=20651" />
+			<itunes:duration>02:22:14</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,garrett,rogan,reisman,deathsquad,jre,1425</itunes:keywords>
+			<itunes:subtitle><![CDATA[Garrett Reisman is a former NASA Astronaut. He is currently a Professor of Astronautical Engineering at USC and a Senior Advisor at SpaceX.]]></itunes:subtitle>
+			<itunes:episode>1425</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1424 - Tom Papa</title>
+			<pubDate>Thu, 06 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[cabb6fa4-22ce-4ee0-834e-0ccef7982056]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1424.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/0/d/b/e0db7a3dafab1715/JRE1424.jpg" />
+			<description><![CDATA[Tom Papa is a comedian, actor, writer and television/radio host. Check out his new special "You're Doing Great!" now streaming on Netflix.]]></description>
+			<content:encoded><![CDATA[Tom Papa is a comedian, actor, writer and television/radio host. Check out his new special "You're Doing Great!" now streaming on Netflix.]]></content:encoded>
+			<enclosure length="170903770" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1424.mp3?dest-id=20651" />
+			<itunes:duration>02:57:41</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,tom,freak,papa,rogan,deathsquad,jre,1424</itunes:keywords>
+			<itunes:subtitle><![CDATA[Tom Papa is a comedian, actor, writer and television/radio host. Check out his new special "You're Doing Great!" now streaming on Netflix.]]></itunes:subtitle>
+			<itunes:episode>1424</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1423 - Andrew Doyle</title>
+			<pubDate>Wed, 05 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[f0c83a21-948c-417e-b9bf-0580608f9d8e]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1423.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/f/6/f/5f6f1a1af4ef27d8/JRE1423.jpg" />
+			<description><![CDATA[Andrew Doyle is a British comedian, playwright, journalist, political satirist and is creator of the fictitious character Titania McGrath.]]></description>
+			<content:encoded><![CDATA[Andrew Doyle is a British comedian, playwright, journalist, political satirist and is creator of the fictitious character Titania McGrath.]]></content:encoded>
+			<enclosure length="155622617" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1423.mp3?dest-id=20651" />
+			<itunes:duration>02:41:46</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>joe,party,experience,andrew,doyle,freak,rogan,deathsquad,jre,1423</itunes:keywords>
+			<itunes:subtitle><![CDATA[Andrew Doyle is a British comedian, playwright, journalist, political satirist and is creator of the fictitious character Titania McGrath.]]></itunes:subtitle>
+			<itunes:episode>1423</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1422 - Lex Fridman</title>
+			<pubDate>Tue, 04 Feb 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[e70acda9-375e-4ce5-a9e8-91f460d3ed5d]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1422.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/2/d/3/d/2d3dfd756bef64aa/JRE1422.jpg" />
+			<description><![CDATA[Lex Fridman is a research scientist at MIT working on human-centered artificial intelligence and autonomous vehicles. Check out is podcast "Artificial Intelligence Podcast" available on Apple Podcast & YouTube - https://www.youtube.com/channel/UCSHZKyawb77ixDdsGog4iWA]]></description>
+			<content:encoded><![CDATA[Lex Fridman is a research scientist at MIT working on human-centered artificial intelligence and autonomous vehicles. Check out is podcast "Artificial Intelligence Podcast" available on Apple Podcast & YouTube - https://www.youtube.com/channel/UCSHZKyawb77ixDdsGog4iWA]]></content:encoded>
+			<enclosure length="170337414" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1422.mp3?dest-id=20651" />
+			<itunes:duration>02:57:06</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,lex,deathsquad,jre,fridman,1422</itunes:keywords>
+			<itunes:subtitle><![CDATA[Lex Fridman is a research scientist at MIT working on human-centered artificial intelligence and autonomous vehicles. Check out is podcast "Artificial Intelligence Podcast" available on Apple Podcast & YouTube -...]]></itunes:subtitle>
+			<itunes:episode>1422</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1421 - Jim Norton</title>
+			<pubDate>Tue, 04 Feb 2020 03:05:40 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[1674f719-cb81-4cfc-b640-1cf31f9826cf]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1421.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/4/7/3/4473e4d7e68596a0/JRE1421.jpg" />
+			<description><![CDATA[Jim Norton is a stand-up comedian, radio personality, author, and actor. Check out his podcast the “Chip Chipperson Podacast” available on iTunes and the Riotcast Podcast Network. Look for Jim on "The Degenerates - Season 2" now streaming on Netflix.]]></description>
+			<content:encoded><![CDATA[Jim Norton is a stand-up comedian, radio personality, author, and actor. Check out his podcast the “Chip Chipperson Podacast” available on iTunes and the Riotcast Podcast Network. Look for Jim on "The Degenerates - Season 2" now streaming on Netflix.]]></content:encoded>
+			<enclosure length="184088711" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1421.mp3?dest-id=20651" />
+			<itunes:duration>03:11:25</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,jim,joe,party,experience,norton,freak,rogan,deathsquad,jre,1421</itunes:keywords>
+			<itunes:subtitle><![CDATA[Jim Norton is a stand-up comedian, radio personality, author, and actor. Check out his podcast the “Chip Chipperson Podacast” available on iTunes and the Riotcast Podcast Network. Look for Jim on "The Degenerates - Season 2" now streaming on Netflix.]]></itunes:subtitle>
+			<itunes:episode>1421</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1420 - Mark Normand</title>
+			<pubDate>Fri, 31 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[3732e71e-9310-4cf3-882f-3950f2dfb6e7]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1420.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/f/4/1/0f41f63c3380468e/JRE1420.jpg" />
+			<description><![CDATA[Mark Normand is a stand-up comedian and actor. Check out his podcast “Tuesdays with Stories!” with co-host Joe List available on Apple Podcasts.]]></description>
+			<content:encoded><![CDATA[Mark Normand is a stand-up comedian and actor. Check out his podcast “Tuesdays with Stories!” with co-host Joe List available on Apple Podcasts.]]></content:encoded>
+			<enclosure length="156577905" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1420.mp3?dest-id=20651" />
+			<itunes:duration>02:42:45</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mark,joe,party,experience,freak,rogan,1420,deathsquad,normand,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Mark Normand is a stand-up comedian and actor. Check out his podcast “Tuesdays with Stories!” with co-host Joe List available on Apple Podcasts.]]></itunes:subtitle>
+			<itunes:episode>1420</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1419 - Daryl Davis</title>
+			<pubDate>Thu, 30 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[0c9c0c42-1741-46b5-9f6d-1620eba2081d]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1419.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/6/c/c/6/6cc6cefeadfdaee1/JRE1419.jpg" />
+			<description><![CDATA[Daryl Davis is an R&B and blues musician, activist, author, actor and bandleader. He also is the author of "Klan-destine Relationships: A Black Man's Odyssey in the Ku Klux Klan".]]></description>
+			<content:encoded><![CDATA[Daryl Davis is an R&B and blues musician, activist, author, actor and bandleader. He also is the author of "Klan-destine Relationships: A Black Man's Odyssey in the Ku Klux Klan".]]></content:encoded>
+			<enclosure length="161702921" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1419.mp3?dest-id=20651" />
+			<itunes:duration>02:48:05</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,davis,party,experience,freak,rogan,daryl,deathsquad,jre,1419</itunes:keywords>
+			<itunes:subtitle><![CDATA[Daryl Davis is an R&B and blues musician, activist, author, actor and bandleader. He also is the author of "Klan-destine Relationships: A Black Man's Odyssey in the Ku Klux Klan".]]></itunes:subtitle>
+			<itunes:episode>1419</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #89 with Rafael Lovato Jr.</title>
+			<pubDate>Wed, 29 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[56148186-b066-4c40-ba6f-9f65fbb718d8]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow089.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/4/7/7/e477ec94031da737/JRE1418D.jpg" />
+			<description><![CDATA[Joe sits down with Bellator Middleweight World Champion Rafael Lovato Jr.]]></description>
+			<content:encoded><![CDATA[Joe sits down with Bellator Middleweight World Champion Rafael Lovato Jr.]]></content:encoded>
+			<enclosure length="102226951" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow089.mp3?dest-id=20651" />
+			<itunes:duration>01:46:09</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,jr,joe,party,experience,lovato,rafael,freak,rogan,89,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with Bellator Middleweight World Champion Rafael Lovato Jr.]]></itunes:subtitle>
+			<itunes:episode>1418</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #88 with Frankie Edgar</title>
+			<pubDate>Tue, 28 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d10026ce-5edc-4465-a907-49fa0ca0668d]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow088.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/c/4/0/7c401561df4913d4/JRE1418C.jpg" />
+			<description><![CDATA[Joe sits down with former UFC Lightweight Champion Frankie Edgar.]]></description>
+			<content:encoded><![CDATA[Joe sits down with former UFC Lightweight Champion Frankie Edgar.]]></content:encoded>
+			<enclosure length="131566683" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow088.mp3?dest-id=20651" />
+			<itunes:duration>02:16:44</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,88,edgar,frankie,party,experience,freak,rogan,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with former UFC Lightweight Champion Frankie Edgar.]]></itunes:subtitle>
+			<itunes:episode>1418</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA SHow #87 with Kamaru Usman</title>
+			<pubDate>Tue, 28 Jan 2020 05:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[09983589-1864-4ec3-9173-a8d32c83be2c]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow087.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/6/a/c/46acf8c34d110ec3/JRE1418B.jpg" />
+			<description><![CDATA[Joe sits down with UFC Welterweight Champion Kamaru Usman.]]></description>
+			<content:encoded><![CDATA[Joe sits down with UFC Welterweight Champion Kamaru Usman.]]></content:encoded>
+			<enclosure length="181260381" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow087.mp3?dest-id=20651" />
+			<itunes:duration>03:08:29</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,87,party,experience,freak,rogan,usman,deathsquad,jre,kamaru</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with UFC Welterweight Champion Kamaru Usman.]]></itunes:subtitle>
+			<itunes:episode>1418</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #86 with Josh Thomson</title>
+			<pubDate>Fri, 24 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[1219eace-6f49-4e2d-84fa-1493d017ba2b]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow086.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/c/c/3/7cc36607fc119d63/JRE1418A.jpg" />
+			<description><![CDATA[Joe sits down with former Strikeforce Lightweight Champion and current Bellator commentator Josh Thomson.]]></description>
+			<content:encoded><![CDATA[Joe sits down with former Strikeforce Lightweight Champion and current Bellator commentator Josh Thomson.]]></content:encoded>
+			<enclosure length="177796356" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow086.mp3?dest-id=20651" />
+			<itunes:duration>03:04:53</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,86,josh,party,experience,freak,rogan,thomson,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with former Strikeforce Lightweight Champion and current Bellator commentator Josh Thomson.]]></itunes:subtitle>
+			<itunes:episode>1418</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1418 - Don Gavin</title>
+			<pubDate>Thu, 23 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[497c6695-fd4a-4e01-b048-ca9819f6ca18]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1418.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/7/8/5/d785a16bdaba35b6/JRE1418.jpg" />
+			<description><![CDATA[Don Gavin is a stand-up comedian and actor. His album "Don Gavin: Live with a Manhattan" will be available for the first time to stream on January 24.]]></description>
+			<content:encoded><![CDATA[Don Gavin is a stand-up comedian and actor. His album "Don Gavin: Live with a Manhattan" will be available for the first time to stream on January 24.]]></content:encoded>
+			<enclosure length="79077465" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1418.mp3?dest-id=20651" />
+			<itunes:duration>01:22:02</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,don,gavin,freak,rogan,deathsquad,jre,1418</itunes:keywords>
+			<itunes:subtitle><![CDATA[Don Gavin is a stand-up comedian and actor. His album "Don Gavin: Live with a Manhattan" will be available for the first time to stream on January 24.]]></itunes:subtitle>
+			<itunes:episode>1418</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1417 - Kevin Ross</title>
+			<pubDate>Wed, 22 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[051fd9e2-65e8-44cb-b716-3a79888a543e]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1417.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/4/0/c/d40ccc0b1c264bf5/JRE1417.jpg" />
+			<description><![CDATA[Kevin “The Soul Assassin” Ross is an artist, writer, and American Muay Thai kickboxer fighting with Bellator Kickboxing.]]></description>
+			<content:encoded><![CDATA[Kevin “The Soul Assassin” Ross is an artist, writer, and American Muay Thai kickboxer fighting with Bellator Kickboxing.]]></content:encoded>
+			<enclosure length="155809382" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1417.mp3?dest-id=20651" />
+			<itunes:duration>02:41:58</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,ross,kevin,joe,party,experience,freak,rogan,deathsquad,jre,1417</itunes:keywords>
+			<itunes:subtitle><![CDATA[Kevin “The Soul Assassin” Ross is an artist, writer, and American Muay Thai kickboxer fighting with Bellator Kickboxing.]]></itunes:subtitle>
+			<itunes:episode>1417</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1416 - Rob Kearney</title>
+			<pubDate>Tue, 21 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[fe88666a-53f4-4dc4-8107-062b12124adc]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1416.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/7/7/d/d77da37076cce54c/JRE1416.jpg" />
+			<description><![CDATA[Rob Kearney is the only openly gay professional strongman. He currently holds the American record for the log press, at 471 lbs. There is also a documentary about his life currently in production:]]></description>
+			<content:encoded><![CDATA[Rob Kearney is the only openly gay professional strongman. He currently holds the American record for the log press, at 471 lbs. There is also a documentary about his life currently in production:]]></content:encoded>
+			<enclosure length="117624567" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1416.mp3?dest-id=20651" />
+			<itunes:duration>02:02:10</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,rob,party,experience,kearney,freak,rogan,deathsquad,jre,1416</itunes:keywords>
+			<itunes:subtitle><![CDATA[Rob Kearney is the only openly gay professional strongman. He currently holds the American record for the log press, at 471 lbs. There is also a documentary about his life currently in production:]]></itunes:subtitle>
+			<itunes:episode>1416</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1415 - Bari Weiss</title>
+			<pubDate>Tue, 21 Jan 2020 05:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[60a4159e-71d7-4c29-8330-a5450e85ecf4]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1415.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/4/9/f/549f723269eacd45/JRE1415.jpg" />
+			<description><![CDATA[Bari Weiss is an American opinion writer and editor. In 2017, Weiss joined The New York Times as a staff editor in the opinion section. Her new book "How to Fight Anti-Semitism" is now available. https://amzn.to/2Gh7WIL]]></description>
+			<content:encoded><![CDATA[Bari Weiss is an American opinion writer and editor. In 2017, Weiss joined The New York Times as a staff editor in the opinion section. Her new book "How to Fight Anti-Semitism" is now available. https://amzn.to/2Gh7WIL]]></content:encoded>
+			<enclosure length="154114265" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1415.mp3?dest-id=20651" />
+			<itunes:duration>02:40:11</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,weiss,bari,deathsquad,jre,1415</itunes:keywords>
+			<itunes:subtitle><![CDATA[Bari Weiss is an American opinion writer and editor. In 2017, Weiss joined The New York Times as a staff editor in the opinion section. Her new book "How to Fight Anti-Semitism" is now available. https://amzn.to/2Gh7WIL]]></itunes:subtitle>
+			<itunes:episode>1415</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1414 - Mike Baker</title>
+			<pubDate>Sat, 18 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[a9b518af-f9f1-4c14-860a-9ba40c20af6f]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1414.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/b/a/1/6/ba16c43cb5617c69/JRE1414.jpg" />
+			<description><![CDATA[Mike Baker is a former CIA covert operations officer. Currently he is the president of Diligence LLC, a global intelligence and security firm.]]></description>
+			<content:encoded><![CDATA[Mike Baker is a former CIA covert operations officer. Currently he is the president of Diligence LLC, a global intelligence and security firm.]]></content:encoded>
+			<enclosure length="153515706" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1414.mp3?dest-id=20651" />
+			<itunes:duration>02:39:33</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mike,joe,party,experience,baker,freak,rogan,deathsquad,jre,1414</itunes:keywords>
+			<itunes:subtitle><![CDATA[Mike Baker is a former CIA covert operations officer. Currently he is the president of Diligence LLC, a global intelligence and security firm.]]></itunes:subtitle>
+			<itunes:episode>1414</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1413 - Bill Maher</title>
+			<pubDate>Fri, 17 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d14a501f-c683-4bf7-b103-4f6ad37d9172]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1413.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/7/3/0/4730f2850a3a253c/JRE1413.jpg" />
+			<description><![CDATA[Bill Maher is a comedian, political commentator, and television host. The new season of his show "Real Time with Bill Maher" premieres January 17 on HBO.]]></description>
+			<content:encoded><![CDATA[Bill Maher is a comedian, political commentator, and television host. The new season of his show "Real Time with Bill Maher" premieres January 17 on HBO.]]></content:encoded>
+			<enclosure length="120309266" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1413.mp3?dest-id=20651" />
+			<itunes:duration>02:04:58</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,bill,freak,rogan,maher,deathsquad,jre,1413</itunes:keywords>
+			<itunes:subtitle><![CDATA[Bill Maher is a comedian, political commentator, and television host. The new season of his show "Real Time with Bill Maher" premieres January 17 on HBO.]]></itunes:subtitle>
+			<itunes:episode>1413</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1412 - Jimmy Dore</title>
+			<pubDate>Thu, 16 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[bb7b24a5-34b7-4b40-9537-e8d9d29b2371]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1412.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/6/5/c/465ca4f7b46350d7/JRE1412.jpg" />
+			<description><![CDATA[Jimmy Dore is a stand-up comedian, political commentator, host of “The Jimmy Dore Show” available on YouTube (https://www.youtube.com/channel/UC3M7l8ved_rYQ45AVzS0RGA) and as a podcast available on iTunes.]]></description>
+			<content:encoded><![CDATA[Jimmy Dore is a stand-up comedian, political commentator, host of “The Jimmy Dore Show” available on YouTube (https://www.youtube.com/channel/UC3M7l8ved_rYQ45AVzS0RGA) and as a podcast available on iTunes.]]></content:encoded>
+			<enclosure length="170811798" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1412.mp3?dest-id=20651" />
+			<itunes:duration>02:57:34</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,jimmy,freak,rogan,dore,1412,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Jimmy Dore is a stand-up comedian, political commentator, host of “The Jimmy Dore Show” available on YouTube (https://www.youtube.com/channel/UC3M7l8ved_rYQ45AVzS0RGA) and as a podcast available on iTunes.]]></itunes:subtitle>
+			<itunes:episode>1412</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1411 - Robert Downey Jr.</title>
+			<pubDate>Wed, 15 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[7cb6bf39-67d3-4d53-bc02-5aff03bccaa1]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1411.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/3/8/d/038d39569c82551b/JRE1411.jpg" />
+			<description><![CDATA[Robert Downey Jr. is an American actor, producer, and singer. He stars in the new movie "Dolittle" which releases in theater on January 17, 2020.]]></description>
+			<content:encoded><![CDATA[Robert Downey Jr. is an American actor, producer, and singer. He stars in the new movie "Dolittle" which releases in theater on January 17, 2020.]]></content:encoded>
+			<enclosure length="76713007" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1411.mp3?dest-id=20651" />
+			<itunes:duration>01:19:33</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,jr,joe,party,experience,robert,downey,freak,rogan,1411,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Robert Downey Jr. is an American actor, producer, and singer. He stars in the new movie "Dolittle" which releases in theater on January 17, 2020.]]></itunes:subtitle>
+			<itunes:episode>1411</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1410 - Ash Dykes</title>
+			<pubDate>Tue, 14 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[2b1982dd-9e50-43cc-a689-3c6d8cbcdb79]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1410.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/6/d/3/6/6d36a23b7d4ca16f/JRE1410.jpg" />
+			<description><![CDATA[Ash Dykes is a Welsh adventurer and extreme athlete. He achieved three world-first records, trekking across Mongolia, Madagascar, and the course of the Yangtze River.]]></description>
+			<content:encoded><![CDATA[Ash Dykes is a Welsh adventurer and extreme athlete. He achieved three world-first records, trekking across Mongolia, Madagascar, and the course of the Yangtze River.]]></content:encoded>
+			<enclosure length="160948212" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1410.mp3?dest-id=20651" />
+			<itunes:duration>02:47:18</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>joe,party,experience,ash,freak,rogan,dykes,deathsquad,jre,1410</itunes:keywords>
+			<itunes:subtitle><![CDATA[Ash Dykes is a Welsh adventurer and extreme athlete. He achieved three world-first records, trekking across Mongolia, Madagascar, and the course of the Yangtze River.]]></itunes:subtitle>
+			<itunes:episode>1410</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1409 - Joey Diaz</title>
+			<pubDate>Tue, 14 Jan 2020 04:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[98a07193-8860-4e2a-90a2-2a0b34f46eed]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1409.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/b/b/9/9/bb999646ed4f0e98/JRE1409.jpg" />
+			<description><![CDATA[Joey “CoCo” Diaz is a Cuban-American stand up comedian and actor. Joey also hosts his own podcast called “The Church of What’s Happening Now”.]]></description>
+			<content:encoded><![CDATA[Joey “CoCo” Diaz is a Cuban-American stand up comedian and actor. Joey also hosts his own podcast called “The Church of What’s Happening Now”.]]></content:encoded>
+			<enclosure length="186506542" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1409.mp3?dest-id=20651" />
+			<itunes:duration>03:13:55</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,diaz,party,experience,mad,flavor,joey,freak,rogan,deathsquad,jre,1409</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joey “CoCo” Diaz is a Cuban-American stand up comedian and actor. Joey also hosts his own podcast called “The Church of What’s Happening Now”.]]></itunes:subtitle>
+			<itunes:episode>1409</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>Fight Companion - January 9, 2020</title>
+			<pubDate>Fri, 10 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[c9992db4-56c2-44bd-96b3-4aa3bfede0eb]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/fightcomp010920.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/3/2/7/0/32700deb5e2ead2d/JRE1408A.jpg" />
+			<description><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub.]]></description>
+			<content:encoded><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub.]]></content:encoded>
+			<enclosure length="251822698" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/fightcomp010920.mp3?dest-id=20651" />
+			<itunes:duration>04:21:58</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,fight,joe,party,experience,eddie,bryan,bravo,9,brendan,freak,rogan,companion,january,2020,callen,schaub,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by Eddie Bravo, Bryan Callen & Brendan Schaub.]]></itunes:subtitle>
+			<itunes:episode>1408</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1408 - Ed Calderon</title>
+			<pubDate>Wed, 08 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[a18173e1-c535-4f72-8ec7-a1e1a43fa4b3]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1408.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/2/e/5/d2e5d329a50a842e/JRE1408.jpg" />
+			<description><![CDATA[Ed Calderon is a security specialist and combatives instructor with over 10 years experience in public safety along the northern border area of Mexico. Follow him online @EdsManifesto http://edsmanifesto.com]]></description>
+			<content:encoded><![CDATA[Ed Calderon is a security specialist and combatives instructor with over 10 years experience in public safety along the northern border area of Mexico. Follow him online @EdsManifesto http://edsmanifesto.com]]></content:encoded>
+			<enclosure length="120466878" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1408.mp3?dest-id=20651" />
+			<itunes:duration>02:05:08</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,ed,freak,rogan,1408,calderon,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Ed Calderon is a security specialist and combatives instructor with over 10 years experience in public safety along the northern border area of Mexico. Follow him online @EdsManifesto http://edsmanifesto.com]]></itunes:subtitle>
+			<itunes:episode>1408</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1407 - Michael Malice</title>
+			<pubDate>Tue, 07 Jan 2020 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[c32a47c5-33fa-4b61-9b5a-8bc49403ad45]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1407.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/6/f/b/c6fb3e09f3459599/JRE1407.jpg" />
+			<description><![CDATA[Michael Malice is an author and also hosts a podcast called “Your Welcome with Michael Malice” available on the GaS Digital Network. His new book called “The New Right” is available now.]]></description>
+			<content:encoded><![CDATA[Michael Malice is an author and also hosts a podcast called “Your Welcome with Michael Malice” available on the GaS Digital Network. His new book called “The New Right” is available now.]]></content:encoded>
+			<enclosure length="168822291" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1407.mp3?dest-id=20651" />
+			<itunes:duration>02:55:29</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,michael,malice,freak,rogan,deathsquad,jre,1407</itunes:keywords>
+			<itunes:subtitle><![CDATA[Michael Malice is an author and also hosts a podcast called “Your Welcome with Michael Malice” available on the GaS Digital Network. His new book called “The New Right” is available now.]]></itunes:subtitle>
+			<itunes:episode>1407</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1406 - Brian Redban</title>
+			<pubDate>Tue, 07 Jan 2020 05:06:31 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[254068a1-e733-400a-b171-8ecf006f2aca]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1406.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/8/7/c/a87c945cdf3ee88a/JRE1406.jpg" />
+			<description><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></description>
+			<content:encoded><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></content:encoded>
+			<enclosure length="165346208" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1406.mp3?dest-id=20651" />
+			<itunes:duration>02:51:52</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,brian,freak,rogan,redban,deathsquad,jre,1406</itunes:keywords>
+			<itunes:subtitle><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></itunes:subtitle>
+			<itunes:episode>1406</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1405 - Sober October 3 Recap</title>
+			<pubDate>Tue, 24 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[0d7147a3-f1c1-4ae6-bbf8-2e0a493639ca]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1405.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/2/8/7/9/28797cc6f284596e/JRE1405.jpg" />
+			<description><![CDATA[Joe is joined by Ari Shaffir, Bert Kreischer & Tom Segura to recap their 3rd annual Sober October challenge.]]></description>
+			<content:encoded><![CDATA[Joe is joined by Ari Shaffir, Bert Kreischer & Tom Segura to recap their 3rd annual Sober October challenge.]]></content:encoded>
+			<enclosure length="202715961" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1405.mp3?dest-id=20651" />
+			<itunes:duration>03:30:48</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,3,joe,party,experience,tom,ari,october,bert,freak,rogan,recap,sober,kreischer,shaffir,segura,deathsquad,jre,1405</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by Ari Shaffir, Bert Kreischer & Tom Segura to recap their 3rd annual Sober October challenge.]]></itunes:subtitle>
+			<itunes:episode>1405</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1404 - Bryan Callen</title>
+			<pubDate>Sat, 21 Dec 2019 05:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[2f23417a-899b-4139-a4fe-11b2180eb816]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1404a.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/1/0/9/c1090117a397e7ba/JRE1404.jpg" />
+			<description><![CDATA[Bryan Callen is an actor and stand-up comedian, and together with Brendan Schaub he also hosts “The Fighter & The Kid” podcast. His stand up special “Complicated Apes” is now available to download on iTunes, Amazon, and various other platforms.]]></description>
+			<content:encoded><![CDATA[Bryan Callen is an actor and stand-up comedian, and together with Brendan Schaub he also hosts “The Fighter & The Kid” podcast. His stand up special “Complicated Apes” is now available to download on iTunes, Amazon, and various other platforms.]]></content:encoded>
+			<enclosure length="181076019" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1404a.mp3?dest-id=20651" />
+			<itunes:duration>03:08:16</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,bryan,freak,rogan,callen,deathsquad,jre,1404</itunes:keywords>
+			<itunes:subtitle><![CDATA[Bryan Callen is an actor and stand-up comedian, and together with Brendan Schaub he also hosts “The Fighter & The Kid” podcast. His stand up special “Complicated Apes” is now available to download on iTunes, Amazon, and various other...]]></itunes:subtitle>
+			<itunes:episode>1404</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1403 - Forrest Galante</title>
+			<pubDate>Thu, 19 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[90a055f5-b4a0-4ea3-978b-2fd0d9e52552]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1403.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/1/4/0/0140b2b604a1d88e/JRE1403.jpg" />
+			<description><![CDATA[Forrest Galante is an international wildlife adventurer and conservationist. He’s also the host of “Extinct of Alive” on The Animal Planet. https://www.instagram.com/forrest.galante]]></description>
+			<content:encoded><![CDATA[Forrest Galante is an international wildlife adventurer and conservationist. He’s also the host of “Extinct of Alive” on The Animal Planet. https://www.instagram.com/forrest.galante]]></content:encoded>
+			<enclosure length="169762637" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1403.mp3?dest-id=20651" />
+			<itunes:duration>02:56:30</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,forrest,party,experience,freak,rogan,galante,deathsquad,jre,1403</itunes:keywords>
+			<itunes:subtitle><![CDATA[Forrest Galante is an international wildlife adventurer and conservationist. He’s also the host of “Extinct of Alive” on The Animal Planet. https://www.instagram.com/forrest.galante]]></itunes:subtitle>
+			<itunes:episode>1403</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #85 with Max Holloway</title>
+			<pubDate>Wed, 18 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[1dbe014b-28a6-4720-8720-a78e151ea280]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow085.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/a/f/4/4af4ab05a3324965/JRE1402A.jpg" />
+			<description><![CDATA[Joe sits down with former UFC Featherweight Champion Max Holloway.]]></description>
+			<content:encoded><![CDATA[Joe sits down with former UFC Featherweight Champion Max Holloway.]]></content:encoded>
+			<enclosure length="128655075" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow085.mp3?dest-id=20651" />
+			<itunes:duration>02:13:41</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,party,experience,max,holloway,freak,rogan,85,deathsquad</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with former UFC Featherweight Champion Max Holloway.]]></itunes:subtitle>
+			<itunes:episode>1402</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1402 - Boyan Slat</title>
+			<pubDate>Tue, 17 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[437f2a4f-02dc-4a3e-8922-fe9f90d844fa]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1402.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/4/6/d/a46d82104febdce8/JRE1402.jpg" />
+			<description><![CDATA[Boyan Slat is an inventor, entrepreneur and former aerospace engineering student. He is the founder of The Ocean Cleanup organization: https://www.theoceancleanup.com/]]></description>
+			<content:encoded><![CDATA[Boyan Slat is an inventor, entrepreneur and former aerospace engineering student. He is the founder of The Ocean Cleanup organization: https://www.theoceancleanup.com/]]></content:encoded>
+			<enclosure length="109840767" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1402.mp3?dest-id=20651" />
+			<itunes:duration>01:54:00</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,1402,deathsquad,slat,jre,boyan</itunes:keywords>
+			<itunes:subtitle><![CDATA[Boyan Slat is an inventor, entrepreneur and former aerospace engineering student. He is the founder of The Ocean Cleanup organization: https://www.theoceancleanup.com/]]></itunes:subtitle>
+			<itunes:episode>1402</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1401 - Iliza Shlesinger</title>
+			<pubDate>Tue, 17 Dec 2019 04:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[091d2728-eb2a-4be0-954a-afd7d5e2ff51]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1401a.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/b/b/b/d/bbbd3baa92a68fcf/JRE1401.jpg" />
+			<description><![CDATA[Iliza Shlesinger is a comedian, host, and writer. Her new special "Unveiled" is now streaming on Netflix.]]></description>
+			<content:encoded><![CDATA[Iliza Shlesinger is a comedian, host, and writer. Her new special "Unveiled" is now streaming on Netflix.]]></content:encoded>
+			<enclosure length="149619971" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1401a.mp3?dest-id=20651" />
+			<itunes:duration>02:35:30</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,iliza,deathsquad,jre,shlesinger,1401</itunes:keywords>
+			<itunes:subtitle><![CDATA[Iliza Shlesinger is a comedian, host, and writer. Her new special "Unveiled" is now streaming on Netflix.]]></itunes:subtitle>
+			<itunes:episode>1401</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1400 - Tony Hinchcliffe</title>
+			<pubDate>Fri, 13 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[2ada1b50-bde2-4b83-b748-e10a6d1e5238]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1400.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/a/8/f/4a8f7c5c594ee62b/JRE1400.jpg" />
+			<description><![CDATA[Tony Hinchcliffe is a stand-up comedian, writer, and actor. Tony also hosts his own podcast called “Kill Tony” with Redban, and it’s available on iTunes and and YouTube at: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></description>
+			<content:encoded><![CDATA[Tony Hinchcliffe is a stand-up comedian, writer, and actor. Tony also hosts his own podcast called “Kill Tony” with Redban, and it’s available on iTunes and and YouTube at: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></content:encoded>
+			<enclosure length="170801245" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1400.mp3?dest-id=20651" />
+			<itunes:duration>02:57:34</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>joe,party,experience,tony,freak,rogan,hinchcliffe,1400,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Tony Hinchcliffe is a stand-up comedian, writer, and actor. Tony also hosts his own podcast called “Kill Tony” with Redban, and it’s available on iTunes and and YouTube at: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></itunes:subtitle>
+			<itunes:episode>1400</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1399 - Pavel Tsatsouline</title>
+			<pubDate>Thu, 12 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[5912f3c4-98c7-4a74-b61a-a984c6527c3f]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1399.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/2/b/b/3/2bb30581708d51ad/JRE1399.jpg" />
+			<description><![CDATA[Pavel Tsatsouline, is the Chairman of StrongFirst, Inc., a fitness instructor who has introduced SPETSNAZ training techniques from the former Soviet Union to US Navy SEALs, Marines and Army Special Forces, and shortly thereafter to the American public.]]></description>
+			<content:encoded><![CDATA[Pavel Tsatsouline, is the Chairman of StrongFirst, Inc., a fitness instructor who has introduced SPETSNAZ training techniques from the former Soviet Union to US Navy SEALs, Marines and Army Special Forces, and shortly thereafter to the American public.]]></content:encoded>
+			<enclosure length="109073603" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1399.mp3?dest-id=20651" />
+			<itunes:duration>01:53:16</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,pavel,freak,rogan,deathsquad,jre,tsatsouline,1399</itunes:keywords>
+			<itunes:subtitle><![CDATA[Pavel Tsatsouline, is the Chairman of StrongFirst, Inc., a fitness instructor who has introduced SPETSNAZ training techniques from the former Soviet Union to US Navy SEALs, Marines and Army Special Forces, and shortly thereafter to the American public.]]></itunes:subtitle>
+			<itunes:episode>1399</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1398 - Lil Duval</title>
+			<pubDate>Wed, 11 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[65d69254-69ca-49c8-a002-0966264cc80b]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1398.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/f/6/7/1/f671b5d9b5ef08e3/JRE1398.jpg" />
+			<description><![CDATA[Lil Duval is a stand-up comedian and recording artist.]]></description>
+			<content:encoded><![CDATA[Lil Duval is a stand-up comedian and recording artist.]]></content:encoded>
+			<enclosure length="185550795" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1398.mp3?dest-id=20651" />
+			<itunes:duration>03:12:54</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,lil,freak,rogan,duval,deathsquad,jre,1398</itunes:keywords>
+			<itunes:subtitle><![CDATA[Lil Duval is a stand-up comedian and recording artist.]]></itunes:subtitle>
+			<itunes:episode>1398</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1397 - S.C. Gwynne</title>
+			<pubDate>Tue, 10 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[1ba2a653-fdf7-469d-a8df-efd7ce53d91b]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1397.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/9/b/b/9/9bb9756391238c78/JRE1397.jpg" />
+			<description><![CDATA[S. C. Gwynne is an American nonfiction writer. He is the author of the prize-winning "Empire of the SUmmer Moon" and his latest book "Hymns of the Republic" is now available.]]></description>
+			<content:encoded><![CDATA[S. C. Gwynne is an American nonfiction writer. He is the author of the prize-winning "Empire of the SUmmer Moon" and his latest book "Hymns of the Republic" is now available.]]></content:encoded>
+			<enclosure length="85424029" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1397.mp3?dest-id=20651" />
+			<itunes:duration>01:28:38</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,sc,deathsquad,gwynne,jre,1396</itunes:keywords>
+			<itunes:subtitle><![CDATA[S. C. Gwynne is an American nonfiction writer. He is the author of the prize-winning "Empire of the SUmmer Moon" and his latest book "Hymns of the Republic" is now available.]]></itunes:subtitle>
+			<itunes:episode>1397</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1396 - Michelle Wolf</title>
+			<pubDate>Tue, 10 Dec 2019 02:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[c3861fbb-7811-40a2-823a-cb7a1a57f6ab]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1396.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/6/0/6/3/60638df4ec81ba8c/JRE1396.jpg" />
+			<description><![CDATA[Michelle Wolf is a comedian, writer, producer, and television host. Her new special "Joke Show" starts streaming on Netflix on December 10.]]></description>
+			<content:encoded><![CDATA[Michelle Wolf is a comedian, writer, producer, and television host. Her new special "Joke Show" starts streaming on Netflix on December 10.]]></content:encoded>
+			<enclosure length="162132436" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1396.mp3?dest-id=20651" />
+			<itunes:duration>02:48:32</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,wolf,joe,party,experience,michelle,freak,rogan,deathsquad,jre,1396</itunes:keywords>
+			<itunes:subtitle><![CDATA[Michelle Wolf is a comedian, writer, producer, and television host. Her new special "Joke Show" starts streaming on Netflix on December 10.]]></itunes:subtitle>
+			<itunes:episode>1396</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1395 - Glenn Villeneuve</title>
+			<pubDate>Sat, 07 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[c6529a25-bb4d-41a2-9351-1e59acf72c1b]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1395.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/5/b/7/c5b72d3afd60e413/JRE1395.jpg" />
+			<description><![CDATA[Glenn Villeneuve is a hunter, fisherman and TV personality, best known for appearing in the show “Life Below Zero”, which showcases the life of the Alaskan hunters particularly during the harsh winters.]]></description>
+			<content:encoded><![CDATA[Glenn Villeneuve is a hunter, fisherman and TV personality, best known for appearing in the show “Life Below Zero”, which showcases the life of the Alaskan hunters particularly during the harsh winters.]]></content:encoded>
+			<enclosure length="192920857" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1395.mp3?dest-id=20651" />
+			<itunes:duration>03:20:36</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>joe,party,life,experience,below,zero,glenn,freak,rogan,deathsquad,jre,villeneuve,1395</itunes:keywords>
+			<itunes:subtitle><![CDATA[Glenn Villeneuve is a hunter, fisherman and TV personality, best known for appearing in the show “Life Below Zero”, which showcases the life of the Alaskan hunters particularly during the harsh winters.]]></itunes:subtitle>
+			<itunes:episode>1395</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1394 - Matt Farah</title>
+			<pubDate>Fri, 06 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d73fa48e-1749-4ffb-9c45-7acff3ca6a79]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1394.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/6/b/3/c6b3fd69e503f70a/JRE1394.jpg" />
+			<description><![CDATA[Matt Farah is a car enthusiast and the host of “The Smoking Tire” seen on YouTube and also a podcast available on Apple Podcasts.]]></description>
+			<content:encoded><![CDATA[Matt Farah is a car enthusiast and the host of “The Smoking Tire” seen on YouTube and also a podcast available on Apple Podcasts.]]></content:encoded>
+			<enclosure length="189481032" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1394.mp3?dest-id=20651" />
+			<itunes:duration>03:17:00</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,matt,party,experience,freak,rogan,farah,deathsquad,jre,1394</itunes:keywords>
+			<itunes:subtitle><![CDATA[Matt Farah is a car enthusiast and the host of “The Smoking Tire” seen on YouTube and also a podcast available on Apple Podcasts.]]></itunes:subtitle>
+			<itunes:episode>1394</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1393 - James Wilks &amp; Chris Kresser - The Game Changers Debate</title>
+			<pubDate>Thu, 05 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[cddf430d-f8bf-415b-ba71-375984900ada]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1393.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/c/c/5/5cc579fd650f9f29/JRE1393a.jpg" />
+			<description><![CDATA[James Wilks is a retired mixed martial artist. He was the winner of Spike TV's The Ultimate Fighter: United States vs. United Kingdom. He is also a producer of the documentary "The Game Changers" on Netflix. Chris Kresser, M.S., L.Ac is a globally recognized leader in the fields of ancestral health, Paleo nutrition, and functional and integrative medicine. Link to notes from this podcast by Chris Kresser: http://kresser.co/gamechangers]]></description>
+			<content:encoded><![CDATA[James Wilks is a retired mixed martial artist. He was the winner of Spike TV's The Ultimate Fighter: United States vs. United Kingdom. He is also a producer of the documentary "The Game Changers" on Netflix. Chris Kresser, M.S., L.Ac is a globally recognized leader in the fields of ancestral health, Paleo nutrition, and functional and integrative medicine. Link to notes from this podcast by Chris Kresser: http://kresser.co/gamechangers]]></content:encoded>
+			<enclosure length="222992478" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1393.mp3?dest-id=20651" />
+			<itunes:duration>03:51:55</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,james,joe,party,experience,chris,gamechangers,freak,rogan,wilks,deathsquad,jre,kresser,1393</itunes:keywords>
+			<itunes:subtitle><![CDATA[James Wilks is a retired mixed martial artist. He was the winner of Spike TV's The Ultimate Fighter: United States vs. United Kingdom. He is also a producer of the documentary "The Game Changers" on Netflix. Chris Kresser, M.S., L.Ac is a globally...]]></itunes:subtitle>
+			<itunes:episode>1393</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #84 with Brendan Schaub</title>
+			<pubDate>Wed, 04 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[b17459e5-1bf0-4d3d-ae75-e37f534bf0f6]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow084.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/f/a/0/d/fa0d5e5a923ada88/JRE1392a.jpg" />
+			<description><![CDATA[Joe is joined by Brendan Schaub to discuss some recent and upcoming fights.]]></description>
+			<content:encoded><![CDATA[Joe is joined by Brendan Schaub to discuss some recent and upcoming fights.]]></content:encoded>
+			<enclosure length="152374238" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow084.mp3?dest-id=20651" />
+			<itunes:duration>02:38:23</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>mma,show,joe,party,experience,brendan,freak,rogan,84,deathsquad,jre,scahub</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by Brendan Schaub to discuss some recent and upcoming fights.]]></itunes:subtitle>
+			<itunes:episode>1392</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1392 - Zach Bitter</title>
+			<pubDate>Tue, 03 Dec 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[6cec7020-dea9-402a-a489-2d73fbab916a]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1392.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/8/b/7/d8b73ce4ea364b74/JRE1392.jpg" />
+			<description><![CDATA[Zach Bitter is an endurance athlete, ultramarathon runner and coach. He recently broke 2 world records in running: 100-mile (11:19:18) & the 12-Hour record (104.88 miles).]]></description>
+			<content:encoded><![CDATA[Zach Bitter is an endurance athlete, ultramarathon runner and coach. He recently broke 2 world records in running: 100-mile (11:19:18) & the 12-Hour record (104.88 miles).]]></content:encoded>
+			<enclosure length="142116767" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1392.mp3?dest-id=20651" />
+			<itunes:duration>02:27:41</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,bitter,zach,freak,rogan,deathsquad,jre,1392</itunes:keywords>
+			<itunes:subtitle><![CDATA[Zach Bitter is an endurance athlete, ultramarathon runner and coach. He recently broke 2 world records in running: 100-mile (11:19:18) & the 12-Hour record (104.88 miles).]]></itunes:subtitle>
+			<itunes:episode>1392</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #83 with Firas Zahabi</title>
+			<pubDate>Wed, 27 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[aa1eac04-6084-46c3-9327-c36bd3853933]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow083.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/9/3/f/d/93fd84018db64ea5/JRE1391A.jpg" />
+			<description><![CDATA[Joe sits down with the head coach of Tristar Gym, Firas Zahabi.]]></description>
+			<content:encoded><![CDATA[Joe sits down with the head coach of Tristar Gym, Firas Zahabi.]]></content:encoded>
+			<enclosure length="190859650" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow083.mp3?dest-id=20651" />
+			<itunes:duration>03:18:28</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,83,party,experience,freak,rogan,firas,deathsquad,jre,tristar,zahabi</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with the head coach of Tristar Gym, Firas Zahabi.]]></itunes:subtitle>
+			<itunes:episode>1391</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1391 - Tulsi Gabbard &amp; Jocko Willink</title>
+			<pubDate>Tue, 26 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[8d4aa1b2-9899-40fe-a5a4-f8c4da1f3483]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1391.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/a/e/6/7ae62b493ea54208/JRE1391.jpg" />
+			<description><![CDATA[Tulsi Gabbard is a 2020 Presidential Candidate of the Democratic Party and is currently serving as the U.S. Representative for Hawaii’s 2nd congressional district since 2013.  Jocko Willink is a decorated retired Navy SEAL officer, author of the book Extreme Ownership: How U.S. Navy SEALs Lead and Win, and co-founder of Echelon Front, where he is a leadership instructor, speaker, and executive coach. His new book "Leadership Strategies and Tactics" will be available in January 2020.]]></description>
+			<content:encoded><![CDATA[Tulsi Gabbard is a 2020 Presidential Candidate of the Democratic Party and is currently serving as the U.S. Representative for Hawaii’s 2nd congressional district since 2013.  Jocko Willink is a decorated retired Navy SEAL officer, author of the book Extreme Ownership: How U.S. Navy SEALs Lead and Win, and co-founder of Echelon Front, where he is a leadership instructor, speaker, and executive coach. His new book "Leadership Strategies and Tactics" will be available in January 2020.]]></content:encoded>
+			<enclosure length="160627574" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1391.mp3?dest-id=20651" />
+			<itunes:duration>02:46:58</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,deathsquad,jre,jocko,willink,tulsi,gabbard,1391</itunes:keywords>
+			<itunes:subtitle><![CDATA[Tulsi Gabbard is a 2020 Presidential Candidate of the Democratic Party and is currently serving as the U.S. Representative for Hawaii’s 2nd congressional district since 2013.  Jocko Willink is a decorated retired Navy SEAL officer, author...]]></itunes:subtitle>
+			<itunes:episode>1391</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1390 - Tim Dillon</title>
+			<pubDate>Fri, 22 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[507ab284-0743-423d-ac1b-c2c681220ade]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1390.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/e/2/e/b/e2eba5e73f508734/JRE1390.jpg" />
+			<description><![CDATA[Tim Dillon is a comedian, tour guide, and host. His podcast "The Tim Dillon Show" is available on YouTube & Apple Podcasts. https://www.youtube.com/channel/UC4woSp8ITBoYDmjkukhEhxg]]></description>
+			<content:encoded><![CDATA[Tim Dillon is a comedian, tour guide, and host. His podcast "The Tim Dillon Show" is available on YouTube & Apple Podcasts. https://www.youtube.com/channel/UC4woSp8ITBoYDmjkukhEhxg]]></content:encoded>
+			<enclosure length="190595541" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1390.mp3?dest-id=20651" />
+			<itunes:duration>03:18:11</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,tim,joe,party,experience,dillon,freak,rogan,deathsquad,jre,1390</itunes:keywords>
+			<itunes:subtitle><![CDATA[Tim Dillon is a comedian, tour guide, and host. His podcast "The Tim Dillon Show" is available on YouTube & Apple Podcasts. https://www.youtube.com/channel/UC4woSp8ITBoYDmjkukhEhxg]]></itunes:subtitle>
+			<itunes:episode>1390</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1389 - Chris Kresser Debunks "The Gamechangers" Documentary</title>
+			<pubDate>Thu, 21 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d81b13ab-558e-494a-96f6-8a61a1e76162]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1389.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/0/f/7/a0f781953456ee91/JRE1389.jpg" />
+			<description><![CDATA[Chris Kresser, M.S., L.Ac is a globally recognized leader in the fields of ancestral health, Paleo nutrition, and functional and integrative medicine. Link to notes from this podcast by Chris Kresser: http://kresser.co/gamechangers]]></description>
+			<content:encoded><![CDATA[Chris Kresser, M.S., L.Ac is a globally recognized leader in the fields of ancestral health, Paleo nutrition, and functional and integrative medicine. Link to notes from this podcast by Chris Kresser: http://kresser.co/gamechangers]]></content:encoded>
+			<enclosure length="173985362" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1389.mp3?dest-id=20651" />
+			<itunes:duration>03:00:53</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,chris,gamechangers,freak,rogan,deathsquad,jre,kresser,1389</itunes:keywords>
+			<itunes:subtitle><![CDATA[Chris Kresser, M.S., L.Ac is a globally recognized leader in the fields of ancestral health, Paleo nutrition, and functional and integrative medicine. Link to notes from this podcast by Chris Kresser: http://kresser.co/gamechangers]]></itunes:subtitle>
+			<itunes:episode>1389</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1388 - Louie Psihoyos</title>
+			<pubDate>Wed, 20 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[b3a208b1-6438-478a-8d6a-b1606ab1a494]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1388a.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/2/1/3/d2139dc2de144ab9/JRE1388.jpg" />
+			<description><![CDATA[Louis Psihoyos is a photographer and documentary film director known for his still photography and contributions to National Geographic. His film "The Cove" won the Academy Award for Best Documentary Feature in 2010.]]></description>
+			<content:encoded><![CDATA[Louis Psihoyos is a photographer and documentary film director known for his still photography and contributions to National Geographic. His film "The Cove" won the Academy Award for Best Documentary Feature in 2010.]]></content:encoded>
+			<enclosure length="134515072" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1388a.mp3?dest-id=20651" />
+			<itunes:duration>02:19:47</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,the,joe,party,experience,louie,freak,rogan,cove,psihoyos,deathsquad,jre,1388</itunes:keywords>
+			<itunes:subtitle><![CDATA[Louis Psihoyos is a photographer and documentary film director known for his still photography and contributions to National Geographic. His film "The Cove" won the Academy Award for Best Documentary Feature in 2010.]]></itunes:subtitle>
+			<itunes:episode>1388</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1387 - Josh Homme</title>
+			<pubDate>Tue, 19 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[44cdbf8f-6a64-4377-90ae-328d5f9aec76]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1387.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/f/4/c/2/f4c2946025904135/JRE1387.jpg" />
+			<description><![CDATA[Josh Homme is a singer, songwriter, musician, record producer, and actor. He is the founder and primary songwriter of the rock band Queens of the Stone Age. "Desert Sessions Vol. 11 & 12" are both available now.]]></description>
+			<content:encoded><![CDATA[Josh Homme is a singer, songwriter, musician, record producer, and actor. He is the founder and primary songwriter of the rock band Queens of the Stone Age. "Desert Sessions Vol. 11 & 12" are both available now.]]></content:encoded>
+			<enclosure length="141440635" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1387.mp3?dest-id=20651" />
+			<itunes:duration>02:26:59</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,josh,party,experience,freak,rogan,homme,deathsquad,jre,1387</itunes:keywords>
+			<itunes:subtitle><![CDATA[Josh Homme is a singer, songwriter, musician, record producer, and actor. He is the founder and primary songwriter of the rock band Queens of the Stone Age. "Desert Sessions Vol. 11 & 12" are both available now.]]></itunes:subtitle>
+			<itunes:episode>1387</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1386 - Matt Taibbi</title>
+			<pubDate>Sat, 16 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[24ffc4c6-b165-4fb3-9b3c-5dbf978d1b61]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1386.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/d/9/9/0d990ee437d3fa45/JRE1386.jpg" />
+			<description><![CDATA[Matt Taibbi is a journalist and author. He has reported on politics, media, finance, and sports, and has authored several books including his latest "Hate, Inc.: Why Today's Media Makes Us Despise One Another" is available now & look for his podcast "Useful Idiots" is available at RollingStone.com  https://www.amazon.com/Hate-Inc-Todays-Despise-Another/dp/1949017257]]></description>
+			<content:encoded><![CDATA[Matt Taibbi is a journalist and author. He has reported on politics, media, finance, and sports, and has authored several books including his latest "Hate, Inc.: Why Today's Media Makes Us Despise One Another" is available now & look for his podcast "Useful Idiots" is available at RollingStone.com  https://www.amazon.com/Hate-Inc-Todays-Despise-Another/dp/1949017257]]></content:encoded>
+			<enclosure length="127883543" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1386.mp3?dest-id=20651" />
+			<itunes:duration>02:12:51</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,matt,party,experience,freak,rogan,taibbi,deathsquad,jre,1386</itunes:keywords>
+			<itunes:subtitle><![CDATA[Matt Taibbi is a journalist and author. He has reported on politics, media, finance, and sports, and has authored several books including his latest "Hate, Inc.: Why Today's Media Makes Us Despise One Another" is available now & look for...]]></itunes:subtitle>
+			<itunes:episode>1386</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1385 - Paul Stamets</title>
+			<pubDate>Fri, 15 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[c8ae101e-6d6d-4c52-af1b-2ef060ca4fd3]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1385.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/0/b/b/c0bbc6a1f6ae0f75/JRE1385.jpg" />
+			<description><![CDATA[Paul Stamets is a mycologist, author and advocate of bioremediation and medicinal fungi. Check out ]]></description>
+			<content:encoded><![CDATA[Paul Stamets is a mycologist, author and advocate of bioremediation and medicinal fungi. Check out ]]></content:encoded>
+			<enclosure length="135941420" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1385.mp3?dest-id=20651" />
+			<itunes:duration>02:21:15</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,paul,joe,party,experience,freak,rogan,deathsquad,jre,stamets,1385</itunes:keywords>
+			<itunes:subtitle><![CDATA[Paul Stamets is a mycologist, author and advocate of bioremediation and medicinal fungi. Check out ]]></itunes:subtitle>
+			<itunes:episode>1385</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1384 - Ari Shaffir</title>
+			<pubDate>Thu, 14 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[0dca7f31-89e1-4367-99b3-2b9f010f9ec9]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1384.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/7/1/5/a715f202f6af7520/JRE1384.jpg" />
+			<description><![CDATA[Ari Shaffir is a stand-up comedian and also hosts the podcasts “Ari Shaffir’s Skeptic Tank” & “Punch Drunk Sports.”]]></description>
+			<content:encoded><![CDATA[Ari Shaffir is a stand-up comedian and also hosts the podcasts “Ari Shaffir’s Skeptic Tank” & “Punch Drunk Sports.”]]></content:encoded>
+			<enclosure length="171539110" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1384.mp3?dest-id=20651" />
+			<itunes:duration>02:58:19</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,ari,freak,rogan,shaffir,deathsquad,jre,1384</itunes:keywords>
+			<itunes:subtitle><![CDATA[Ari Shaffir is a stand-up comedian and also hosts the podcasts “Ari Shaffir’s Skeptic Tank” & “Punch Drunk Sports.”]]></itunes:subtitle>
+			<itunes:episode>1384</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1383 - Malcolm Gladwell</title>
+			<pubDate>Wed, 13 Nov 2019 20:09:36 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[6c40af521a70476398e135a44a2659c1]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1383.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/f/8/7/af87a695c9ccd50e/JRE1383.jpg" />
+			<description><![CDATA[Malcolm Gladwell is a journalist, author, and public speaker. He is the host of the popular podcast "Revisionist History" and his new book "Talking to Strangers: What We Should Know about the People We Don't Know" is available now.]]></description>
+			<content:encoded><![CDATA[Malcolm Gladwell is a journalist, author, and public speaker. He is the host of the popular podcast "Revisionist History" and his new book "Talking to Strangers: What We Should Know about the People We Don't Know" is available now.]]></content:encoded>
+			<enclosure length="158534038" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1383.mp3?dest-id=20651" />
+			<itunes:duration>02:44:44</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords />
+			<itunes:subtitle><![CDATA[Malcolm Gladwell is a journalist, author, and public speaker. He is the host of the popular podcast "Revisionist History" and his new book "Talking to Strangers: What We Should Know about the People We Don't Know" is available now.]]></itunes:subtitle>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1382 - RZA &amp; Donnell Rawlings</title>
+			<pubDate>Wed, 13 Nov 2019 03:40:01 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[566a9b058a084742821ef067bd9beca1]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1382.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/b/a/f/abaf94bff51c2ab2/JRE1382.jpg" />
+			<description><![CDATA[RZA is a rapper, record producer, musician, actor, and director. He is the de facto leader of the Wu-Tang Clan. Donnell Rawlings is a stand up comedian, actor, and podcaster. He’s known best for his roles on Chappelle’s Show and The Wire.]]></description>
+			<content:encoded><![CDATA[RZA is a rapper, record producer, musician, actor, and director. He is the de facto leader of the Wu-Tang Clan. Donnell Rawlings is a stand up comedian, actor, and podcaster. He’s known best for his roles on Chappelle’s Show and The Wire.]]></content:encoded>
+			<enclosure length="143769775" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1382.mp3?dest-id=20651" />
+			<itunes:duration>02:29:23</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rza,rogan,rawlings,donnell,deathsquad,jre,1382</itunes:keywords>
+			<itunes:subtitle><![CDATA[RZA is a rapper, record producer, musician, actor, and director. He is the de facto leader of the Wu-Tang Clan. Donnell Rawlings is a stand up comedian, actor, and podcaster. He’s known best for his roles on Chappelle’s Show and The...]]></itunes:subtitle>
+			<itunes:episode>1382</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1381 - Donnell Rawlings</title>
+			<pubDate>Tue, 12 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[9b77e7e095d74fbcbedb0bf9f8d8e131]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1381.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/f/9/8/8/f988b118391d59af/JRE1381.jpg" />
+			<description><![CDATA[Donnell Rawlings is a stand up comedian, actor, and podcaster. He’s known best for his roles on Chappelle’s Show and The Wire. Look for his new podcast "The Donnell Rawlings Show" coming soon.]]></description>
+			<content:encoded><![CDATA[Donnell Rawlings is a stand up comedian, actor, and podcaster. He’s known best for his roles on Chappelle’s Show and The Wire. Look for his new podcast "The Donnell Rawlings Show" coming soon.]]></content:encoded>
+			<enclosure length="163086094" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1381.mp3?dest-id=20651" />
+			<itunes:duration>02:49:31</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,rawlings,donnell,deathsquad,jre,1381</itunes:keywords>
+			<itunes:subtitle><![CDATA[Donnell Rawlings is a stand up comedian, actor, and podcaster. He’s known best for his roles on Chappelle’s Show and The Wire. Look for his new podcast "The Donnell Rawlings Show" coming soon.]]></itunes:subtitle>
+			<itunes:episode>1381</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #82 with Israel Adesanya</title>
+			<pubDate>Tue, 12 Nov 2019 03:29:54 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[72feb75b6b8d4548b404b4a567fb872b]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow082.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/b/8/5/cb8517115e581f36/JRE1381a.jpg" />
+			<description><![CDATA[Joe sits down with UFC Middleweight Champion, Israel “The Last Stylebender” Adesanya.]]></description>
+			<content:encoded><![CDATA[Joe sits down with UFC Middleweight Champion, Israel “The Last Stylebender” Adesanya.]]></content:encoded>
+			<enclosure length="125376478" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow082.mp3?dest-id=20651" />
+			<itunes:duration>02:10:16</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,party,experience,israel,freak,rogan,82,deathsquad,jre,adesanya</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with UFC Middleweight Champion, Israel “The Last Stylebender” Adesanya.]]></itunes:subtitle>
+			<itunes:episode>1380</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1380 - Pete Dominick</title>
+			<pubDate>Fri, 08 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d9c396298f604236a61b3a9e753a5096]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1380.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/7/7/5/c775304fb9c16092/JRE1380.jpg" />
+			<description><![CDATA[Pete Dominick is a stand up comic, speaker, news commentator, host, and moderator. Look for his podcast called "StandUP! with Pete Dominick" available on Apple Podcasts.]]></description>
+			<content:encoded><![CDATA[Pete Dominick is a stand up comic, speaker, news commentator, host, and moderator. Look for his podcast called "StandUP! with Pete Dominick" available on Apple Podcasts.]]></content:encoded>
+			<enclosure length="183628141" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1380.mp3?dest-id=20651" />
+			<itunes:duration>03:10:55</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,pete,party,experience,freak,rogan,dominick,deathsquad,jre,1380</itunes:keywords>
+			<itunes:subtitle><![CDATA[Pete Dominick is a stand up comic, speaker, news commentator, host, and moderator. Look for his podcast called "StandUP! with Pete Dominick" available on Apple Podcasts.]]></itunes:subtitle>
+			<itunes:episode>1380</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1379 - Ben Westhoff</title>
+			<pubDate>Thu, 07 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[8b2aba61a6c6492ba5db2c4e6fd45e2d]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1379.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/0/2/6/d0263b137668e726/JRE1379.jpg" />
+			<description><![CDATA[Ben Westhoff is an award-winning investigative journalist who writes about culture, drugs, and poverty. His new book "Fentanyl, Inc.: How Rogue Chemists Are Creating the Deadliest Wave of the Opioid Epidemic " is available now on Amazon. https://www.amazon.com/Fentanyl-Inc-Chemists-Creating-Deadliest/dp/0802127436]]></description>
+			<content:encoded><![CDATA[Ben Westhoff is an award-winning investigative journalist who writes about culture, drugs, and poverty. His new book "Fentanyl, Inc.: How Rogue Chemists Are Creating the Deadliest Wave of the Opioid Epidemic " is available now on Amazon. https://www.amazon.com/Fentanyl-Inc-Chemists-Creating-Deadliest/dp/0802127436]]></content:encoded>
+			<enclosure length="118920178" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1379.mp3?dest-id=20651" />
+			<itunes:duration>02:03:32</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>ben,joe,party,experience,freak,rogan,pdocast,westhoff,deathsquad,fentanyl,jre,1379</itunes:keywords>
+			<itunes:subtitle><![CDATA[Ben Westhoff is an award-winning investigative journalist who writes about culture, drugs, and poverty. His new book "Fentanyl, Inc.: How Rogue Chemists Are Creating the Deadliest Wave of the Opioid Epidemic " is available now on Amazon....]]></itunes:subtitle>
+			<itunes:episode>1379</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1378 - Greg Fitzsimmons</title>
+			<pubDate>Wed, 06 Nov 2019 20:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[22b79fdef76e43afaf6cd9a4b1f62460]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1378.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/2/6/d/d/26dd4879251e39ef/JRE1378.jpg" />
+			<description><![CDATA[Greg Fitzsimmons is a writer and stand-up comedian. He also hosts a podcast with Alison Rosen called “Childish” that is available now on iTunes & Stitcher.]]></description>
+			<content:encoded><![CDATA[Greg Fitzsimmons is a writer and stand-up comedian. He also hosts a podcast with Alison Rosen called “Childish” that is available now on iTunes & Stitcher.]]></content:encoded>
+			<enclosure length="159927973" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1378.mp3?dest-id=20651" />
+			<itunes:duration>02:46:15</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,greg,freak,fitzsimmons,rogan,fitzdog,deathsquad,jre,1378</itunes:keywords>
+			<itunes:subtitle><![CDATA[Greg Fitzsimmons is a writer and stand-up comedian. He also hosts a podcast with Alison Rosen called “Childish” that is available now on iTunes & Stitcher.]]></itunes:subtitle>
+			<itunes:episode>1378</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1377 - Rick Baker</title>
+			<pubDate>Wed, 06 Nov 2019 03:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[eb698589d49c445ababdce22bb4ce877]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1377.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/9/3/a/093a9e87f50d3107/JRE1377.jpg" />
+			<description><![CDATA[Rick Baker is a retired special make-up effects creator and actor, mostly known for his creature effects and designs. He won the Academy Award for Best Makeup seven times from a record of eleven nominations.]]></description>
+			<content:encoded><![CDATA[Rick Baker is a retired special make-up effects creator and actor, mostly known for his creature effects and designs. He won the Academy Award for Best Makeup seven times from a record of eleven nominations.]]></content:encoded>
+			<enclosure length="118523786" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1377.mp3?dest-id=20651" />
+			<itunes:duration>02:03:08</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,baker,rick,freak,rogan,deathsquad,jre,1377</itunes:keywords>
+			<itunes:subtitle><![CDATA[Rick Baker is a retired special make-up effects creator and actor, mostly known for his creature effects and designs. He won the Academy Award for Best Makeup seven times from a record of eleven nominations.]]></itunes:subtitle>
+			<itunes:episode>1377</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1376 - Artie Lange</title>
+			<pubDate>Tue, 05 Nov 2019 03:43:38 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[0938986956c041f1944a1f3e5598a910]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1376.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/f/a/e/2/fae26bf9c90fd855/JRE1376.jpg" />
+			<description><![CDATA[Artie Lange is a stand-up comedian and actor, best known for his tenures on The Howard Stern Show and the sketch comedy series Mad TV.]]></description>
+			<content:encoded><![CDATA[Artie Lange is a stand-up comedian and actor, best known for his tenures on The Howard Stern Show and the sketch comedy series Mad TV.]]></content:encoded>
+			<enclosure length="99112569" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1376.mp3?dest-id=20651" />
+			<itunes:duration>01:43:01</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,lange,freak,rogan,artie,deathsquad,jre,1376</itunes:keywords>
+			<itunes:subtitle><![CDATA[Artie Lange is a stand-up comedian and actor, best known for his tenures on The Howard Stern Show and the sketch comedy series Mad TV.]]></itunes:subtitle>
+			<itunes:episode>1376</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1375 - Edward Norton</title>
+			<pubDate>Thu, 31 Oct 2019 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[eb7f8539b0644ae9a7003c43540f987e]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1375.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/4/7/0/d470458cacfa3a24/JRE1375.jpg" />
+			<description><![CDATA[Edward Norton is an actor, writer, producer, director, and filmmaker. His new film "Motherless Brooklyn" opens in theaters on November 1 .]]></description>
+			<content:encoded><![CDATA[Edward Norton is an actor, writer, producer, director, and filmmaker. His new film "Motherless Brooklyn" opens in theaters on November 1 .]]></content:encoded>
+			<enclosure length="88531243" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1375.mp3?dest-id=20651" />
+			<itunes:duration>01:31:53</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,norton,edward,freak,rogan,deathsquad,jre,1375</itunes:keywords>
+			<itunes:subtitle><![CDATA[Edward Norton is an actor, writer, producer, director, and filmmaker. His new film "Motherless Brooklyn" opens in theaters on November 1 .]]></itunes:subtitle>
+			<itunes:episode>1375</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1374 - Justin Wren</title>
+			<pubDate>Thu, 31 Oct 2019 01:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d37ea9e819894bdfb1bfcb9415e71047]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1374.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/c/8/7/cc87af776196c08b/JRE1374.jpg" />
+			<description><![CDATA[Justin Wren is an American MMA fighter. Justin is currently fighting in the Heavyweight division of Bellator to help raise more awareness for helping the Pygmy people of the Democratic Republic of the Congo. Donate to Fight For The Forgotten at ]]></description>
+			<content:encoded><![CDATA[Justin Wren is an American MMA fighter. Justin is currently fighting in the Heavyweight division of Bellator to help raise more awareness for helping the Pygmy people of the Democratic Republic of the Congo. Donate to Fight For The Forgotten at ]]></content:encoded>
+			<enclosure length="117829597" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1374.mp3?dest-id=20651" />
+			<itunes:duration>02:02:23</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,justin,joe,party,experience,freak,rogan,wren,1374,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Justin Wren is an American MMA fighter. Justin is currently fighting in the Heavyweight division of Bellator to help raise more awareness for helping the Pygmy people of the Democratic Republic of the Congo. Donate to Fight For The Forgotten at ]]></itunes:subtitle>
+			<itunes:episode>1374</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1373 - Kyle Kulinski</title>
+			<pubDate>Wed, 30 Oct 2019 10:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[c01aa2f46bec48bdb5d9cf2e57c30ffe]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1373.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/7/4/4/a744a10200703e10/JRE1373.jpg" />
+			<description><![CDATA[Kyle Kulinski is a political activist, progressive talk radio host, social democratic political commentator, and the co-founder of Justice Democrats. His show “Secular Talk” is available on YouTube: https://www.youtube.com/SecularTalk]]></description>
+			<content:encoded><![CDATA[Kyle Kulinski is a political activist, progressive talk radio host, social democratic political commentator, and the co-founder of Justice Democrats. His show “Secular Talk” is available on YouTube: https://www.youtube.com/SecularTalk]]></content:encoded>
+			<enclosure length="143529950" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1373.mp3?dest-id=20651" />
+			<itunes:duration>02:29:10</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,kyle,freak,rogan,deathsquad,jre,kulinski,1373</itunes:keywords>
+			<itunes:subtitle><![CDATA[Kyle Kulinski is a political activist, progressive talk radio host, social democratic political commentator, and the co-founder of Justice Democrats. His show “Secular Talk” is available on YouTube: https://www.youtube.com/SecularTalk]]></itunes:subtitle>
+			<itunes:episode>1373</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1372 - Kevin Smith</title>
+			<pubDate>Wed, 30 Oct 2019 01:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[831be9725d8f444ea4a1caa14e934f98]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1372.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/7/0/0/5700520a9e12562b/JRE1372.jpg" />
+			<description><![CDATA[Kevin Smith is a filmmaker, actor, comedian, public speaker, comic book writer, author, and podcaster. Look for his movie "Jay and Silent Bob Reboot" on tour now with tickets available at https://rebootroadshow.com/]]></description>
+			<content:encoded><![CDATA[Kevin Smith is a filmmaker, actor, comedian, public speaker, comic book writer, author, and podcaster. Look for his movie "Jay and Silent Bob Reboot" on tour now with tickets available at https://rebootroadshow.com/]]></content:encoded>
+			<enclosure length="122856351" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1372.mp3?dest-id=20651" />
+			<itunes:duration>02:07:37</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,kevin,joe,party,experience,smith,freak,rogan,deathsquad,jre,1372</itunes:keywords>
+			<itunes:subtitle><![CDATA[Kevin Smith is a filmmaker, actor, comedian, public speaker, comic book writer, author, and podcaster. Look for his movie "Jay and Silent Bob Reboot" on tour now with tickets available at https://rebootroadshow.com/]]></itunes:subtitle>
+			<itunes:episode>1372</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1371 - Andrew Santino</title>
+			<pubDate>Tue, 29 Oct 2019 10:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[5cb07e20f7a9466e92ca4815646a3e52]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1371.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/9/4/d/3/94d3a25fa3c5f45b/JRE1371.jpg" />
+			<description><![CDATA[Andrew Santino is a stand up comedian and actor. Check out his podcast “Whiskey Ginger” available on Apple Podcasts & YouTube.]]></description>
+			<content:encoded><![CDATA[Andrew Santino is a stand up comedian and actor. Check out his podcast “Whiskey Ginger” available on Apple Podcasts & YouTube.]]></content:encoded>
+			<enclosure length="124663105" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1371.mp3?dest-id=20651" />
+			<itunes:duration>02:09:30</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,andrew,freak,rogan,santino,deathsquad,jre,1371</itunes:keywords>
+			<itunes:subtitle><![CDATA[Andrew Santino is a stand up comedian and actor. Check out his podcast “Whiskey Ginger” available on Apple Podcasts & YouTube.]]></itunes:subtitle>
+			<itunes:episode>1371</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #81 with Dave Leduc</title>
+			<pubDate>Tue, 29 Oct 2019 01:51:41 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[255bc5516a1a4ba09f7dba4dbed75162]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow081.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/1/3/5/51357272acf3381f/JRE1371a.jpg" />
+			<description><![CDATA[Joe sits down with Dave Leduc, the current openweight Lethwei World Champion and current WLC Cruiserweight World Champion.]]></description>
+			<content:encoded><![CDATA[Joe sits down with Dave Leduc, the current openweight Lethwei World Champion and current WLC Cruiserweight World Champion.]]></content:encoded>
+			<enclosure length="125102464" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow081.mp3?dest-id=20651" />
+			<itunes:duration>02:09:59</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,party,experience,dave,freak,rogan,leduc,81,deathsquad,jre,lethwei</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with Dave Leduc, the current openweight Lethwei World Champion and current WLC Cruiserweight World Champion.]]></itunes:subtitle>
+			<itunes:episode>1370</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1370 - Brian Grazer</title>
+			<pubDate>Thu, 24 Oct 2019 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[a0315d40f8f340b8b77d44a6bdfd45c4]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1370.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/a/5/d/4a5d50eebe145976/JRE1370.jpg" />
+			<description><![CDATA[Brian Grazer is a film and television producer and screenwriter. He co-founded Imagine Entertainment in 1986, with Ron Howard. His new book "Face to Face: The Art of Human Connection" is now available: https://www.amazon.com/Eye-Contact-Power-Personal-Connection/dp/1501147722]]></description>
+			<content:encoded><![CDATA[Brian Grazer is a film and television producer and screenwriter. He co-founded Imagine Entertainment in 1986, with Ron Howard. His new book "Face to Face: The Art of Human Connection" is now available: https://www.amazon.com/Eye-Contact-Power-Personal-Connection/dp/1501147722]]></content:encoded>
+			<enclosure length="132419592" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1370.mp3?dest-id=20651" />
+			<itunes:duration>02:17:35</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>joe,party,experience,brian,freak,rogan,1370,deathsquad,grazer,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Brian Grazer is a film and television producer and screenwriter. He co-founded Imagine Entertainment in 1986, with Ron Howard. His new book "Face to Face: The Art of Human Connection" is now available:...]]></itunes:subtitle>
+			<itunes:episode>1370</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1369 - Christopher Ryan</title>
+			<pubDate>Thu, 24 Oct 2019 01:36:19 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[6711512842cc447784a4dd9e700c2d18]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1369.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/4/1/b/a/41ba8d7ba86d51ef/JRE1369.jpg" />
+			<description><![CDATA[Christopher Ryan, PhD is a psychologist, speaker, and author of New York Times best seller “Sex At Dawn” and he also hosts a podcast called “Tangentially Speaking” available on Apple Podcasts & Stitcher. His latest book “Civilized To Death” is available now: https://www.amazon.com/Civilized-Death-What-Lost-Modernity/dp/1451659105]]></description>
+			<content:encoded><![CDATA[Christopher Ryan, PhD is a psychologist, speaker, and author of New York Times best seller “Sex At Dawn” and he also hosts a podcast called “Tangentially Speaking” available on Apple Podcasts & Stitcher. His latest book “Civilized To Death” is available now: https://www.amazon.com/Civilized-Death-What-Lost-Modernity/dp/1451659105]]></content:encoded>
+			<enclosure length="144712587" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1369.mp3?dest-id=20651" />
+			<itunes:duration>02:30:22</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,christopher,experience,chris,ryan,freak,rogan,deathsquad,jre,1369</itunes:keywords>
+			<itunes:subtitle><![CDATA[Christopher Ryan, PhD is a psychologist, speaker, and author of New York Times best seller “Sex At Dawn” and he also hosts a podcast called “Tangentially Speaking” available on Apple Podcasts & Stitcher. His latest book “Civilized...]]></itunes:subtitle>
+			<itunes:episode>1369</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1368 - Edward Snowden</title>
+			<pubDate>Wed, 23 Oct 2019 10:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d26fc0ef555843278b2eaf1c43144fcb]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1368.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/5/6/6/0/56605d228b6093fd/JRE1368.jpg" />
+			<description><![CDATA[Edward Snowden is an American whistleblower who copied and leaked highly classified information from the National Security Agency in 2013 when he was a Central Intelligence Agency employee and subcontractor.]]></description>
+			<content:encoded><![CDATA[Edward Snowden is an American whistleblower who copied and leaked highly classified information from the National Security Agency in 2013 when he was a Central Intelligence Agency employee and subcontractor.]]></content:encoded>
+			<enclosure length="172588145" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1368.mp3?dest-id=20651" />
+			<itunes:duration>02:59:22</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,ed,edward,freak,rogan,snowden,deathsquad,jre,1368</itunes:keywords>
+			<itunes:subtitle><![CDATA[Edward Snowden is an American whistleblower who copied and leaked highly classified information from the National Security Agency in 2013 when he was a Central Intelligence Agency employee and subcontractor.]]></itunes:subtitle>
+			<itunes:episode>1368</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1367 - Bridget Phetasy</title>
+			<pubDate>Wed, 23 Oct 2019 01:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[f791d8576e7742ddb3879a4055e1ff59]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1367.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/3/4/a/3/34a33a4fc853a25b/JRE1367.jpg" />
+			<description><![CDATA[Bridget Phetasy is a writer and comedian. Check out her show on YouTube called "Dumpster Fire" --  & her podcast called "Walk-Ins Welcome" available on Apple Podcasts & Stitcher.]]></description>
+			<content:encoded><![CDATA[Bridget Phetasy is a writer and comedian. Check out her show on YouTube called "Dumpster Fire" --  & her podcast called "Walk-Ins Welcome" available on Apple Podcasts & Stitcher.]]></content:encoded>
+			<enclosure length="150965423" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1367.mp3?dest-id=20651" />
+			<itunes:duration>02:36:54</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,freak,rogan,bridget,deathsquad,jre,phetasy,1367</itunes:keywords>
+			<itunes:subtitle><![CDATA[Bridget Phetasy is a writer and comedian. Check out her show on YouTube called "Dumpster Fire" --  & her podcast called "Walk-Ins Welcome" available on Apple Podcasts & Stitcher.]]></itunes:subtitle>
+			<itunes:episode>1367</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1366 - Richard Dawkins</title>
+			<pubDate>Tue, 22 Oct 2019 04:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[6fc05eff5ad540d4b2c57ab7074b5b94]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1366.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/a/f/d/1/afd1cec5b803cab0/JRE1366.jpg" />
+			<description><![CDATA[Richard Dawkins, FRS FRSL is an English ethologist, evolutionary biologist, and author. He is an emeritus fellow of New College, Oxford, and was the University of Oxford's Professor for Public Understanding of Science from 1995 until 2008. His latest book "Outgrowing God: A Beginner's Guide" is available now.]]></description>
+			<content:encoded><![CDATA[Richard Dawkins, FRS FRSL is an English ethologist, evolutionary biologist, and author. He is an emeritus fellow of New College, Oxford, and was the University of Oxford's Professor for Public Understanding of Science from 1995 until 2008. His latest book "Outgrowing God: A Beginner's Guide" is available now.]]></content:encoded>
+			<enclosure length="68580107" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1366.mp3?dest-id=20651" />
+			<itunes:duration>01:11:06</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,richard,freak,rogan,dawkins,deathsquad,jre,1366</itunes:keywords>
+			<itunes:subtitle><![CDATA[Richard Dawkins, FRS FRSL is an English ethologist, evolutionary biologist, and author. He is an emeritus fellow of New College, Oxford, and was the University of Oxford's Professor for Public Understanding of Science from 1995 until 2008. His latest...]]></itunes:subtitle>
+			<itunes:episode>1366</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1365 - Cameron Hanes</title>
+			<pubDate>Thu, 10 Oct 2019 19:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[aa48df91e5414620bd8eb2e4288ccc8e]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1365.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/6/f/2/c/6f2c0efa8ba4e7d1/JRE1365a.jpg" />
+			<description><![CDATA[Cameron Hanes is a bowhunting athlete, “training intensively each and every day to become the Ultimate Predator” and he also has a podcast available on Apple Podcasts called "Keep Hammering with Cameron Hanes."]]></description>
+			<content:encoded><![CDATA[Cameron Hanes is a bowhunting athlete, “training intensively each and every day to become the Ultimate Predator” and he also has a podcast available on Apple Podcasts called "Keep Hammering with Cameron Hanes."]]></content:encoded>
+			<enclosure length="154150962" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1365.mp3?dest-id=20651" />
+			<itunes:duration>02:40:13</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,cameron,cam,freak,rogan,hanes,deathsquad,jre,1365</itunes:keywords>
+			<itunes:subtitle><![CDATA[Cameron Hanes is a bowhunting athlete, “training intensively each and every day to become the Ultimate Predator” and he also has a podcast available on Apple Podcasts called "Keep Hammering with Cameron Hanes."]]></itunes:subtitle>
+			<itunes:episode>1365</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1364 - Brian Redban</title>
+			<pubDate>Thu, 10 Oct 2019 00:38:08 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[0af5b2d2d5a24146b0dab3addfe2451f]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1364.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/9/7/4/9/97497ae393125526/JRE1364.jpg" />
+			<description><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></description>
+			<content:encoded><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></content:encoded>
+			<enclosure length="133838563" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1364.mp3?dest-id=20651" />
+			<itunes:duration>02:19:02</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,brian,freak,rogan,redban,deathsquad,jre,1364</itunes:keywords>
+			<itunes:subtitle><![CDATA[Brian Redban is a comedian and the founder of the Deathsquad podcast network. Also look for him on “Kill Tony” available on Apple Podcasts & YouTube: https://www.youtube.com/channel/UCwzCMiicL-hBUzyjWiJaseg]]></itunes:subtitle>
+			<itunes:episode>1364</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1363 - Dakota Meyer</title>
+			<pubDate>Wed, 09 Oct 2019 00:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[a5f992d9ed3f4864adf70b7bda31dccc]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1363.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/0/1/8/0018365608157bde/JRE1363.jpg" />
+			<description><![CDATA[Dakota Meyer is a United States Marine. A veteran of the War in Afghanistan, he was awarded the Medal of Honor for his actions during the Battle of Ganjgal on 8 September 2009, in Kunar Province, Afghanistan.]]></description>
+			<content:encoded><![CDATA[Dakota Meyer is a United States Marine. A veteran of the War in Afghanistan, he was awarded the Medal of Honor for his actions during the Battle of Ganjgal on 8 September 2009, in Kunar Province, Afghanistan.]]></content:encoded>
+			<enclosure length="131760470" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1363.mp3?dest-id=20651" />
+			<itunes:duration>02:16:54</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,meyer,dakota,freak,rogan,deathsquad,jre,1363</itunes:keywords>
+			<itunes:subtitle><![CDATA[Dakota Meyer is a United States Marine. A veteran of the War in Afghanistan, he was awarded the Medal of Honor for his actions during the Battle of Ganjgal on 8 September 2009, in Kunar Province, Afghanistan.]]></itunes:subtitle>
+			<itunes:episode>1363</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #80 with Evander Holyfield</title>
+			<pubDate>Tue, 08 Oct 2019 03:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[5aadcb10c2754859bf8c30d7d7607376]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow080.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/2/5/d/d25dc97462778cd5/JRE1362a.jpg" />
+			<description><![CDATA[Joe sits down with former boxer Evander Holyfield, who was the undisputed champion at cruiserweight in the late 1980s and at heavyweight in the early 1990s, and remains the only boxer in history to win the undisputed championship in two weight classes.]]></description>
+			<content:encoded><![CDATA[Joe sits down with former boxer Evander Holyfield, who was the undisputed champion at cruiserweight in the late 1980s and at heavyweight in the early 1990s, and remains the only boxer in history to win the undisputed championship in two weight classes.]]></content:encoded>
+			<enclosure length="77494361" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow080.mp3?dest-id=20651" />
+			<itunes:duration>01:20:23</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,party,experience,80,holyfield,freak,rogan,evander,deathsquad,jre</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe sits down with former boxer Evander Holyfield, who was the undisputed champion at cruiserweight in the late 1980s and at heavyweight in the early 1990s, and remains the only boxer in history to win the undisputed championship in two weight classes.]]></itunes:subtitle>
+			<itunes:episode>1362</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1362 - Lenny Clarke</title>
+			<pubDate>Tue, 08 Oct 2019 01:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[7d952e7da13d44708dcdcde1bfe4aa46]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1362.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/1/a/8/d/1a8d24c497342189/JRE1362.jpg" />
+			<description><![CDATA[Lenny Clarke is a legendary Boston comic and actor.]]></description>
+			<content:encoded><![CDATA[Lenny Clarke is a legendary Boston comic and actor.]]></content:encoded>
+			<enclosure length="118302017" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1362.mp3?dest-id=20651" />
+			<itunes:duration>02:02:51</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>joe,party,experience,clarke,freak,lenny,rogan,deathsquad,jre,1362</itunes:keywords>
+			<itunes:subtitle><![CDATA[Lenny Clarke is a legendary Boston comic and actor.]]></itunes:subtitle>
+			<itunes:episode>1362</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1361 - Cmdr. David Fravor &amp; Jeremy Corbell</title>
+			<pubDate>Sat, 05 Oct 2019 21:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d9e17c921e16426f9a7ed615813e6b65]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1361.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/1/f/3/71f3014e14ef2722/JREiTunesImage2.jpg" />
+			<description><![CDATA[Commander David Fravor is a retired US Navy pilot, who has a close encounter in 2004 with the so-called Tic Tac UFO, and Jeremy Corbell is a contemporary artist and documentary filmmaker.]]></description>
+			<content:encoded><![CDATA[Commander David Fravor is a retired US Navy pilot, who has a close encounter in 2004 with the so-called Tic Tac UFO, and Jeremy Corbell is a contemporary artist and documentary filmmaker.]]></content:encoded>
+			<enclosure length="116876274" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1361.mp3?dest-id=20651" />
+			<itunes:duration>02:01:20</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,david,freak,rogan,deathsquad,jre,corbell,jermey,1361,fravor</itunes:keywords>
+			<itunes:subtitle><![CDATA[Commander David Fravor is a retired US Navy pilot, who has a close encounter in 2004 with the so-called Tic Tac UFO, and Jeremy Corbell is a contemporary artist and documentary filmmaker.]]></itunes:subtitle>
+			<itunes:episode>1361</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1360 - Nikki Glaser</title>
+			<pubDate>Fri, 04 Oct 2019 01:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[d6ccec2cf2df40eea82060f8e6cdc9ae]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1360.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/3/8/f/9/38f945971e8e72db/JRE1360.jpg" />
+			<description><![CDATA[Nikki Glaser is a stand-up comedian, podcast host, and television host. Her new stand-up special "Bangin" is now streaming on Netflix.]]></description>
+			<content:encoded><![CDATA[Nikki Glaser is a stand-up comedian, podcast host, and television host. Her new stand-up special "Bangin" is now streaming on Netflix.]]></content:encoded>
+			<enclosure length="162743430" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1360.mp3?dest-id=20651" />
+			<itunes:duration>02:49:10</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,nikki,freak,rogan,glaser,deathsquad,jre,1360</itunes:keywords>
+			<itunes:subtitle><![CDATA[Nikki Glaser is a stand-up comedian, podcast host, and television host. Her new stand-up special "Bangin" is now streaming on Netflix.]]></itunes:subtitle>
+			<itunes:episode>1360</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1359 - Roseanne Barr</title>
+			<pubDate>Thu, 03 Oct 2019 01:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[3619900bfb304ce684fe3cba93f02f9b]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1359.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/c/6/8/0c68b3bd58dd5b37/JRE1359.jpg" />
+			<description><![CDATA[Roseanne Barr is a comedian, actress, writer, television producer, director.]]></description>
+			<content:encoded><![CDATA[Roseanne Barr is a comedian, actress, writer, television producer, director.]]></content:encoded>
+			<enclosure length="130043076" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1359.mp3?dest-id=20651" />
+			<itunes:duration>02:15:06</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,barr,freak,rogan,rosanne,deathsquad,jre,1359</itunes:keywords>
+			<itunes:subtitle><![CDATA[Roseanne Barr is a comedian, actress, writer, television producer, director.]]></itunes:subtitle>
+			<itunes:episode>1359</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1358 - Sober October 3</title>
+			<pubDate>Wed, 02 Oct 2019 04:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[9b360e47daa0482d876943ce0a693bfa]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1358.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/8/5/7/f/857f5e3a5e34ab57/JRE1358a.jpg" />
+			<description><![CDATA[Joe is joined by Ari Shaffir, Bert Kreischer & Tom Segura to discuss their 3rd annual Sober October challenge.]]></description>
+			<content:encoded><![CDATA[Joe is joined by Ari Shaffir, Bert Kreischer & Tom Segura to discuss their 3rd annual Sober October challenge.]]></content:encoded>
+			<enclosure length="165690147" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1358.mp3?dest-id=20651" />
+			<itunes:duration>02:52:13</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,tom,ari,october,bert,freak,rogan,sober,kreischer,shaffir,segura,deathsquad,jre,1358</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by Ari Shaffir, Bert Kreischer & Tom Segura to discuss their 3rd annual Sober October challenge.]]></itunes:subtitle>
+			<itunes:episode>1358</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1357 - Ari Shaffir</title>
+			<pubDate>Wed, 02 Oct 2019 02:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[f19eea8dc62b4b40954cfb28b83881fc]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1357.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/7/1/8/0/718060639bdc0774/JRE1357.jpg" />
+			<description><![CDATA[Ari Shaffir is a stand-up comedian and also hosts the podcasts "Ari Shaffir’s Skeptic Tank" & "Punch Drunk Sports."]]></description>
+			<content:encoded><![CDATA[Ari Shaffir is a stand-up comedian and also hosts the podcasts "Ari Shaffir’s Skeptic Tank" & "Punch Drunk Sports."]]></content:encoded>
+			<enclosure length="102953907" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1357.mp3?dest-id=20651" />
+			<itunes:duration>01:46:53</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,ari,freak,rogan,shaffir,deathsquad,jre,1357</itunes:keywords>
+			<itunes:subtitle><![CDATA[Ari Shaffir is a stand-up comedian and also hosts the podcasts "Ari Shaffir’s Skeptic Tank" & "Punch Drunk Sports."]]></itunes:subtitle>
+			<itunes:episode>1357</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1356 - Sturgill Simpson &amp; His Band</title>
+			<pubDate>Tue, 01 Oct 2019 03:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[8bb8c4a71ceb4466b2d4976c1062f75d]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1356.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/c/4/1/4/c4146c028fd22943/JRE1356.jpg" />
+			<description><![CDATA[Sturgill Simpson is a Grammy Award-winning country music and roots rock singer-songwriter. His new album "Sound & Fury" is available now on streaming services everywhere, and the anime visual album "Sturgill Simpson presents Sound & Fury" is now streaming on Netflix. He is joined by his band members Miles Miller, Chuck Bartels, Bobby Emmett and by Green Beret Medic Justin Laseck.]]></description>
+			<content:encoded><![CDATA[Sturgill Simpson is a Grammy Award-winning country music and roots rock singer-songwriter. His new album "Sound & Fury" is available now on streaming services everywhere, and the anime visual album "Sturgill Simpson presents Sound & Fury" is now streaming on Netflix. He is joined by his band members Miles Miller, Chuck Bartels, Bobby Emmett and by Green Beret Medic Justin Laseck.]]></content:encoded>
+			<enclosure length="157807896" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1356.mp3?dest-id=20651" />
+			<itunes:duration>02:44:01</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,party,experience,simpson,freak,rogan,sturgill,deathsquad,jre,1356</itunes:keywords>
+			<itunes:subtitle><![CDATA[Sturgill Simpson is a Grammy Award-winning country music and roots rock singer-songwriter. His new album "Sound & Fury" is available now on streaming services everywhere, and the anime visual album "Sturgill Simpson presents Sound & Fury"...]]></itunes:subtitle>
+			<itunes:episode>1356</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1355 - Mark Normand</title>
+			<pubDate>Sat, 21 Sep 2019 01:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[7798906218684900b35f1eeeaa5c2d64]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1355.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/f/5/e/0f5e70d8917adeb4/JRE1355.jpg" />
+			<description><![CDATA[Mark Normand is a stand-up comedian and actor. Check out his podcast "Tuesdays with Stories!" with co-host Joe List available on Apple Podcasts.]]></description>
+			<content:encoded><![CDATA[Mark Normand is a stand-up comedian and actor. Check out his podcast "Tuesdays with Stories!" with co-host Joe List available on Apple Podcasts.]]></content:encoded>
+			<enclosure length="203124579" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1355.mp3?dest-id=20651" />
+			<itunes:duration>03:31:14</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mark,joe,party,experience,freak,rogan,deathsquad,normand,jre,1355</itunes:keywords>
+			<itunes:subtitle><![CDATA[Mark Normand is a stand-up comedian and actor. Check out his podcast "Tuesdays with Stories!" with co-host Joe List available on Apple Podcasts.]]></itunes:subtitle>
+			<itunes:episode>1355</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1354 - The Black Keys</title>
+			<pubDate>Fri, 20 Sep 2019 01:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[79a35d049da64c298190f1d96a2fcb35]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1354.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/8/2/e/7/82e70c0dec4fbe39/JRE1354.jpg" />
+			<description><![CDATA[The Black Keys is a rock band formed in Akron, Ohio, in 2001. The group consists of Dan Auerbach and Patrick Carney. Their latest album "Let's Rock" is available now everywhere.]]></description>
+			<content:encoded><![CDATA[The Black Keys is a rock band formed in Akron, Ohio, in 2001. The group consists of Dan Auerbach and Patrick Carney. Their latest album "Let's Rock" is available now everywhere.]]></content:encoded>
+			<enclosure length="195267009" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1354.mp3?dest-id=20651" />
+			<itunes:duration>03:23:03</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,the,black,joe,party,experience,keys,freak,rogan,deathsquad,jre,1354</itunes:keywords>
+			<itunes:subtitle><![CDATA[The Black Keys is a rock band formed in Akron, Ohio, in 2001. The group consists of Dan Auerbach and Patrick Carney. Their latest album "Let's Rock" is available now everywhere.]]></itunes:subtitle>
+			<itunes:episode>1354</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>JRE MMA Show #79 with Vinnie Shoreman &amp; Liam Harrison</title>
+			<pubDate>Thu, 19 Sep 2019 02:30:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[55735ff96ef74e2f898d113ed3b9bd38]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/mmashow079.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/d/3/5/c/d35c8cd9289a8218/JRE1353a.jpg" />
+			<description><![CDATA[Joe is joined by mind coach and fight commentator Vinny Shoreman & 8 time kickboxing and Muay Thai world champion, including holding the W.M.C. belt, Liam Harrison.]]></description>
+			<content:encoded><![CDATA[Joe is joined by mind coach and fight commentator Vinny Shoreman & 8 time kickboxing and Muay Thai world champion, including holding the W.M.C. belt, Liam Harrison.]]></content:encoded>
+			<enclosure length="159714605" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/mmashow079.mp3?dest-id=20651" />
+			<itunes:duration>02:46:02</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,mma,show,joe,party,experience,liam,harrison,freak,rogan,vinnie,79,deathsquad,jre,shoreman</itunes:keywords>
+			<itunes:subtitle><![CDATA[Joe is joined by mind coach and fight commentator Vinny Shoreman & 8 time kickboxing and Muay Thai world champion, including holding the W.M.C. belt, Liam Harrison.]]></itunes:subtitle>
+			<itunes:episode>1353</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+		<item>
+			<title>#1353 - Rob Zombie</title>
+			<pubDate>Tue, 17 Sep 2019 04:00:00 +0000</pubDate>
+			<guid isPermaLink="false"><![CDATA[063684b7375849209333cdeb0bed8aae]]></guid>
+			<link><![CDATA[http://traffic.libsyn.com/joeroganexp/p1353.mp3]]></link>
+			<itunes:image href="http://static.libsyn.com/p/assets/0/f/f/2/0ff2aeaf32441072/JRE1353.jpg" />
+			<description><![CDATA[Rob Zombie is a musician and filmmaker. His new film "3 From Hell" is available in select theaters this week and everywhere in October.]]></description>
+			<content:encoded><![CDATA[Rob Zombie is a musician and filmmaker. His new film "3 From Hell" is available in select theaters this week and everywhere in October.]]></content:encoded>
+			<enclosure length="130546612" type="audio/mpeg" url="http://traffic.libsyn.com/joeroganexp/p1353.mp3?dest-id=20651" />
+			<itunes:duration>02:15:37</itunes:duration>
+			<itunes:explicit>no</itunes:explicit>
+			<itunes:keywords>podcast,joe,rob,party,experience,zombie,freak,rogan,deathsquad,jre,1353</itunes:keywords>
+			<itunes:subtitle><![CDATA[Rob Zombie is a musician and filmmaker. His new film "3 From Hell" is available in select theaters this week and everywhere in October.]]></itunes:subtitle>
+			<itunes:episode>1353</itunes:episode>
+			<itunes:episodeType>full</itunes:episodeType>
+		</item>
+	</channel>
+</rss>
