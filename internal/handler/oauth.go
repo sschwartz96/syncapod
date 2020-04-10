@@ -210,9 +210,9 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 
 	// setup json
 	type tokenResponse struct {
-		AccessToken  string
-		RefreshToken string
-		ExpiresIn    int
+		AccessToken  string `json:"access_token"`
+		RefreshToken string `json:"refresh_token"`
+		ExpiresIn    int    `json:"expires_in"`
 	}
 	tRes := &tokenResponse{
 		AccessToken:  token.Token,
