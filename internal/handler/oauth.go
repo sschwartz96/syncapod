@@ -19,10 +19,13 @@ type OauthHandler struct {
 	dbClient      *database.Client
 	loginTemplate *template.Template
 	authTemplate  *template.Template
+	// only used for alexa, need these in database if suppport more than one client
+	clientID     string
+	clientSecret string
 }
 
 // CreateOauthHandler just intantiates an OauthHandler
-func CreateOauthHandler(dbClient *database.Client) (*OauthHandler, error) {
+func CreateOauthHandler(dbClient *database.Client, clientID, clientSecret string) (*OauthHandler, error) {
 	loginT, err := template.ParseFiles("templates/oauth/login.gohtml")
 	authT, err := template.ParseFiles("templates/oauth/auth.gohtml")
 	if err != nil {
@@ -33,6 +36,8 @@ func CreateOauthHandler(dbClient *database.Client) (*OauthHandler, error) {
 		dbClient:      dbClient,
 		loginTemplate: loginT,
 		authTemplate:  authT,
+		clientID:      clientID,
+		clientSecret:  clientSecret,
 	}, nil
 }
 
@@ -154,6 +159,22 @@ func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 }
 
 func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
+	fmt.Println("token request: ", req.RequestURI)
+
+	// authenticate client
+	id, sec, ok := req.BasicAuth()
+	if !ok {
+		fmt.Println("not using basic authentication?")
+		return
+	}
+	if id != h.clientID || sec != h.clientSecret {
+		fmt.Printf("id: %v & secret: %v\n", id, sec)
+		fmt.Println("incorrect credentials")
+		return
+	}
+
+	// ^^^^^^^^^^ client is authenticated after above ^^^^^^^^^^
+
 	var queryCode string
 
 	// find grant type: refresh_token or authorization_code

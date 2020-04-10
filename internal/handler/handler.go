@@ -5,6 +5,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 )
 
@@ -16,11 +17,11 @@ type Handler struct {
 }
 
 // CreateHandler sets up the main handler
-func CreateHandler(dbClient *database.Client) (*Handler, error) {
+func CreateHandler(dbClient *database.Client, config *config.Config) (*Handler, error) {
 	handler := &Handler{}
 	var err error
 
-	handler.oauthHandler, err = CreateOauthHandler(dbClient)
+	handler.oauthHandler, err = CreateOauthHandler(dbClient, config.AlexaClientID, config.AlexaSecret)
 	if err != nil {
 		return nil, err
 	}

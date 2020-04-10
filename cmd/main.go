@@ -39,7 +39,7 @@ func main() {
 
 	fmt.Println("setting up handlers")
 	// setup handler
-	handler, err := handler.CreateHandler(dbClient)
+	handler, err := handler.CreateHandler(dbClient, config)
 	if err != nil {
 		log.Fatal("could not setup handlers: ", err)
 	}
