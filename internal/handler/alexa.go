@@ -96,7 +96,7 @@ func createAlexaResponse(userID string) *AlexaResponseData {
 		Version: "1.0",
 		Response: AlexaResponse{
 			Directives: []AlexaDirective{
-				AlexaDirective{
+				{
 					Type:         "AudioPlayer.Play",
 					PlayBehavior: "REPLACE_ALL",
 					AudioItem: AlexaAudioItem{
@@ -189,6 +189,7 @@ type AlexaResponseData struct {
 // AlexaResponse contains the actual response
 type AlexaResponse struct {
 	Directives []AlexaDirective `json:"directives"`
+	OutputSpeech // TODO: leftoff here
 }
 
 // AlexaDirective tells alexa what to do
@@ -200,7 +201,8 @@ type AlexaDirective struct {
 
 // AlexaAudioItem holds information of audio track
 type AlexaAudioItem struct {
-	Stream AlexaStream `json:"stream"`
+	Stream   AlexaStream   `json:"stream"`
+	Metadata AlexaMetadata `json:"metadata"`
 }
 
 type AlexaStream struct {
@@ -208,3 +210,11 @@ type AlexaStream struct {
 	URL                  string `json:"url"`
 	OffsetInMilliseconds int64  `json:"offsetInMilliseconds"`
 }
+
+type AlexaMetadata struct {
+	Title    string
+	Subtitle string
+	Art AlexaArt
+}
+
+type AlexaArt
