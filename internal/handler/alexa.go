@@ -56,28 +56,24 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	name := aData.Request.Intent.AlexaSlots.Podcast.Value
 	fmt.Println("request name of podcast: ", name)
 
-	response := createAlexaResponse(user.ID.Hex())
+	var resText string
+	var podcast *models.Podcast
+	var episode *models.Episode
+	var offset int64
 
 	switch aData.Request.Intent.Name {
 	case PlayPodcast:
 		var podcasts []models.Podcast
 		err = h.dbClient.Search(database.ColPodcast, name, &podcasts)
 		if err != nil {
-			fmt.Println("error searching for podcast: ", err)
+			resText = "Error occured searching for podcast"
+			break
 		}
 		if len(podcasts) > 0 {
-			response.Response.Directives[0].AudioItem.Stream.URL = podcasts[0].Episodes[0].Enclosure.MP3
-
-			jsonRes, err := json.Marshal(response)
-			if err != nil {
-				fmt.Println("couldn't marshal alexa response: ", err)
-			}
-
-			res.Header().Set("Content-Type", "application/json")
-			res.Write(jsonRes)
+			podcast = &podcasts[0]
+			episode = &podcast.Episodes[0]
 		} else {
-			//TODO: no podcast found
-			fmt.Println("no podcast found")
+			resText = "Podcast of the name: " + name + ", not found"
 		}
 
 	case PlayLatestPodcast:
@@ -88,10 +84,33 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 
 	case Pause:
 
+	default:
+
 	}
+
+	// get details from non-nil episode
+	if episode != nil {
+		resText = "Playing " + podcast.Title + ", " + episode.Title
+		offset = findOffset(user, podcast)
+	}
+
+	response := createAlexaResponse(user.ID.Hex(), resText, offset)
+
+	jsonRes, err := json.Marshal(response)
+	if err != nil {
+		fmt.Println("couldn't marshal alexa response: ", err)
+	}
+
+	res.Header().Set("Content-Type", "application/json")
+	res.Write(jsonRes)
 }
 
-func createAlexaResponse(userID string) *AlexaResponseData {
+func findOffset(dbClient *database.Client, user *models.User, episode *models.Episode) int64 {
+	dbClient.Find()
+	return 0
+}
+
+func createAlexaResponse(userID, text string, offset int64) *AlexaResponseData {
 	return &AlexaResponseData{
 		Version: "1.0",
 		Response: AlexaResponse{
@@ -103,10 +122,15 @@ func createAlexaResponse(userID string) *AlexaResponseData {
 						Stream: AlexaStream{
 							URL:                  "",
 							Token:                userID,
-							OffsetInMilliseconds: 0,
+							OffsetInMilliseconds: offset,
 						},
 					},
 				},
+			},
+			OutputSpeech: AlexaOutputSpeech{
+				Type:         "PlainText",
+				Text:         text,
+				PlayBehavior: "REPLACE_ENQUEUE",
 			},
 		},
 	}
@@ -188,8 +212,8 @@ type AlexaResponseData struct {
 
 // AlexaResponse contains the actual response
 type AlexaResponse struct {
-	Directives []AlexaDirective `json:"directives"`
-	OutputSpeech // TODO: leftoff here
+	Directives   []AlexaDirective  `json:"directives"`
+	OutputSpeech AlexaOutputSpeech `json:"outputSpeech"`
 }
 
 // AlexaDirective tells alexa what to do
@@ -212,9 +236,22 @@ type AlexaStream struct {
 }
 
 type AlexaMetadata struct {
-	Title    string
-	Subtitle string
-	Art AlexaArt
+	Title    string   `json:"title"`
+	Subtitle string   `json:"subtitle"`
+	Art      AlexaArt `json:"art"`
 }
 
-type AlexaArt
+type AlexaArt struct {
+	Sources []AlexaURL `json:"sources"`
+}
+
+type AlexaURL struct {
+	URL string `json:"url"`
+}
+
+// AlexaOutputSpeech takes type: "PlainText", text, and playBehavior: REPLACE_ENQUEUE
+type AlexaOutputSpeech struct {
+	Type         string `json:"type"`
+	Text         string `json:"text"`
+	PlayBehavior string `json:"playBehavior"`
+}
