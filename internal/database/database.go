@@ -23,6 +23,7 @@ const (
 	ColPodcast     = "podcast"
 	ColSession     = "session"
 	ColUser        = "user"
+	ColUserEpisode = "user_episode"
 	ColAuthCode    = "auth_code"
 	ColAccessToken = "access_token"
 )
@@ -97,8 +98,20 @@ func (c *Client) Find(collection, param string, value interface{}, object interf
 		Value: value,
 	}}
 
+	return c.FindWithBSON(collection, filter, object)
+}
+
+func (c *Client) FindWithBSON(collection string, bson interface{}, object interface{}) error {
+	// get collection
 	col := c.Database(DBsyncapod).Collection(collection)
-	result := col.FindOne(context.Background(), filter)
+
+	// find operation
+	result := col.FindOne(context.Background(), bson)
+	if result.Err() != nil {
+		return result.Err()
+	}
+
+	// decode into object
 	err := result.Decode(object)
 	if err != nil {
 		return err

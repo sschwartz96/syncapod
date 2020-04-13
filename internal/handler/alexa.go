@@ -11,6 +11,7 @@ import (
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Intents
@@ -91,7 +92,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	// get details from non-nil episode
 	if episode != nil {
 		resText = "Playing " + podcast.Title + ", " + episode.Title
-		offset = findOffset(user, podcast)
+		offset = findOffset(user, episode)
 	}
 
 	response := createAlexaResponse(user.ID.Hex(), resText, offset)
@@ -106,8 +107,14 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 }
 
 func findOffset(dbClient *database.Client, user *models.User, episode *models.Episode) int64 {
-	dbClient.Find()
-	return 0
+	var userEpi models.UserEpisode
+	filter := bson.D{{Key: "user_id", Value: user.ID}, {Key: "episode_id", Value: episode.ID}}
+	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, &userEpi)
+	if err != nil {
+		fmt.Println("error finding user episode details: ", err)
+		return 0
+	}
+	return userEpi.Offset
 }
 
 func createAlexaResponse(userID, text string, offset int64) *AlexaResponseData {
