@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
-	"go.mongodb.org/mongo-driver/bson"
+	"github.com/sschwartz96/syncapod/internal/podcast"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Intents
@@ -22,6 +24,12 @@ const (
 	FastForward       = "FastForward"
 	Rewind            = "Rewind"
 	Pause             = "AMAZON.PauseIntent"
+	Resume            = "AMAZON.ResumeIntent"
+
+	// Directives
+	DirPlay       = "AudioPlayer.Play"
+	DirStop       = "AudioPlayer.Stop"
+	DirClearQueue = "AudioPlayer.ClearQueue"
 )
 
 // Alexa handles all requests through /api/alexa endpoint
@@ -52,16 +60,17 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("error validating token: ", err)
 	}
-	fmt.Println(user)
 
 	name := aData.Request.Intent.AlexaSlots.Podcast.Value
 	fmt.Println("request name of podcast: ", name)
 
-	var resText string
-	var podcast *models.Podcast
-	var episode *models.Episode
+	var response *AlexaResponseData
+	var resText, directive string
+	var pod *models.Podcast
+	var epi *models.Episode
 	var offset int64
 
+	fmt.Println("the requested intent: ", aData.Request.Intent.Name)
 	switch aData.Request.Intent.Name {
 	case PlayPodcast:
 		var podcasts []models.Podcast
@@ -71,31 +80,78 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 			break
 		}
 		if len(podcasts) > 0 {
-			podcast = &podcasts[0]
-			episode = &podcast.Episodes[0]
+			pod = &podcasts[0]
+			epi = &pod.Episodes[0]
+			directive = DirPlay
 		} else {
 			resText = "Podcast of the name: " + name + ", not found"
 		}
 
 	case PlayLatestPodcast:
+		fmt.Println("playing latest")
+
 	case PlayNthFromLatest:
 
 	case FastForward:
+
 	case Rewind:
 
 	case Pause:
+		directive = DirStop
+		epiID := strings.Split(aData.Context.AudioPlayer.Token, "-")[2]
+		defer podcast.UpdateOffset(h.dbClient, user.ID.Hex(),
+			epiID, aData.Context.AudioPlayer.OffsetInMilliseconds)
+
+	case Resume:
+		splitID := strings.Split(aData.Context.AudioPlayer.Token, "-")
+		podID, _ := primitive.ObjectIDFromHex(splitID[1])
+		epiID := splitID[2]
+		err := h.dbClient.FindByID(database.ColPodcast, podID, &pod)
+		if err != nil {
+			fmt.Println("couldn't find podcast from ID: ", err)
+			resText = "Please try playing new podcast"
+			break
+		}
+
+		for i, _ := range pod.Episodes {
+			if pod.Episodes[i].ID.Hex() == epiID {
+				epi = &pod.Episodes[i]
+				break
+			}
+		}
+
+		if epi != nil {
+			directive = DirPlay
+			resText = "Resuming"
+			offset = aData.Context.AudioPlayer.OffsetInMilliseconds
+		} else {
+			resText = "Episode not found, please try playing new podcast"
+		}
 
 	default:
-
+		resText = "This command is currently not supported, please request"
 	}
 
-	// get details from non-nil episode
-	if episode != nil {
-		resText = "Playing " + podcast.Title + ", " + episode.Title
-		offset = findOffset(user, episode)
-	}
+	// If we are creating an alexa audio repsonse
+	if directive != "" {
+		// get details from non-nil episode
+		if epi != nil {
+			if resText == "" {
+				resText = "Playing " + pod.Title + ", " + epi.Title
+			}
+			if offset == 0 {
+				offset = podcast.FindOffset(h.dbClient, user, epi)
+			}
+			fmt.Println("offset: ", offset)
 
-	response := createAlexaResponse(user.ID.Hex(), resText, offset)
+			response = createAudioResponse(directive, user.ID.Hex(),
+				resText, pod, epi, offset)
+		} else {
+			response = createPauseResponse(directive)
+		}
+	} else {
+		response = createEmptyResponse(resText)
+	}
 
 	jsonRes, err := json.Marshal(response)
 	if err != nil {
@@ -106,39 +162,85 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	res.Write(jsonRes)
 }
 
-func findOffset(dbClient *database.Client, user *models.User, episode *models.Episode) int64 {
-	var userEpi models.UserEpisode
-	filter := bson.D{{Key: "user_id", Value: user.ID}, {Key: "episode_id", Value: episode.ID}}
-	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, &userEpi)
-	if err != nil {
-		fmt.Println("error finding user episode details: ", err)
-		return 0
-	}
-	return userEpi.Offset
-}
+func createAudioResponse(directive, userID, text string,
+	pod *models.Podcast, epi *models.Episode, offset int64) *AlexaResponseData {
 
-func createAlexaResponse(userID, text string, offset int64) *AlexaResponseData {
+	imgURL := epi.Image.URL
+	if imgURL == "" {
+		imgURL = pod.Image.URL
+		if imgURL == "" {
+			// TODO: add custom generic defualt image
+			imgURL = "https://emby.media/community/uploads/inline/355992/5c1cc71abf1ee_genericcoverart.jpg"
+		}
+	}
+
 	return &AlexaResponseData{
 		Version: "1.0",
 		Response: AlexaResponse{
 			Directives: []AlexaDirective{
 				{
-					Type:         "AudioPlayer.Play",
+					Type:         directive,
 					PlayBehavior: "REPLACE_ALL",
 					AudioItem: AlexaAudioItem{
 						Stream: AlexaStream{
-							URL:                  "",
-							Token:                userID,
+							URL:                  epi.Enclosure.MP3,
+							Token:                userID + "-" + pod.ID.Hex() + "-" + epi.ID.Hex(),
 							OffsetInMilliseconds: offset,
+						},
+						Metadata: AlexaMetadata{
+							Title:    epi.Title,
+							Subtitle: epi.Subtitle,
+							Art: AlexaArt{
+								Sources: []AlexaURL{
+									AlexaURL{
+										URL:    imgURL,
+										Height: 144,
+										Width:  144,
+									},
+								},
+							},
 						},
 					},
 				},
 			},
 			OutputSpeech: AlexaOutputSpeech{
+				Type: "PlainText",
+				Text: text,
+			},
+			ShouldEndSession: true,
+		},
+	}
+}
+
+func createPauseResponse(directive string) *AlexaResponseData {
+	return &AlexaResponseData{
+		Version: "1.0",
+		Response: AlexaResponse{
+			Directives: []AlexaDirective{
+				{
+					Type: directive,
+				},
+			},
+			OutputSpeech: AlexaOutputSpeech{
+				Type: "PlainText",
+				Text: "Paused",
+			},
+			ShouldEndSession: true,
+		},
+	}
+}
+
+func createEmptyResponse(text string) *AlexaResponseData {
+	return &AlexaResponseData{
+		Version: "1.0",
+		Response: AlexaResponse{
+			Directives: nil,
+			OutputSpeech: AlexaOutputSpeech{
 				Type:         "PlainText",
 				Text:         text,
 				PlayBehavior: "REPLACE_ENQUEUE",
 			},
+			ShouldEndSession: true,
 		},
 	}
 }
@@ -154,111 +256,122 @@ func getAccessToken(data *AlexaData) (string, error) {
 
 // AlexaData contains all the informatino and data from request sent from alexa
 type AlexaData struct {
-	Version string       `json:"version"`
-	Context AlexaContext `json:"context"`
-	Request AlexaRequest `json:"request"`
+	Version string       `json:"version,omitempty"`
+	Context AlexaContext `json:"context,omitempty"`
+	Request AlexaRequest `json:"request,omitempty"`
 }
 
 // AlexaContext contains system
 type AlexaContext struct {
-	System AlexaSystem `json:"system"`
+	System      AlexaSystem      `json:"System,omitempty"`
+	AudioPlayer AlexaAudioPlayer `json:"AudioPlayer,omitempty"`
 }
 
 // AlexaSystem is the container for person and user
 type AlexaSystem struct {
-	Person AlexaPerson `json:"person"`
-	User   AlexaUser   `json:"user"`
+	Person AlexaPerson `json:"person,omitempty"`
+	User   AlexaUser   `json:"user,omitempty"`
+}
+
+// AlexaAudioPlayer contains info of the currently played track if available
+type AlexaAudioPlayer struct {
+	OffsetInMilliseconds int64  `json:"offsetInMilliseconds,omitempty"`
+	Token                string `json:"token,omitempty"`
+	PlayActivity         string `json:"playActivity,omitempty"`
 }
 
 // AlexaPerson holds the info about the person who explicitly called the skill
 type AlexaPerson struct {
-	PersonID    string `json:"personId"`
-	AccessToken string `json:"accessToken"`
+	PersonID    string `json:"personId,omitempty"`
+	AccessToken string `json:"accessToken,omitempty"`
 }
 
 // AlexaUser contains info about the user that holds the skill
 type AlexaUser struct {
-	UserID      string `json:"userId"`
-	AccessToken string `json:"accessToken"`
+	UserID      string `json:"userId,omitempty"`
+	AccessToken string `json:"accessToken,omitempty"`
 }
 
 // AlexaRequest holds all the information and data
 type AlexaRequest struct {
-	Type                 string      `json:"type"`
-	RequestID            string      `json:"requestId"`
-	Timestamp            time.Time   `json:"timestamp"`
-	Token                string      `json:"token"`
-	OffsetInMilliseconds int64       `json:"offsetInMilliseconds"`
-	Intent               AlexaIntent `json:"intent"`
+	Type                 string      `json:"type,omitempty"`
+	RequestID            string      `json:"requestId,omitempty"`
+	Timestamp            time.Time   `json:"timestamp,omitempty"`
+	Token                string      `json:"token,omitempty"`
+	OffsetInMilliseconds int64       `json:"offsetInMilliseconds,omitempty"`
+	Intent               AlexaIntent `json:"intent,omitempty"`
 }
 
 // AlexaIntent holds information and data of intent sent from alexa
 type AlexaIntent struct {
-	Name       string     `json:"name"`
-	AlexaSlots AlexaSlots `json:"slots"`
+	Name       string     `json:"name,omitempty"`
+	AlexaSlots AlexaSlots `json:"slots,omitempty"`
 }
 
 // AlexaSlots are the container for the slots
 type AlexaSlots struct {
-	Nth     AlexaSlot `json:"nth"`
-	Episode AlexaSlot `json:"episode"`
-	Podcast AlexaSlot `json:"podcast"`
+	Nth     AlexaSlot `json:"nth,omitempty"`
+	Episode AlexaSlot `json:"episode,omitempty"`
+	Podcast AlexaSlot `json:"podcast,omitempty"`
 }
 
 // AlexaSlot holds information of the slot for the intent
 type AlexaSlot struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
+	Name  string `json:"name,omitempty"`
+	Value string `json:"value,omitempty"`
 }
 
 // AlexaResponseData contains the version and response
 type AlexaResponseData struct {
-	Version  string        `json:"version"`
-	Response AlexaResponse `json:"response"`
+	Version  string        `json:"version,omitempty"`
+	Response AlexaResponse `json:"response,omitempty"`
 }
 
 // AlexaResponse contains the actual response
 type AlexaResponse struct {
-	Directives   []AlexaDirective  `json:"directives"`
-	OutputSpeech AlexaOutputSpeech `json:"outputSpeech"`
+	Directives       []AlexaDirective  `json:"directives,omitempty"`
+	OutputSpeech     AlexaOutputSpeech `json:"outputSpeech,omitempty"`
+	ShouldEndSession bool              `json:"shouldEndSession,omitempty"`
 }
 
 // AlexaDirective tells alexa what to do
 type AlexaDirective struct {
-	Type         string         `json:"type"`
-	PlayBehavior string         `json:"playBehavior"`
-	AudioItem    AlexaAudioItem `json:"audioItem"`
+	Type         string         `json:"type,omitempty"`
+	PlayBehavior string         `json:"playBehavior,omitempty"`
+	AudioItem    AlexaAudioItem `json:"audioItem,omitempty"`
 }
 
 // AlexaAudioItem holds information of audio track
 type AlexaAudioItem struct {
-	Stream   AlexaStream   `json:"stream"`
-	Metadata AlexaMetadata `json:"metadata"`
+	Stream   AlexaStream   `json:"stream,omitempty"`
+	Metadata AlexaMetadata `json:"metadata,omitempty"`
 }
 
 type AlexaStream struct {
-	Token                string `json:"token"`
-	URL                  string `json:"url"`
-	OffsetInMilliseconds int64  `json:"offsetInMilliseconds"`
+	Token                string `json:"token,omitempty"`
+	URL                  string `json:"url,omitempty"`
+	OffsetInMilliseconds int64  `json:"offsetInMilliseconds,omitempty"`
 }
 
 type AlexaMetadata struct {
-	Title    string   `json:"title"`
-	Subtitle string   `json:"subtitle"`
-	Art      AlexaArt `json:"art"`
+	Title    string   `json:"title,omitempty"`
+	Subtitle string   `json:"subtitle,omitempty"`
+	Art      AlexaArt `json:"art,omitempty"`
 }
 
 type AlexaArt struct {
-	Sources []AlexaURL `json:"sources"`
+	Sources []AlexaURL `json:"sources,omitempty"`
 }
 
 type AlexaURL struct {
-	URL string `json:"url"`
+	URL    string `json:"url,omitempty"`
+	Height int    `json:"height,omitempty"`
+	Width  int    `json:"width,omitempty"`
 }
 
 // AlexaOutputSpeech takes type: "PlainText", text, and playBehavior: REPLACE_ENQUEUE
 type AlexaOutputSpeech struct {
-	Type         string `json:"type"`
-	Text         string `json:"text"`
-	PlayBehavior string `json:"playBehavior"`
+	Type         string `json:"type,omitempty"`
+	Text         string `json:"text,omitempty"`
+	PlayBehavior string `json:"playBehavior,omitempty"`
 }

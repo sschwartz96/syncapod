@@ -101,6 +101,26 @@ func (c *Client) Find(collection, param string, value interface{}, object interf
 	return c.FindWithBSON(collection, filter, object)
 }
 
+func (c *Client) Upsert(collection string, filter bson.D, object interface{}) error {
+	col := c.Database(DBsyncapod).Collection(collection)
+
+	update := bson.M{"$set": object}
+
+	upsert := true
+
+	opts := &options.UpdateOptions{
+		Upsert: &upsert,
+	}
+
+	res, err := col.UpdateOne(context.Background(), filter, update, opts)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("result: ", res)
+	return nil
+}
+
 func (c *Client) FindWithBSON(collection string, bson interface{}, object interface{}) error {
 	// get collection
 	col := c.Database(DBsyncapod).Collection(collection)
