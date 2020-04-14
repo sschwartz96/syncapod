@@ -2,8 +2,10 @@ package podcast
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -83,4 +85,29 @@ func UpdateOffset(dbClient *database.Client, userID, epiID string, offset int64)
 	if err != nil {
 		fmt.Println("error upserting offset: ", err)
 	}
+}
+
+// FindPodcastEpisode takes a *database.Client, podcast and episode ID
+func FindPodcastEpisode(dbClient *database.Client, podID, epiID string) (*models.Podcast, *models.Episode, error) {
+	pID, _ := primitive.ObjectIDFromHex(podID)
+	eID, _ := primitive.ObjectIDFromHex(epiID)
+
+	var pod models.Podcast
+	err := dbClient.FindByID(database.ColPodcast, pID, &pod)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	for i, _ := range pod.Episodes {
+		if pod.Episodes[i].ID == eID {
+			return &pod, &pod.Episodes[i], nil
+		}
+	}
+
+	return nil, nil, errors.New("podcast episode not found")
+}
+
+// FindLength
+func FindLength(epi *models.Episode) *time.Duration {
+
 }

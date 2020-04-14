@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -76,7 +78,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 		var podcasts []models.Podcast
 		err = h.dbClient.Search(database.ColPodcast, name, &podcasts)
 		if err != nil {
-			resText = "Error occured searching for podcast"
+			resText = "Error occurred searching for podcast"
 			break
 		}
 		if len(podcasts) > 0 {
@@ -97,10 +99,15 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	case Rewind:
 
 	case Pause:
-		directive = DirStop
-		epiID := strings.Split(aData.Context.AudioPlayer.Token, "-")[2]
-		defer podcast.UpdateOffset(h.dbClient, user.ID.Hex(),
-			epiID, aData.Context.AudioPlayer.OffsetInMilliseconds)
+		audioTokens := strings.Split(aData.Context.AudioPlayer.Token, "-")
+		if len(audioTokens) > 1 {
+			epiID := audioTokens[2]
+			directive = DirStop
+			defer podcast.UpdateOffset(h.dbClient, user.ID.Hex(),
+				epiID, aData.Context.AudioPlayer.OffsetInMilliseconds)
+		} else {
+			resText = "Please play a podcast first"
+		}
 
 	case Resume:
 		splitID := strings.Split(aData.Context.AudioPlayer.Token, "-")
@@ -160,6 +167,46 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 
 	res.Header().Set("Content-Type", "application/json")
 	res.Write(jsonRes)
+}
+
+func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast, *models.Episode, string, int64) {
+	var pod *models.Podcast
+	var epi *models.Episode
+	var resText string
+	var offset int64
+	var err error
+
+	audioTokens := strings.Split(aData.Context.AudioPlayer.Token, "-")
+	if len(audioTokens) > 1 {
+		podID := audioTokens[1]
+		epiID := audioTokens[2]
+
+		// find episode
+		pod, epi, err = podcast.FindPodcastEpisode(h.dbClient, podID, epiID)
+		if err != nil {
+			fmt.Println("error finding podcast episode", err)
+			resText = "Error occurred, please try again"
+			return nil, nil, resText, 0
+		}
+
+		// get the current time and duration to move
+		curTime := aData.Context.AudioPlayer.OffsetInMilliseconds
+		dura := convertISO8601ToMillis(aData.Request.Intent.AlexaSlots.Duration.Value)
+
+		if forward {
+			offset = curTime + dura
+		} else {
+			offset = curTime - dura
+		}
+
+		if offset < 0 {
+			offset = 0
+		} // TODO: make check for offset > run time
+	} else {
+		resText = "Please play a podcast first"
+	}
+
+	return pod, epi, resText, offset
 }
 
 func createAudioResponse(directive, userID, text string,
@@ -245,6 +292,30 @@ func createEmptyResponse(text string) *AlexaResponseData {
 	}
 }
 
+func convertISO8601ToMillis(data string) int64 {
+	data = data[2:]
+
+	var durRegArr [3]*regexp.Regexp
+	var durStrArr [3]string
+	var durIntArr [3]int64
+
+	durRegArr[0], _ = regexp.Compile("([0-9]+)H")
+	durRegArr[1], _ = regexp.Compile("([0-9]+)M")
+	durRegArr[2], _ = regexp.Compile("([0-9]+)S")
+
+	for i, str := range durStrArr {
+		durStrArr[i] = durRegArr[i].FindString(data)
+		if len(str) > 1 {
+			val, _ := strconv.Atoi(str[0 : len(str)-1])
+			durIntArr[i] = int64(val)
+		}
+	}
+
+	return (durIntArr[0])*int64(3600000) +
+		(durIntArr[1])*int64(60000) +
+		(durIntArr[2])*int64(1000)
+}
+
 func getAccessToken(data *AlexaData) (string, error) {
 	if data.Context.System.Person.AccessToken != "" {
 		return data.Context.System.Person.AccessToken, nil
@@ -310,9 +381,10 @@ type AlexaIntent struct {
 
 // AlexaSlots are the container for the slots
 type AlexaSlots struct {
-	Nth     AlexaSlot `json:"nth,omitempty"`
-	Episode AlexaSlot `json:"episode,omitempty"`
-	Podcast AlexaSlot `json:"podcast,omitempty"`
+	Nth      AlexaSlot `json:"nth,omitempty"`
+	Episode  AlexaSlot `json:"episode,omitempty"`
+	Podcast  AlexaSlot `json:"podcast,omitempty"`
+	Duration AlexaSlot `json:"duration,omitempty"`
 }
 
 // AlexaSlot holds information of the slot for the intent
