@@ -95,15 +95,20 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	case PlayNthFromLatest:
 
 	case FastForward:
+		directive = DirPlay
+		pod, epi, resText, offset = h.moveAudio(&aData, true)
 
 	case Rewind:
+		directive = DirPlay
+		pod, epi, resText, offset = h.moveAudio(&aData, false)
 
 	case Pause:
 		audioTokens := strings.Split(aData.Context.AudioPlayer.Token, "-")
 		if len(audioTokens) > 1 {
-			epiID := audioTokens[2]
+			podID, _ := primitive.ObjectIDFromHex(audioTokens[1])
+			epiID, _ := primitive.ObjectIDFromHex(audioTokens[2])
 			directive = DirStop
-			defer podcast.UpdateOffset(h.dbClient, user.ID.Hex(),
+			defer podcast.UpdateOffset(h.dbClient, user.ID, podID,
 				epiID, aData.Context.AudioPlayer.OffsetInMilliseconds)
 		} else {
 			resText = "Please play a podcast first"
@@ -111,18 +116,27 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 
 	case Resume:
 		splitID := strings.Split(aData.Context.AudioPlayer.Token, "-")
-		podID, _ := primitive.ObjectIDFromHex(splitID[1])
-		epiID := splitID[2]
-		err := h.dbClient.FindByID(database.ColPodcast, podID, &pod)
-		if err != nil {
-			fmt.Println("couldn't find podcast from ID: ", err)
-			resText = "Please try playing new podcast"
-			break
-		}
+		if len(splitID) > 1 {
+			podID, _ := primitive.ObjectIDFromHex(splitID[1])
+			epiID := splitID[2]
+			err := h.dbClient.FindByID(database.ColPodcast, podID, &pod)
+			if err != nil {
+				fmt.Println("couldn't find podcast from ID: ", err)
+				resText = "Please try playing new podcast"
+				break
+			}
 
-		for i, _ := range pod.Episodes {
-			if pod.Episodes[i].ID.Hex() == epiID {
-				epi = &pod.Episodes[i]
+			for i, _ := range pod.Episodes {
+				if pod.Episodes[i].ID.Hex() == epiID {
+					epi = &pod.Episodes[i]
+					break
+				}
+			}
+		} else {
+			pod, epi, offset, err = podcast.FindUserLastPlayed(h.dbClient, user.ID)
+			if err != nil {
+				fmt.Println("couldn't find user last played: ", err)
+				resText = "Couldn't find any currently played podcast, please play new one"
 				break
 			}
 		}
@@ -130,7 +144,9 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 		if epi != nil {
 			directive = DirPlay
 			resText = "Resuming"
-			offset = aData.Context.AudioPlayer.OffsetInMilliseconds
+			if offset == 0 {
+				offset = aData.Context.AudioPlayer.OffsetInMilliseconds
+			}
 		} else {
 			resText = "Episode not found, please try playing new podcast"
 		}
@@ -169,6 +185,8 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	res.Write(jsonRes)
 }
 
+// moveAudio takes pointer to aData and bool for direction
+// returns pointers to podcast and episode, response text and offset in millis
 func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast, *models.Episode, string, int64) {
 	var pod *models.Podcast
 	var epi *models.Episode
@@ -178,11 +196,11 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast,
 
 	audioTokens := strings.Split(aData.Context.AudioPlayer.Token, "-")
 	if len(audioTokens) > 1 {
-		podID := audioTokens[1]
-		epiID := audioTokens[2]
+		pID, _ := primitive.ObjectIDFromHex(audioTokens[1])
+		eID, _ := primitive.ObjectIDFromHex(audioTokens[2])
 
 		// find episode
-		pod, epi, err = podcast.FindPodcastEpisode(h.dbClient, podID, epiID)
+		pod, epi, err = podcast.FindPodcastEpisode(h.dbClient, pID, eID)
 		if err != nil {
 			fmt.Println("error finding podcast episode", err)
 			resText = "Error occurred, please try again"
@@ -192,21 +210,56 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast,
 		// get the current time and duration to move
 		curTime := aData.Context.AudioPlayer.OffsetInMilliseconds
 		dura := convertISO8601ToMillis(aData.Request.Intent.AlexaSlots.Duration.Value)
+		durString := durationToText(time.Millisecond * time.Duration(dura))
+
+		fmt.Printf("cur time: %v, aData: %v, duration calculated: %v\n", curTime, aData.Request.Intent.AlexaSlots.Duration.Value, dura)
+
+		fmt.Println("durString: ", durString)
 
 		if forward {
 			offset = curTime + dura
+			resText = "Fast-forwarded " + durString
 		} else {
 			offset = curTime - dura
+			resText = "Rewound " + durString
 		}
 
 		if offset < 0 {
-			offset = 0
+			offset = 1
 		} // TODO: make check for offset > run time
 	} else {
 		resText = "Please play a podcast first"
 	}
 
 	return pod, epi, resText, offset
+}
+
+func durationToText(dur time.Duration) string {
+	bldr := strings.Builder{}
+	if int(dur.Hours()) == 1 {
+		bldr.WriteString("1 hour, ")
+	} else if dur.Hours() > 1 {
+		bldr.WriteString(strconv.Itoa(int(dur.Hours())))
+		bldr.WriteString(" hours, ")
+	}
+	dur = dur - dur.Truncate(time.Hour)
+
+	if int(dur.Minutes()) == 1 {
+		bldr.WriteString("1 minute, ")
+	} else if dur.Minutes() > 1 {
+		bldr.WriteString(strconv.Itoa(int(dur.Minutes())))
+		bldr.WriteString(" minutes, ")
+	}
+	dur = dur - dur.Truncate(time.Minute)
+
+	if int(dur.Seconds()) == 1 {
+		bldr.WriteString("1 second, ")
+	} else if dur.Seconds() > 1 {
+		bldr.WriteString(strconv.Itoa(int(dur.Seconds())))
+		bldr.WriteString(" seconds, ")
+	}
+
+	return bldr.String()
 }
 
 func createAudioResponse(directive, userID, text string,
@@ -303,10 +356,11 @@ func convertISO8601ToMillis(data string) int64 {
 	durRegArr[1], _ = regexp.Compile("([0-9]+)M")
 	durRegArr[2], _ = regexp.Compile("([0-9]+)S")
 
-	for i, str := range durStrArr {
+	for i, _ := range durStrArr {
 		durStrArr[i] = durRegArr[i].FindString(data)
-		if len(str) > 1 {
-			val, _ := strconv.Atoi(str[0 : len(str)-1])
+		if len(durStrArr[i]) > 1 {
+			str := durStrArr[i]
+			val, _ := strconv.Atoi(str[:len(str)-1])
 			durIntArr[i] = int64(val)
 		}
 	}

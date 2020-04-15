@@ -41,7 +41,7 @@ func CreateAccessToken(dbClient *database.Client, authCode *models.AuthCode) *mo
 func ValidateAuthCode(dbClient *database.Client, code string) (*models.AuthCode, error) {
 	var authCode models.AuthCode
 
-	err := dbClient.Find(database.ColAuthCode, "code", code, &authCode)
+	err := dbClient.Find(database.ColAuthCode, "code", code, &authCode, false)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func ValidateAuthCode(dbClient *database.Client, code string) (*models.AuthCode,
 // ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
 func ValidateAccessToken(dbClient *database.Client, token string) (*models.User, error) {
 	var tokenObj models.AccessToken
-	err := dbClient.Find(database.ColAccessToken, "token", token, &tokenObj)
+	err := dbClient.Find(database.ColAccessToken, "token", token, &tokenObj, false)
 	if err != nil {
 		return nil, err
 	}

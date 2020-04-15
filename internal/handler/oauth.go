@@ -181,7 +181,7 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 	if strings.ToLower(grantType) == "refresh_token" {
 		var accessToken models.AccessToken
 		refreshToken := req.FormValue("refresh_token")
-		err := h.dbClient.Find(database.ColAccessToken, "refresh_token", refreshToken, &accessToken)
+		err := h.dbClient.Find(database.ColAccessToken, "refresh_token", refreshToken, &accessToken, false)
 		if err != nil {
 			fmt.Println("couldn't find token based on refresh: ", err)
 			http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
