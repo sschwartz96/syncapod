@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/schollz/closestmatch"
@@ -63,7 +64,7 @@ func MatchTitle(search string, podcasts []models.Podcast) {
 func FindOffset(dbClient *database.Client, user *models.User, episode *models.Episode) int64 {
 	var userEpi models.UserEpisode
 	filter := bson.D{{Key: "user_id", Value: user.ID}, {Key: "episode_id", Value: episode.ID}}
-	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, &userEpi)
+	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, &userEpi, false)
 	if err != nil {
 		fmt.Println("error finding user episode details: ", err)
 		return 0
@@ -72,14 +73,12 @@ func FindOffset(dbClient *database.Client, user *models.User, episode *models.Ep
 }
 
 // UpdateOffset takes userID epiID and offset and performs upsert to the UserEpisode collection
-func UpdateOffset(dbClient *database.Client, userID, epiID string, offset int64) {
-	uID, _ := primitive.ObjectIDFromHex(userID)
-	eID, _ := primitive.ObjectIDFromHex(epiID)
-
-	userEpi := &models.UserEpisode{UserID: uID, EpisodeID: eID, Offset: offset, Played: false}
+func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, offset int64) {
+	userEpi := &models.UserEpisode{UserID: uID, PodcastID: pID, EpisodeID: eID, Offset: offset, Played: false}
 
 	err := dbClient.Upsert(database.ColUserEpisode, bson.D{
 		{Key: "user_id", Value: uID},
+		{Key: "podcast_id", Value: pID},
 		{Key: "episode_id", Value: eID}},
 		userEpi)
 	if err != nil {
@@ -88,18 +87,15 @@ func UpdateOffset(dbClient *database.Client, userID, epiID string, offset int64)
 }
 
 // FindPodcastEpisode takes a *database.Client, podcast and episode ID
-func FindPodcastEpisode(dbClient *database.Client, podID, epiID string) (*models.Podcast, *models.Episode, error) {
-	pID, _ := primitive.ObjectIDFromHex(podID)
-	eID, _ := primitive.ObjectIDFromHex(epiID)
-
+func FindPodcastEpisode(dbClient *database.Client, podID, epiID primitive.ObjectID) (*models.Podcast, *models.Episode, error) {
 	var pod models.Podcast
-	err := dbClient.FindByID(database.ColPodcast, pID, &pod)
+	err := dbClient.FindByID(database.ColPodcast, podID, &pod)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	for i, _ := range pod.Episodes {
-		if pod.Episodes[i].ID == eID {
+		if pod.Episodes[i].ID == epiID {
 			return &pod, &pod.Episodes[i], nil
 		}
 	}
@@ -107,7 +103,39 @@ func FindPodcastEpisode(dbClient *database.Client, podID, epiID string) (*models
 	return nil, nil, errors.New("podcast episode not found")
 }
 
+// FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
+func FindUserLastPlayed(dbClient *database.Client, userID primitive.ObjectID) (*models.Podcast, *models.Episode, int64, error) {
+	var userEps []models.UserEpisode
+	// look up all the UserEpisodes with the user id
+	err := dbClient.Find(database.ColUserEpisode, "user_id", userID, &userEps, true)
+	if err != nil {
+		fmt.Println("find user last played error: ", err)
+		return nil, nil, 0, err
+	}
+	if len(userEps) == 0 {
+		return nil, nil, 0, errors.New("User has no currently played episodes")
+	}
+
+	// sort array
+	sort.Slice(userEps, func(i, j int) bool {
+		return userEps[i].LastSeen.After(userEps[j].LastSeen)
+	})
+
+	// gather ids and perform db lookups
+	podID := userEps[0].PodcastID
+	epiID := userEps[0].EpisodeID
+
+	// find the episode
+	pod, epi, err := FindPodcastEpisode(dbClient, podID, epiID)
+	if err != nil {
+		return nil, nil, 0, err
+	}
+
+	return pod, epi, userEps[0].Offset, err
+}
+
 // FindLength
 func FindLength(epi *models.Episode) *time.Duration {
-
+	zero := time.Duration(0)
+	return &zero
 }

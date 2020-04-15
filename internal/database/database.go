@@ -88,17 +88,17 @@ func (c *Client) Delete(collection, param string, value interface{}) error {
 
 // FindByID takes collection name and pointer to object
 func (c *Client) FindByID(collection string, objID primitive.ObjectID, object interface{}) error {
-	return c.Find(collection, "_id", objID, object)
+	return c.Find(collection, "_id", objID, object, false)
 }
 
 // Find takes collection, param & value to build fitler, and object pointer
-func (c *Client) Find(collection, param string, value interface{}, object interface{}) error {
+func (c *Client) Find(collection, param string, value interface{}, object interface{}, all bool) error {
 	filter := bson.D{{
 		Key:   param,
 		Value: value,
 	}}
 
-	return c.FindWithBSON(collection, filter, object)
+	return c.FindWithBSON(collection, filter, object, all)
 }
 
 // Upsert updates or inserts object within collection with premade filter
@@ -123,23 +123,31 @@ func (c *Client) Upsert(collection string, filter interface{}, object interface{
 }
 
 // FindWithBSON takes in object and already made bson filter
-func (c *Client) FindWithBSON(collection string, filter interface{}, object interface{}) error {
+func (c *Client) FindWithBSON(collection string, filter interface{}, object interface{}, all bool) error {
+	var err error
+
 	// get collection
 	col := c.Database(DBsyncapod).Collection(collection)
 
 	// find operation
-	result := col.FindOne(context.Background(), filter)
-	if result.Err() != nil {
-		return result.Err()
+	if all {
+		cur, err := col.Find(context.Background(), filter)
+		if err != nil {
+			return err
+		}
+		// decode all
+		err = cur.All(context.Background(), object)
+	} else {
+		result := col.FindOne(context.Background(), filter)
+		err = result.Err()
+		if err != nil {
+			return err
+		}
+		// decode one
+		err = result.Decode(object)
 	}
 
-	// decode into object
-	err := result.Decode(object)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 // FindUser attempts to find user by username/email returns pointer to user or error if not found
@@ -153,7 +161,7 @@ func (c *Client) FindUser(username string) (*models.User, error) {
 	}
 
 	var user models.User
-	err := c.Find(ColUser, param, username, &user)
+	err := c.Find(ColUser, param, username, &user, false)
 
 	return &user, err
 }

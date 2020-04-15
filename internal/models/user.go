@@ -18,9 +18,11 @@ type User struct {
 // UserEpisode contains the information of the episode specific to the user
 type UserEpisode struct {
 	UserID    primitive.ObjectID `json:"user_id" bson:"user_id"`
+	PodcastID primitive.ObjectID `json:"podcast_id" bson:"podcast_id"`
 	EpisodeID primitive.ObjectID `json:"episode_id" bson:"episode_id"`
 	Offset    int64              `json:"offset" bson:"offset"` // milliseconds
 	Played    bool               `json:"played" bson:"played"`
+	LastSeen  time.Time          `json:"last_seen" bson:"last_seen"`
 }
 
 // Subscription contains the user specific data on a podcast
