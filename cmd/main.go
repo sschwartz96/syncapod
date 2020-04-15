@@ -10,10 +10,12 @@ import (
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
-	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/podcast"
 )
 
 func main() {
+	// test the find length
+	podcast.FindLength("https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_5MG.mp3")
 
 	// read config
 	config, err := config.ReadConfig("config.json")
@@ -28,14 +30,6 @@ func main() {
 	if err != nil {
 		log.Fatal("couldn't connect to db: ", err)
 	}
-
-	var podcasts []models.Podcast
-	err = dbClient.Search(database.ColPodcast, "architecture", &podcasts)
-	if err != nil {
-		fmt.Println("couldn't perform search: ", err)
-		return
-	}
-	fmt.Println("found: ", len(podcasts))
 
 	fmt.Println("setting up handlers")
 	// setup handler

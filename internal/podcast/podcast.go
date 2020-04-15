@@ -1,6 +1,7 @@
 package podcast
 
 import (
+	"bufio"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -107,7 +108,24 @@ func FindPodcastEpisode(dbClient *database.Client, podID, epiID string) (*models
 	return nil, nil, errors.New("podcast episode not found")
 }
 
-// FindLength
-func FindLength(epi *models.Episode) *time.Duration {
+// FindLength attempts to download the first 10 bytes of the mp3 to find its length
+func FindLength(url string) *time.Duration {
+	var dur *time.Duration
+	//url := epi.Enclosure.MP3
 
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println("error getting mp3: ", err)
+		return dur
+	}
+	defer resp.Body.Close()
+
+	// read the first 10 bytes
+	b := bufio.NewReader(resp.Body)
+	data, err := b.Peek(1024)
+	if err != nil {
+		fmt.Println("error reading 10 bytes: ", err)
+	}
+	fmt.Println("data: ", data)
+	return dur
 }
