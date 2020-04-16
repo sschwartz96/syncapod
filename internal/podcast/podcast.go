@@ -1,17 +1,19 @@
 package podcast
 
 import (
-	"bufio"
+	"context"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
+	"math"
 	"net/http"
 	"sort"
-	"time"
 
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/tcolgate/mp3"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -135,24 +137,73 @@ func FindUserLastPlayed(dbClient *database.Client, userID primitive.ObjectID) (*
 	return pod, epi, userEps[0].Offset, err
 }
 
-// FindLength attempts to download the first 10 bytes of the mp3 to find its length
-func FindLength(url string) *time.Duration {
-	var dur *time.Duration
-	//url := epi.Enclosure.MP3
+// UpdateEpisode takes a pointer to db, podcast, and episode.
+// Attempts to update the episode in the db returning error if not
+func UpdateEpisode(dbClient *database.Client, pod *models.Podcast, epi *models.Episode) error {
+	col := dbClient.Database(database.DBsyncapod).Collection(database.ColPodcast)
 
+	filter := bson.D{
+		{Key: "_id", Value: pod.ID},
+		{Key: "episodes._id", Value: epi.ID},
+	}
+
+	update := bson.D{
+		{Key: "$set", Value: bson.M{"episodes.$": epi}},
+	}
+
+	res, err := col.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return err
+	}
+	fmt.Println("update result: ", res.ModifiedCount)
+	return nil
+}
+
+// FindLength attempts to download only the first few frames of the MP3 to figure out its length
+func FindLength(url string) int64 {
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println("error getting mp3: ", err)
-		return dur
+		fmt.Println(err)
+		return 0
 	}
+	clen := resp.ContentLength
+
+	d := mp3.NewDecoder(resp.Body)
 	defer resp.Body.Close()
 
-	// read the first 10 bytes
-	b := bufio.NewReader(resp.Body)
-	data, err := b.Peek(1024)
-	if err != nil {
-		fmt.Println("error reading 10 bytes: ", err)
+	var f mp3.Frame
+	var skipTTL int64
+	skipped := 0
+
+	total := 0
+	counter := 0
+	samples := 512
+
+	for {
+		if skipped > 0 {
+			skipTTL += int64(skipped)
+		}
+		if err := d.Decode(&f, &skipped); err != nil {
+			if err == io.EOF {
+				break
+			}
+			fmt.Println(err)
+			return 0
+		}
+		total += int(f.Header().BitRate())
+
+		counter++
+		if counter == samples {
+			break
+		}
 	}
-	fmt.Println("data: ", data)
-	return dur
+
+	bitrate := total / samples
+	// Just approximate to 128000 if close enough
+	if math.Abs(float64(bitrate)-128000) < 1920 {
+		bitrate = 128000
+	}
+	guess := ((clen - skipTTL) * 8) / int64(bitrate)
+
+	return guess * 1000
 }

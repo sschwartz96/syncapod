@@ -226,7 +226,25 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast,
 
 		if offset < 0 {
 			offset = 1
-		} // TODO: make check for offset > run time
+		} else {
+			// check if duration does not exist
+			if epi.Duration == 0 {
+				epi.Duration = podcast.FindLength(epi.Enclosure.MP3)
+				go func() {
+					err := podcast.UpdateEpisode(h.dbClient, pod, epi)
+					if err != nil {
+						fmt.Println("error updating episoe: ", err)
+					}
+				}()
+			}
+
+			// check if we are trying to fast forward past end of episode
+			if epi.Duration < offset {
+				tilEnd := time.Duration(epi.Duration-curTime) * time.Millisecond
+				resText = "Cannot fast forward further than: " + durationToText(tilEnd)
+				offset = 1
+			}
+		}
 	} else {
 		resText = "Please play a podcast first"
 	}

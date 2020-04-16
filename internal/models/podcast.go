@@ -44,6 +44,7 @@ type Episode struct {
 	Category    []Category         `json:"category"  bson:"category"  xml:"category"`
 	Explicit    string             `json:"explicit"  bson:"explicit"  xml:"explicit"`
 	Enclosure   Enclosure          `json:"enclosure" bson:"enclosure" xml:"enclosure"`
+	Duration    int64              `json:"duration" bson:"duration" xml:"duration"`
 }
 
 // Enclosure represents enclosure xml object that contains mp3 data

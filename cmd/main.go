@@ -10,12 +10,14 @@ import (
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
-	"github.com/sschwartz96/syncapod/internal/podcast"
 )
 
 func main() {
 	// test the find length
-	podcast.FindLength("https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_5MG.mp3")
+	//	dur := podcast.FindLength("http://traffic.libsyn.com/joeroganexp/p1458.mp3")
+	//	fmt.Printf("duration: %v\n\n", dur)
+	//	dur = podcast.FindLength("https://dts.podtrac.com/redirect.mp3/media.blubrry.com/99percentinvisible/dovetail.prxu.org/96/905fcf0b-2c8b-4c2a-9832-a3e0b10d0472/01_398_Unsheltered_in_Place_pt01.mp3")
+	//	fmt.Printf("duration: %v\n\n", dur)
 
 	// read config
 	config, err := config.ReadConfig("config.json")
