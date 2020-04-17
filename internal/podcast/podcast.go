@@ -9,6 +9,9 @@ import (
 	"math"
 	"net/http"
 	"sort"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -17,6 +20,103 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+// UpdatePodcasts attempts to go through the list of podcasts and add
+// episodes to the collection
+func UpdatePodcasts(dbClient *database.Client) {
+	for {
+		var podcasts []models.Podcast
+		// TODO: use mongo "skip" and "limit" to access only a few podcasts say 100 at a time
+		err := dbClient.FindAll(database.ColPodcast, &podcasts)
+		if err != nil {
+			fmt.Println("error getting all podcasts: ", err)
+		}
+
+		for _, pod := range podcasts {
+			go UpdatePodcast(dbClient, &pod)
+		}
+		time.Sleep(time.Minute * 15)
+	}
+}
+
+// UpdatePodcast updates the given podcast
+func UpdatePodcast(dbClient *database.Client, pod *models.Podcast) {
+	newPod, err := ParseRSS(pod.RSS)
+	if err != nil {
+		fmt.Println("failed to load podcast rss: ", err)
+		return
+	}
+
+	for e := range newPod.Episodes {
+		epi := newPod.Episodes[e]
+		// check if the latest episode is in collection
+		filter := bson.D{
+			{Key: "title", Value: epi.Title},
+			{Key: "pub_date", Value: epi.PubDate},
+		}
+		exists, err := dbClient.Exists(database.ColEpisode, filter)
+		if err != nil {
+			fmt.Println("couldn't tell if object exists: ", err)
+			continue
+		}
+
+		// episode exists
+		if exists {
+			fmt.Println("episode already exists")
+			break
+		} else {
+			epi.PodcastID = pod.ID
+			err = dbClient.Insert(database.ColEpisode, &epi)
+			if err != nil {
+				fmt.Println("couldn't insert episode: ", err)
+			}
+		}
+	}
+}
+
+// AddNewPodcast takes RSS url and downloads contents inserts the podcast and its episodes into the db
+// returns error if podcast already exists or connection error
+func AddNewPodcast(dbClient *database.Client, url string) error {
+	// check if podcast already contains that rss url
+	filter := bson.D{{"rss", url}}
+	exists, err := dbClient.Exists(database.ColPodcast, filter)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return errors.New("podcast already exists")
+	}
+
+	// attempt to download & parse the podcast rss
+	pod, err := ParseRSS(url)
+	if err != nil {
+		return err
+	}
+	pod.ID = primitive.NewObjectID()
+	pod.RSS = url
+
+	// loop through episodes and save them
+	for i := range pod.Episodes {
+		epi := pod.Episodes[i]
+		epi.DurationInMillis = parseDuration(epi.Duration)
+		epi.PodcastID = pod.ID
+
+		err = dbClient.Insert(database.ColEpisode, &epi)
+		if err != nil {
+			fmt.Println("couldn't insert episode: ", err)
+		}
+	}
+
+	// Set episodes to nil and save podcast info to collection
+	pod.Episodes = nil
+	err = dbClient.Insert(database.ColPodcast, pod)
+	if err != nil {
+		fmt.Println("couldn't insert podcast: ", err)
+		return err
+	}
+
+	return nil
+}
 
 // ParseRSS takes in URL path and unmarshals the data
 func ParseRSS(path string) (*models.Podcast, error) {
@@ -34,33 +134,48 @@ func ParseRSS(path string) (*models.Podcast, error) {
 		return nil, err
 	}
 
-	AddIDs(&rss.Podcast)
+	AddEpiIDs(&rss.Podcast)
 
 	return &rss.Podcast, nil
 }
 
-// AddIDs adds missing IDs to the podcast object and episode objects
-func AddIDs(podcast *models.Podcast) {
-	podcast.ID = primitive.NewObjectID()
+func parseDuration(d string) int64 {
+	var millis int64
+	multiplier := int64(1000)
 
-	for i, _ := range podcast.Episodes {
-		podcast.Episodes[i].ID = primitive.NewObjectID()
+	// format hh:mm:ss || mm:ss
+	split := strings.Split(d, ":")
+
+	for i := len(split) - 1; i >= 0; i-- {
+		v, _ := strconv.Atoi(split[i])
+		millis += int64(v) * multiplier
+		multiplier *= int64(60)
 	}
+
+	return millis
 }
 
-// TODO
-func MatchTitle(search string, podcasts []models.Podcast) {
-	var titles []string
-	for _, podcast := range podcasts {
-		titles = append(titles, podcast.Title)
+//	// > 1 hour
+//	if len(split) == 3 {
+//		h, _ := strconv.Atoi(split[0])
+//		m, _ := strconv.Atoi(split[1])
+//		s, _ := strconv.Atoi(split[2])
+//		return int64(h)*int64(3600000) + int64(m)*int64(60000) + int64(s)*int64(1000)
+//	}
+//
+//	// < 1 hour
+//	m, _ := strconv.Atoi(split[0])
+//	s, _ := strconv.Atoi(split[1])
+//	return int64(m)*int64(60000) + int64(s)*int64(1000)
+//}
+
+// AddEpiIDs adds missing IDs to the podcast object and episode objects
+func AddEpiIDs(podcast *models.Podcast) {
+	podcast.ID = primitive.NewObjectID()
+
+	for i := range podcast.Episodes {
+		podcast.Episodes[i].ID = primitive.NewObjectID()
 	}
-
-	bagSizes := []int{2, 3, 4}
-
-	cm := closestmatch.New(titles, bagSizes)
-	fmt.Println(cm)
-
-	return
 }
 
 // FindOffset takes database client and pointers to user and episode to lookup episode details and offset
@@ -89,21 +204,18 @@ func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, o
 	}
 }
 
-// FindPodcastEpisode takes a *database.Client, podcast and episode ID
-func FindPodcastEpisode(dbClient *database.Client, podID, epiID primitive.ObjectID) (*models.Podcast, *models.Episode, error) {
+// FindPodcast takes a *database.Client and podcast ID
+func FindPodcast(dbClient *database.Client, podID primitive.ObjectID) (*models.Podcast, error) {
 	var pod models.Podcast
 	err := dbClient.FindByID(database.ColPodcast, podID, &pod)
-	if err != nil {
-		return nil, nil, err
-	}
+	return &pod, err
+}
 
-	for i, _ := range pod.Episodes {
-		if pod.Episodes[i].ID == epiID {
-			return &pod, &pod.Episodes[i], nil
-		}
-	}
-
-	return nil, nil, errors.New("podcast episode not found")
+// FindEpisode takes a *database.Client and episode ID
+func FindEpisode(dbClient *database.Client, epiID primitive.ObjectID) (*models.Episode, error) {
+	var epi models.Episode
+	err := dbClient.FindByID(database.ColEpisode, epiID, &epi)
+	return &epi, err
 }
 
 // FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
@@ -128,8 +240,14 @@ func FindUserLastPlayed(dbClient *database.Client, userID primitive.ObjectID) (*
 	podID := userEps[0].PodcastID
 	epiID := userEps[0].EpisodeID
 
+	// find the podcast
+	pod, err := FindPodcast(dbClient, podID)
+	if err != nil {
+		return nil, nil, 0, err
+	}
+
 	// find the episode
-	pod, epi, err := FindPodcastEpisode(dbClient, podID, epiID)
+	epi, err := FindEpisode(dbClient, epiID)
 	if err != nil {
 		return nil, nil, 0, err
 	}
@@ -161,6 +279,7 @@ func UpdateEpisode(dbClient *database.Client, pod *models.Podcast, epi *models.E
 
 // FindLength attempts to download only the first few frames of the MP3 to figure out its length
 func FindLength(url string) int64 {
+
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
@@ -174,10 +293,15 @@ func FindLength(url string) int64 {
 	var f mp3.Frame
 	var skipTTL int64
 	skipped := 0
+	vbrFlag := false
 
-	total := 0
+	bRateTTL := int64(0)
+	bRateLow := 0
+	bRateHigh := 0
+
 	counter := 0
-	samples := 512
+
+	maxFrames := 512
 
 	for {
 		if skipped > 0 {
@@ -190,20 +314,91 @@ func FindLength(url string) int64 {
 			fmt.Println(err)
 			return 0
 		}
-		total += int(f.Header().BitRate())
+
+		bRateTTL += int64(f.Header().BitRate())
+
+		if !vbrFlag {
+			if int(f.Header().BitRate()) > bRateHigh && counter > 0 {
+				bRateHigh = int(f.Header().BitRate())
+			}
+			if int(f.Header().BitRate()) < bRateLow || bRateLow == 0 && counter > 0 {
+				bRateLow = int(f.Header().BitRate())
+			}
+			dif := float32(bRateHigh-bRateLow) / float32(bRateHigh)
+			if dif < .9 && dif != 0 {
+				fmt.Println("I think we are VBR: ", dif)
+				vbrFlag = true
+				maxFrames = 0
+			}
+		}
 
 		counter++
-		if counter == samples {
+		if counter == maxFrames {
 			break
 		}
 	}
 
-	bitrate := total / samples
-	// Just approximate to 128000 if close enough
-	if math.Abs(float64(bitrate)-128000) < 1920 {
-		bitrate = 128000
-	}
-	guess := ((clen - skipTTL) * 8) / int64(bitrate)
+	fmt.Println("median: ", (bRateHigh - bRateLow))
 
+	fmt.Println("total frames counter: ", counter)
+
+	bitRate := bRateTTL / int64(counter)
+	fmt.Println("bitrate: ", bitRate)
+	// Just approximate to 128000 if close enough
+	if math.Abs(float64(bitRate)-128000) < 1920 {
+		bitRate = 128000
+		//fmt.Println("bitrate: ", bitRate)
+	}
+	//fmt.Println("clen - skip: ", clen-skipTTL)
+	guess := ((clen - skipTTL) * 8) / bitRate
+
+	if maxFrames == 0 {
+		guess += 20
+	}
 	return guess * 1000
+}
+
+// UpdateUserEpiOffset changes the offset in the collection
+func UpdateUserEpiOffset(dbClient *database.Client, userID, epiID primitive.ObjectID, offset int64) error {
+	return UpdateUserEpi(dbClient, userID, epiID, "offset", offset)
+}
+
+// UpdateUserEpiPlayed marks the episode as played in db
+func UpdateUserEpiPlayed(dbClient *database.Client, userID, epiID primitive.ObjectID, played bool) error {
+	return UpdateUserEpi(dbClient, userID, epiID, "played", played)
+}
+
+// UpdateUserEpi updates the user's episode data based on param and data
+func UpdateUserEpi(dbClient *database.Client, userID, epiID primitive.ObjectID, param string, data interface{}) error {
+	filter := bson.D{
+		{Key: "user_id", Value: userID},
+		{Key: "episode_id", Value: epiID},
+	}
+
+	update := bson.M{
+		"$set": bson.M{param: data},
+	}
+
+	err := dbClient.UpdateWithBSON(database.ColUserEpisode, filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// TODO:
+
+// MatchTitle is a helper function to match search with a list of podcasts titles
+func MatchTitle(search string, podcasts []models.Podcast) {
+	var titles []string
+	for _, podcast := range podcasts {
+		titles = append(titles, podcast.Title)
+	}
+
+	bagSizes := []int{2, 3, 4}
+
+	cm := closestmatch.New(titles, bagSizes)
+	fmt.Println(cm)
+
+	return
 }

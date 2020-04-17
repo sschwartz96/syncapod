@@ -10,14 +10,10 @@ import (
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
+	"github.com/sschwartz96/syncapod/internal/podcast"
 )
 
 func main() {
-	// test the find length
-	//	dur := podcast.FindLength("http://traffic.libsyn.com/joeroganexp/p1458.mp3")
-	//	fmt.Printf("duration: %v\n\n", dur)
-	//	dur = podcast.FindLength("https://dts.podtrac.com/redirect.mp3/media.blubrry.com/99percentinvisible/dovetail.prxu.org/96/905fcf0b-2c8b-4c2a-9832-a3e0b10d0472/01_398_Unsheltered_in_Place_pt01.mp3")
-	//	fmt.Printf("duration: %v\n\n", dur)
 
 	// read config
 	config, err := config.ReadConfig("config.json")
@@ -32,6 +28,14 @@ func main() {
 	if err != nil {
 		log.Fatal("couldn't connect to db: ", err)
 	}
+
+	err = podcast.AddNewPodcast(dbClient, "http://joeroganexp.joerogan.libsynpro.com/rss")
+	if err != nil {
+		fmt.Println("error adding new podcast: ", err)
+	}
+
+	// start updating podcasts
+	go podcast.UpdatePodcasts(dbClient)
 
 	fmt.Println("setting up handlers")
 	// setup handler

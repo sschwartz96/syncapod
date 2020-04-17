@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -21,6 +22,7 @@ const (
 
 	// Collections
 	ColPodcast     = "podcast"
+	ColEpisode     = "episode"
 	ColSession     = "session"
 	ColUser        = "user"
 	ColUserEpisode = "user_episode"
@@ -67,8 +69,10 @@ func (c *Client) Insert(collection string, object interface{}) error {
 		return err
 	}
 
-	fmt.Println("inserted object successfully with ID: ", res.InsertedID)
-	return nil
+	if res.InsertedID != nil {
+		return nil
+	}
+	return errors.New("failed to insert object into: " + collection)
 }
 
 // Delete deletes the certain document based on param and value
@@ -101,14 +105,24 @@ func (c *Client) Find(collection, param string, value interface{}, object interf
 	return c.FindWithBSON(collection, filter, object, all)
 }
 
+// FindAll finds all objects in the collection and inserts them into provided slice
+// returns error if the operation fails
+func (c *Client) FindAll(collection string, slice interface{}) error {
+	col := c.Database(DBsyncapod).Collection(collection)
+	cur, err := col.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		return err
+	}
+	err = cur.All(context.Background(), slice)
+	return nil
+}
+
 // Upsert updates or inserts object within collection with premade filter
 func (c *Client) Upsert(collection string, filter interface{}, object interface{}) error {
 	col := c.Database(DBsyncapod).Collection(collection)
-
 	update := bson.M{"$set": object}
 
 	upsert := true
-
 	opts := &options.UpdateOptions{
 		Upsert: &upsert,
 	}
@@ -148,6 +162,43 @@ func (c *Client) FindWithBSON(collection string, filter interface{}, object inte
 	}
 
 	return err
+}
+
+// UpdateWithBSON takes in collection string & bson filter and update objects
+func (c *Client) UpdateWithBSON(collection string, filter, update interface{}) error {
+	col := c.Database(DBsyncapod).Collection(collection)
+	r, err := col.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return err
+	}
+	if r.ModifiedCount != 1 {
+		if r.MatchedCount == 1 {
+			return errors.New("matched but not updated")
+		}
+		return errors.New("object failed to update")
+	}
+	return nil
+}
+
+// ExistsByID attempts to find a document in the collection based on its ID
+func (c *Client) ExistsByID(collection string, id primitive.ObjectID) (bool, error) {
+	return c.Exists(collection, bson.M{"_id": id})
+}
+
+// Exists checks if the document exists within the collection based on the filter
+func (c *Client) Exists(collection string, filter interface{}) (bool, error) {
+	col := c.Database(DBsyncapod).Collection(collection)
+
+	// setup limit in FindOptions
+	limit := int64(1)
+	opts := options.FindOptions{Limit: &limit}
+
+	cur, err := col.Find(context.Background(), filter, &opts)
+	if err != nil {
+		return false, err
+	}
+
+	return cur.TryNext(context.Background()), nil
 }
 
 // FindUser attempts to find user by username/email returns pointer to user or error if not found

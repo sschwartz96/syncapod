@@ -26,25 +26,29 @@ type Podcast struct {
 	PubDate       string             `json:"pubdate"  bson:"pubdate"  xml:"pubDate"`
 	LastBuildDate string             `json:"last_build_date"  bson:"last_build_date"  xml:"lastBuildDate"`
 	Episodes      []Episode          `json:"episodes"  bson:"episodes"  xml:"item"`
+	NewFeedURL    string             `json:"new_feed_url"  bson:"new_feed_url"  xml:"new-feed-url"`
+	RSS           string             `json:"rss"  bson:"rss"`
 }
 
 // Episode holds information about a single episode of a podcast
 type Episode struct {
-	ID          primitive.ObjectID `json:"_id"  bson:"_id"  xml:"id"`
-	Title       string             `json:"title"  bson:"title"  xml:"title"`
-	Subtitle    string             `json:"subtitle" bson:"subtitle" xml:"subtitle"`
-	Author      string             `json:"author"  bson:"author"  xml:"author"`
-	Type        string             `json:"type"  bson:"type"  xml:"type"`
-	Image       Image              `json:"image"  bson:"image"  xml:"image"`
-	PubDate     string             `json:"pub_date"  bson:"pub_date"  xml:"pubDate"`
-	Description string             `json:"description"  bson:"description"  xml:"description"`
-	Summary     string             `json:"summary"  bson:"summary"  xml:"summary"`
-	Season      int                `json:"season"  bson:"season"  xml:"season"`
-	Episode     int                `json:"episode"  bson:"episode"  xml:"episode"`
-	Category    []Category         `json:"category"  bson:"category"  xml:"category"`
-	Explicit    string             `json:"explicit"  bson:"explicit"  xml:"explicit"`
-	Enclosure   Enclosure          `json:"enclosure" bson:"enclosure" xml:"enclosure"`
-	Duration    int64              `json:"duration" bson:"duration" xml:"duration"`
+	ID               primitive.ObjectID `json:"_id"  bson:"_id"  xml:"id"`
+	PodcastID        primitive.ObjectID `json:"podcast_id"  bson:"podcast_id"`
+	Title            string             `json:"title"  bson:"title"  xml:"title"`
+	Subtitle         string             `json:"subtitle" bson:"subtitle" xml:"subtitle"`
+	Author           string             `json:"author"  bson:"author"  xml:"author"`
+	Type             string             `json:"type"  bson:"type"  xml:"type"`
+	Image            Image              `json:"image"  bson:"image"  xml:"image"`
+	PubDate          string             `json:"pub_date"  bson:"pub_date"  xml:"pubDate"`
+	Description      string             `json:"description"  bson:"description"  xml:"description"`
+	Summary          string             `json:"summary"  bson:"summary"  xml:"summary"`
+	Season           int                `json:"season"  bson:"season"  xml:"season"`
+	Episode          int                `json:"episode"  bson:"episode"  xml:"episode"`
+	Category         []Category         `json:"category"  bson:"category"  xml:"category"`
+	Explicit         string             `json:"explicit"  bson:"explicit"  xml:"explicit"`
+	Enclosure        Enclosure          `json:"enclosure" bson:"enclosure" xml:"enclosure"`
+	Duration         string             `json:"duration" bson:"duration" xml:"duration"`
+	DurationInMillis int64              `json:"duration_in_millis" bson:"duration_in_millis"`
 }
 
 // Enclosure represents enclosure xml object that contains mp3 data

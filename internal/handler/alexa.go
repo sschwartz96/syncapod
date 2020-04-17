@@ -18,8 +18,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Intents
+// Alexa intents events and directives
 const (
+	// Intents
 	PlayPodcast       = "PlayPodcast"
 	PlayLatestPodcast = "PlayLatestPodcast"
 	PlayNthFromLatest = "PlayNthFromLatest"
@@ -27,6 +28,10 @@ const (
 	Rewind            = "Rewind"
 	Pause             = "AMAZON.PauseIntent"
 	Resume            = "AMAZON.ResumeIntent"
+
+	// Events
+	PlaybackNearlyFinished = "AudioPlayer.PlaybackNearlyFinished"
+	PlaybackFinished       = "AudioPlayer.PlaybackFinished"
 
 	// Directives
 	DirPlay       = "AudioPlayer.Play"
@@ -36,10 +41,18 @@ const (
 
 // Alexa handles all requests through /api/alexa endpoint
 func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
+	var resText, directive string
+
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		fmt.Println("couldn't read the body of the request")
 		// TODO: proper response here
+		return
+	}
+
+	// audioplayer event or intent
+	if strings.Contains(string(body), "\"even\"") {
+		h.AudioEvent(res, req, body)
 		return
 	}
 
@@ -48,26 +61,27 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("couldn't unmarshal json to object: ", err)
 		// TODO: proper response here
+		return
 	}
 
 	// get the person or user accessToken
 	token, err := getAccessToken(&aData)
 	if err != nil {
 		fmt.Println("no accessToken: ", err)
-		// TODO: proper response here
+		resText = "No associated account, please link account in settings."
 	}
 
 	// validate the token and return user
 	user, err := auth.ValidateAccessToken(h.dbClient, token)
 	if err != nil {
 		fmt.Println("error validating token: ", err)
+		resText = "Associated account has invalid toke, please re-link account in settings."
 	}
 
 	name := aData.Request.Intent.AlexaSlots.Podcast.Value
 	fmt.Println("request name of podcast: ", name)
 
 	var response *AlexaResponseData
-	var resText, directive string
 	var pod *models.Podcast
 	var epi *models.Episode
 	var offset int64
@@ -88,9 +102,6 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 		} else {
 			resText = "Podcast of the name: " + name + ", not found"
 		}
-
-	case PlayLatestPodcast:
-		fmt.Println("playing latest")
 
 	case PlayNthFromLatest:
 
@@ -126,7 +137,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				break
 			}
 
-			for i, _ := range pod.Episodes {
+			for i := range pod.Episodes {
 				if pod.Episodes[i].ID.Hex() == epiID {
 					epi = &pod.Episodes[i]
 					break
@@ -199,10 +210,18 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast,
 		pID, _ := primitive.ObjectIDFromHex(audioTokens[1])
 		eID, _ := primitive.ObjectIDFromHex(audioTokens[2])
 
-		// find episode
-		pod, epi, err = podcast.FindPodcastEpisode(h.dbClient, pID, eID)
+		// find podcast
+		pod, err = podcast.FindPodcast(h.dbClient, pID)
 		if err != nil {
-			fmt.Println("error finding podcast episode", err)
+			fmt.Println("error finding podcast", err)
+			resText = "Error occurred, please try again"
+			return nil, nil, resText, 0
+		}
+
+		// find episode
+		epi, err = podcast.FindEpisode(h.dbClient, eID)
+		if err != nil {
+			fmt.Println("error finding episode", err)
 			resText = "Error occurred, please try again"
 			return nil, nil, resText, 0
 		}
@@ -228,8 +247,8 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast,
 			offset = 1
 		} else {
 			// check if duration does not exist
-			if epi.Duration == 0 {
-				epi.Duration = podcast.FindLength(epi.Enclosure.MP3)
+			if epi.DurationInMillis == 0 {
+				epi.DurationInMillis = podcast.FindLength(epi.Enclosure.MP3)
 				go func() {
 					err := podcast.UpdateEpisode(h.dbClient, pod, epi)
 					if err != nil {
@@ -239,10 +258,10 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast,
 			}
 
 			// check if we are trying to fast forward past end of episode
-			if epi.Duration < offset {
-				tilEnd := time.Duration(epi.Duration-curTime) * time.Millisecond
+			if epi.DurationInMillis < offset {
+				tilEnd := time.Duration(epi.DurationInMillis-curTime) * time.Millisecond
 				resText = "Cannot fast forward further than: " + durationToText(tilEnd)
-				offset = 1
+				offset = curTime
 			}
 		}
 	} else {
@@ -287,7 +306,7 @@ func createAudioResponse(directive, userID, text string,
 	if imgURL == "" {
 		imgURL = pod.Image.URL
 		if imgURL == "" {
-			// TODO: add custom generic defualt image
+			// custom generic defualt image
 			imgURL = "https://emby.media/community/uploads/inline/355992/5c1cc71abf1ee_genericcoverart.jpg"
 		}
 	}
@@ -310,7 +329,7 @@ func createAudioResponse(directive, userID, text string,
 							Subtitle: epi.Subtitle,
 							Art: AlexaArt{
 								Sources: []AlexaURL{
-									AlexaURL{
+									{
 										URL:    imgURL,
 										Height: 144,
 										Width:  144,
@@ -374,7 +393,7 @@ func convertISO8601ToMillis(data string) int64 {
 	durRegArr[1], _ = regexp.Compile("([0-9]+)M")
 	durRegArr[2], _ = regexp.Compile("([0-9]+)S")
 
-	for i, _ := range durStrArr {
+	for i := range durStrArr {
 		durStrArr[i] = durRegArr[i].FindString(data)
 		if len(durStrArr[i]) > 1 {
 			str := durStrArr[i]
@@ -388,6 +407,17 @@ func convertISO8601ToMillis(data string) int64 {
 		(durIntArr[2])*int64(1000)
 }
 
+// getIDsFromToken takes token string and returns (userID,podID,epiID,error)
+// returns error if the token is malformed
+func getIDsFromToken(token string) (string, string, string, error) {
+	// token is in this format userid-podid-epiid
+	split := strings.Split(token, "-")
+	if len(split) != 3 {
+		return "", "", "", errors.New("not valid playback token")
+	}
+	return split[0], split[1], split[2], nil
+}
+
 func getAccessToken(data *AlexaData) (string, error) {
 	if data.Context.System.Person.AccessToken != "" {
 		return data.Context.System.Person.AccessToken, nil
@@ -395,6 +425,39 @@ func getAccessToken(data *AlexaData) (string, error) {
 		return data.Context.System.User.AccessToken, nil
 	}
 	return "", errors.New("no accessToken")
+}
+
+// AudioEvent handles responses from the Alexa audioplayer
+func (h *APIHandler) AudioEvent(res http.ResponseWriter, req *http.Request, body []byte) {
+	var data AudioData
+	err := json.Unmarshal(body, &data)
+	if err != nil {
+		fmt.Println("failed to unmarshal audio event: ", err)
+		return
+	}
+
+	uID, pID, eID, err := getIDsFromToken(data.Event.Payload.Token)
+	userID, _ := primitive.ObjectIDFromHex(uID)
+	podID, _ := primitive.ObjectIDFromHex(pID)
+	epiID, _ := primitive.ObjectIDFromHex(eID)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("audio event: ", data.Event.Header.Name)
+	fmt.Printf("uID: %s, pID: %s, eID: %s\n", userID, podID, epiID)
+
+	switch data.Event.Header.Name {
+	case PlaybackNearlyFinished:
+		return
+	case PlaybackFinished:
+		err := podcast.UpdateUserEpiPlayed(h.dbClient, userID, epiID, true)
+		if err != nil {
+			fmt.Println("failed to update the userEpi as played: ", err)
+		}
+	}
 }
 
 // AlexaData contains all the informatino and data from request sent from alexa
@@ -491,22 +554,26 @@ type AlexaAudioItem struct {
 	Metadata AlexaMetadata `json:"metadata,omitempty"`
 }
 
+// AlexaStream contains information about the audio url and offset
 type AlexaStream struct {
 	Token                string `json:"token,omitempty"`
 	URL                  string `json:"url,omitempty"`
 	OffsetInMilliseconds int64  `json:"offsetInMilliseconds,omitempty"`
 }
 
+// AlexaMetadata contains information about the stream
 type AlexaMetadata struct {
 	Title    string   `json:"title,omitempty"`
 	Subtitle string   `json:"subtitle,omitempty"`
 	Art      AlexaArt `json:"art,omitempty"`
 }
 
+// AlexaArt contains info for album art of stream
 type AlexaArt struct {
 	Sources []AlexaURL `json:"sources,omitempty"`
 }
 
+// AlexaURL is the container for AlexaArt
 type AlexaURL struct {
 	URL    string `json:"url,omitempty"`
 	Height int    `json:"height,omitempty"`
@@ -518,4 +585,45 @@ type AlexaOutputSpeech struct {
 	Type         string `json:"type,omitempty"`
 	Text         string `json:"text,omitempty"`
 	PlayBehavior string `json:"playBehavior,omitempty"`
+}
+
+// AudioData is the container for AudioEvent
+type AudioData struct {
+	Event AudioEvent `json:"event,omitempty"`
+}
+
+// AudioEvent is the container for audioplayer response
+type AudioEvent struct {
+	Header          AudioHeader   `json:"header,omitempty"`
+	Payload         AudioPayload  `json:"payload,omitempty"`
+	PlaybackReports []AudioReport `json:"playbackReports,omitempty"`
+}
+
+// AudioHeader contains header info of AudioEvent
+type AudioHeader struct {
+	Namespace string `json:"namespace,omitempty"`
+	Name      string `json:"name,omitempty"`
+	MessageId string `json:"messageId,omitempty"`
+}
+
+// AudioPayload contains the main info of AudioEvent
+type AudioPayload struct {
+	Token                string          `json:"token,omitempty"`
+	OffsetInMilliseconds int64           `json:"offsetInMilliseconds,omitempty"`
+	PlaybackAttributes   AudioAttributes `json:"playbackAttributes,omitempty"`
+}
+
+// AudioAttributes contains the attributes of the AudioPayload & AudioReport
+type AudioAttributes struct {
+	Name                    string `json:"name,omitempty"`
+	Codec                   string `json:"codec,omitempty"`
+	SamplingRateInHertz     int64  `json:"samplingRateInHertz,omitempty"`
+	DataRateInBitsPerSecond int64  `json:"dataRateInBitsPerSecond,omitempty"`
+}
+
+// AudioReport contains playback info for AudioEvent
+type AudioReport struct {
+	StartOffsetInMilliseconds string          `json:"startOffsetInMilliseconds,omitempty"`
+	EndOffsetInMilliseconds   string          `json:"endOffsetInMilliseconds,omitempty"`
+	PlaybackAttributes        AudioAttributes `json:"playbackAttributes,omitempty"`
 }
