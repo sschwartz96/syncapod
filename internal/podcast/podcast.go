@@ -2,7 +2,6 @@ package podcast
 
 import (
 	"context"
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"io"
@@ -78,7 +77,7 @@ func UpdatePodcast(dbClient *database.Client, pod *models.Podcast) {
 // returns error if podcast already exists or connection error
 func AddNewPodcast(dbClient *database.Client, url string) error {
 	// check if podcast already contains that rss url
-	filter := bson.D{{"rss", url}}
+	filter := bson.D{{Key: "rss", Value: url}}
 	exists, err := dbClient.Exists(database.ColPodcast, filter)
 	if err != nil {
 		return err
@@ -98,7 +97,7 @@ func AddNewPodcast(dbClient *database.Client, url string) error {
 	// loop through episodes and save them
 	for i := range pod.Episodes {
 		epi := pod.Episodes[i]
-		epi.DurationInMillis = parseDuration(epi.Duration)
+		epi.ID = primitive.NewObjectID()
 		epi.PodcastID = pod.ID
 
 		err = dbClient.Insert(database.ColEpisode, &epi)
@@ -118,27 +117,6 @@ func AddNewPodcast(dbClient *database.Client, url string) error {
 	return nil
 }
 
-// ParseRSS takes in URL path and unmarshals the data
-func ParseRSS(path string) (*models.Podcast, error) {
-	response, err := http.Get(path)
-	if err != nil {
-		return nil, err
-	}
-
-	var rss models.RSSFeed
-	decoder := xml.NewDecoder(response.Body)
-	decoder.DefaultSpace = "Default"
-
-	err = decoder.Decode(&rss)
-	if err != nil {
-		return nil, err
-	}
-
-	AddEpiIDs(&rss.Podcast)
-
-	return &rss.Podcast, nil
-}
-
 func parseDuration(d string) int64 {
 	var millis int64
 	multiplier := int64(1000)
@@ -155,28 +133,14 @@ func parseDuration(d string) int64 {
 	return millis
 }
 
-//	// > 1 hour
-//	if len(split) == 3 {
-//		h, _ := strconv.Atoi(split[0])
-//		m, _ := strconv.Atoi(split[1])
-//		s, _ := strconv.Atoi(split[2])
-//		return int64(h)*int64(3600000) + int64(m)*int64(60000) + int64(s)*int64(1000)
-//	}
-//
-//	// < 1 hour
-//	m, _ := strconv.Atoi(split[0])
-//	s, _ := strconv.Atoi(split[1])
-//	return int64(m)*int64(60000) + int64(s)*int64(1000)
-//}
-
 // AddEpiIDs adds missing IDs to the podcast object and episode objects
-func AddEpiIDs(podcast *models.Podcast) {
-	podcast.ID = primitive.NewObjectID()
+// func AddEpiIDs(podcast *models.RSSPodcast) {
+// 	podcast.ID = primitive.NewObjectID()
 
-	for i := range podcast.Episodes {
-		podcast.Episodes[i].ID = primitive.NewObjectID()
-	}
-}
+// 	for i := range podcast.Episodes {
+// 		podcast.Episodes[i].ID = primitive.NewObjectID()
+// 	}
+// }
 
 // FindOffset takes database client and pointers to user and episode to lookup episode details and offset
 func FindOffset(dbClient *database.Client, user *models.User, episode *models.Episode) int64 {

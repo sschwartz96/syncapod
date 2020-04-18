@@ -1,69 +1,45 @@
 package models
 
 import (
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// RSSFeed is the container to hold all the podcast info
-type RSSFeed struct {
-	Podcast Podcast `xml:"channel"`
-}
-
-// Podcast holds podcast info in the database
+// Podcast holds info of a podcast
 type Podcast struct {
-	ID            primitive.ObjectID `json:"_id"  bson:"_id"`
-	Title         string             `json:"title"  bson:"title"  xml:"title"`
-	Author        string             `json:"author"  bson:"author"  xml:"author"`
-	Type          string             `json:"type"  bson:"type"  xml:"type"`
-	Subtitle      string             `json:"subtitle"  bson:"subtitle"  xml:"subtitle"`
-	Summary       string             `json:"summary"  bson:"summary"  xml:"summary"`
-	Link          string             `json:"link"  bson:"link"  xml:"Default link"`
-	Image         Image              `json:"image"  bson:"image"  xml:"image"`
-	Explicit      string             `json:"explicit"  bson:"explicit"  xml:"explicit"`
-	Language      string             `json:"locale"  bson:"locale"  xml:"language"`
-	Keywords      string             `json:"keywords"  bson:"keywords"  xml:"keywords"`
-	Category      []Category         `json:"category"  bson:"category"  xml:"category"`
-	PubDate       string             `json:"pubdate"  bson:"pubdate"  xml:"pubDate"`
-	LastBuildDate string             `json:"last_build_date"  bson:"last_build_date"  xml:"lastBuildDate"`
-	Episodes      []Episode          `json:"episodes"  bson:"episodes"  xml:"item"`
-	NewFeedURL    string             `json:"new_feed_url"  bson:"new_feed_url"  xml:"new-feed-url"`
-	RSS           string             `json:"rss"  bson:"rss"`
+	ID            primitive.ObjectID `json:"_id" bson:"_id"`
+	Title         string             `json:"title" bson:"title"`
+	Author        string             `json:"author" bson:"author"`
+	Type          string             `json:"type" bson:"type"`
+	Subtitle      string             `json:"subtitle" bson:"subtitle"`
+	Link          string             `json:"link" bson:"link"`
+	Image         Image              `json:"image" bson:"image"`
+	Explicit      bool               `json:"explicit" bson:"explicit"`
+	Language      string             `json:"locale" bson:"locale"`
+	Keywords      []string           `json:"keywords" bson:"keywords"`
+	Category      []Category         `json:"category" bson:"category"`
+	PubDate       time.Time          `json:"pub_date" bson:"pub_date"`
+	LastBuildDate time.Time          `json:"last_build_date" bson:"last_build_date"`
+	RSS           string             `json:"rss" bson:"rss"`
 }
 
-// Episode holds information about a single episode of a podcast
+// Episode holds info of the episode
 type Episode struct {
-	ID               primitive.ObjectID `json:"_id"  bson:"_id"  xml:"id"`
-	PodcastID        primitive.ObjectID `json:"podcast_id"  bson:"podcast_id"`
-	Title            string             `json:"title"  bson:"title"  xml:"title"`
-	Subtitle         string             `json:"subtitle" bson:"subtitle" xml:"subtitle"`
-	Author           string             `json:"author"  bson:"author"  xml:"author"`
-	Type             string             `json:"type"  bson:"type"  xml:"type"`
-	Image            Image              `json:"image"  bson:"image"  xml:"image"`
-	PubDate          string             `json:"pub_date"  bson:"pub_date"  xml:"pubDate"`
-	Description      string             `json:"description"  bson:"description"  xml:"description"`
-	Summary          string             `json:"summary"  bson:"summary"  xml:"summary"`
-	Season           int                `json:"season"  bson:"season"  xml:"season"`
-	Episode          int                `json:"episode"  bson:"episode"  xml:"episode"`
-	Category         []Category         `json:"category"  bson:"category"  xml:"category"`
-	Explicit         string             `json:"explicit"  bson:"explicit"  xml:"explicit"`
-	Enclosure        Enclosure          `json:"enclosure" bson:"enclosure" xml:"enclosure"`
-	Duration         string             `json:"duration" bson:"duration" xml:"duration"`
-	DurationInMillis int64              `json:"duration_in_millis" bson:"duration_in_millis"`
-}
-
-// Enclosure represents enclosure xml object that contains mp3 data
-type Enclosure struct {
-	MP3 string `json:"mp3" bson:"mp3" xml:"url,attr"`
-}
-
-// Category contains the main category and secondary categories
-type Category struct {
-	Text     string     `xml:"text,attr"`
-	Category []Category `xml:"category"`
-}
-
-// Image is the RSS image container
-type Image struct {
-	Title string `json:"title"  bson:"title"  xml:"title"`
-	URL   string `json:"url"  bson:"url"  xml:"url"`
+	ID             primitive.ObjectID `json:"_id" bson:"_id"`
+	PodcastID      primitive.ObjectID `json:"podcast_id" bson:"podcast_id"`
+	Title          string             `json:"title" bson:"title"`
+	Subtitle       string             `json:"subtitle" bson:"subtitle"`
+	Author         string             `json:"author" bson:"author"`
+	Type           string             `json:"type" bson:"type"`
+	Image          Image              `json:"image" bson:"image"`
+	PubDate        time.Time          `json:"pub_date" bson:"pub_date"`
+	Description    string             `json:"description" bson:"description"`
+	Summary        string             `json:"summary" bson:"summary"`
+	Season         int                `json:"season" bson:"season"`
+	Episode        int                `json:"episode" bson:"episode"`
+	Category       []Category         `json:"category" bson:"category"`
+	Explicit       bool               `json:"explicit" bson:"explicit"`
+	URL            string             `json:"url" bson:"url"`
+	DurationMillis int64              `json:"duration_millis" bson:"duration_millis"`
 }
