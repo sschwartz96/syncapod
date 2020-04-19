@@ -8,9 +8,6 @@ import (
 	"math"
 	"net/http"
 	"sort"
-	"strconv"
-	"strings"
-	"time"
 
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -19,119 +16,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-// UpdatePodcasts attempts to go through the list of podcasts and add
-// episodes to the collection
-func UpdatePodcasts(dbClient *database.Client) {
-	for {
-		var podcasts []models.Podcast
-		// TODO: use mongo "skip" and "limit" to access only a few podcasts say 100 at a time
-		err := dbClient.FindAll(database.ColPodcast, &podcasts)
-		if err != nil {
-			fmt.Println("error getting all podcasts: ", err)
-		}
-
-		for _, pod := range podcasts {
-			go UpdatePodcast(dbClient, &pod)
-		}
-		time.Sleep(time.Minute * 15)
-	}
-}
-
-// UpdatePodcast updates the given podcast
-func UpdatePodcast(dbClient *database.Client, pod *models.Podcast) {
-	newPod, err := ParseRSS(pod.RSS)
-	if err != nil {
-		fmt.Println("failed to load podcast rss: ", err)
-		return
-	}
-
-	for e := range newPod.Episodes {
-		epi := newPod.Episodes[e]
-		// check if the latest episode is in collection
-		filter := bson.D{
-			{Key: "title", Value: epi.Title},
-			{Key: "pub_date", Value: epi.PubDate},
-		}
-		exists, err := dbClient.Exists(database.ColEpisode, filter)
-		if err != nil {
-			fmt.Println("couldn't tell if object exists: ", err)
-			continue
-		}
-
-		// episode exists
-		if exists {
-			fmt.Println("episode already exists")
-			break
-		} else {
-			epi.PodcastID = pod.ID
-			err = dbClient.Insert(database.ColEpisode, &epi)
-			if err != nil {
-				fmt.Println("couldn't insert episode: ", err)
-			}
-		}
-	}
-}
-
-// AddNewPodcast takes RSS url and downloads contents inserts the podcast and its episodes into the db
-// returns error if podcast already exists or connection error
-func AddNewPodcast(dbClient *database.Client, url string) error {
-	// check if podcast already contains that rss url
-	filter := bson.D{{Key: "rss", Value: url}}
-	exists, err := dbClient.Exists(database.ColPodcast, filter)
-	if err != nil {
-		return err
-	}
-	if exists {
-		return errors.New("podcast already exists")
-	}
-
-	// attempt to download & parse the podcast rss
-	pod, err := ParseRSS(url)
-	if err != nil {
-		return err
-	}
-	pod.ID = primitive.NewObjectID()
-	pod.RSS = url
-
-	// loop through episodes and save them
-	for i := range pod.Episodes {
-		epi := pod.Episodes[i]
-		epi.ID = primitive.NewObjectID()
-		epi.PodcastID = pod.ID
-
-		err = dbClient.Insert(database.ColEpisode, &epi)
-		if err != nil {
-			fmt.Println("couldn't insert episode: ", err)
-		}
-	}
-
-	// Set episodes to nil and save podcast info to collection
-	pod.Episodes = nil
-	err = dbClient.Insert(database.ColPodcast, pod)
-	if err != nil {
-		fmt.Println("couldn't insert podcast: ", err)
-		return err
-	}
-
-	return nil
-}
-
-func parseDuration(d string) int64 {
-	var millis int64
-	multiplier := int64(1000)
-
-	// format hh:mm:ss || mm:ss
-	split := strings.Split(d, ":")
-
-	for i := len(split) - 1; i >= 0; i-- {
-		v, _ := strconv.Atoi(split[i])
-		millis += int64(v) * multiplier
-		multiplier *= int64(60)
-	}
-
-	return millis
-}
 
 // AddEpiIDs adds missing IDs to the podcast object and episode objects
 // func AddEpiIDs(podcast *models.RSSPodcast) {

@@ -6,7 +6,7 @@ import (
 
 // RSSFeed is the container to hold all the podcast info
 type RSSFeed struct {
-	Podcast RSSPodcast `xml:"channel"`
+	RSSPodcast RSSPodcast `xml:"channel"`
 }
 
 // RSSPodcast holds podcast info from the rss feed
@@ -25,7 +25,7 @@ type RSSPodcast struct {
 	Category      []Category         `json:"category"  bson:"category"  xml:"category"`
 	PubDate       string             `json:"pubdate"  bson:"pubdate"  xml:"pubDate"`
 	LastBuildDate string             `json:"last_build_date"  bson:"last_build_date"  xml:"lastBuildDate"`
-	Episodes      []RSSEpisode       `json:"episodes"  bson:"episodes"  xml:"item"`
+	RSSEpisodes   []RSSEpisode       `json:"episodes"  bson:"episodes"  xml:"item"`
 	NewFeedURL    string             `json:"new_feed_url"  bson:"new_feed_url"  xml:"new-feed-url"`
 	RSS           string             `json:"rss"  bson:"rss"`
 }
