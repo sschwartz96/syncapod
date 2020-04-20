@@ -29,10 +29,21 @@ func main() {
 		log.Fatal("couldn't connect to db: ", err)
 	}
 
-	err = podcast.AddNewPodcast(dbClient, "http://joeroganexp.joerogan.libsynpro.com/rss")
-	if err != nil {
-		fmt.Println("error adding new podcast: ", err)
-	}
+	// tests
+	//err = podcast.AddNewPodcast(dbClient, "http://joeroganexp.joerogan.libsynpro.com/rss")
+	//if err != nil {
+	//	fmt.Println("error adding new podcast: ", err)
+	//}
+
+	//err = podcast.AddNewPodcast(dbClient, "http://feeds.99percentinvisible.org/99percentinvisible")
+	//if err != nil {
+	//	fmt.Println("error adding new podcast: ", err)
+	//}
+
+	//err = podcast.AddNewPodcast(dbClient, "http://feeds.twit.tv/twit.xml")
+	//if err != nil {
+	//	fmt.Println("error adding new podcast: ", err)
+	//}
 
 	// start updating podcasts
 	go podcast.UpdatePodcasts(dbClient)

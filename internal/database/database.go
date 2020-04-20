@@ -92,17 +92,17 @@ func (c *Client) Delete(collection, param string, value interface{}) error {
 
 // FindByID takes collection name and pointer to object
 func (c *Client) FindByID(collection string, objID primitive.ObjectID, object interface{}) error {
-	return c.Find(collection, "_id", objID, object, false)
+	return c.Find(collection, "_id", objID, object)
 }
 
 // Find takes collection, param & value to build fitler, and object pointer
-func (c *Client) Find(collection, param string, value interface{}, object interface{}, all bool) error {
+func (c *Client) Find(collection, param string, value interface{}, object interface{}) error {
 	filter := bson.D{{
 		Key:   param,
 		Value: value,
 	}}
 
-	return c.FindWithBSON(collection, filter, object, all)
+	return c.FindWithBSON(collection, filter, options.FindOne(), object)
 }
 
 // FindAll finds all objects in the collection and inserts them into provided slice
@@ -114,7 +114,7 @@ func (c *Client) FindAll(collection string, slice interface{}) error {
 		return err
 	}
 	err = cur.All(context.Background(), slice)
-	return nil
+	return err
 }
 
 // Upsert updates or inserts object within collection with premade filter
@@ -137,31 +137,40 @@ func (c *Client) Upsert(collection string, filter interface{}, object interface{
 }
 
 // FindWithBSON takes in object and already made bson filter
-func (c *Client) FindWithBSON(collection string, filter interface{}, object interface{}, all bool) error {
+func (c *Client) FindWithBSON(collection string, filter interface{}, opts *options.FindOneOptions, object interface{}) error {
 	var err error
 
 	// get collection
 	col := c.Database(DBsyncapod).Collection(collection)
 
 	// find operation
-	if all {
-		cur, err := col.Find(context.Background(), filter)
-		if err != nil {
-			return err
-		}
-		// decode all
-		err = cur.All(context.Background(), object)
-	} else {
-		result := col.FindOne(context.Background(), filter)
-		err = result.Err()
-		if err != nil {
-			return err
-		}
-		// decode one
-		err = result.Decode(object)
+	if opts == nil {
+		opts = options.FindOne()
 	}
+	result := col.FindOne(context.Background(), filter, opts)
+	err = result.Err()
+	if err != nil {
+		return err
+	}
+	// decode one
+	err = result.Decode(object)
 
 	return err
+}
+
+func (c *Client) FindAllWithBSON(collection string, filter interface{}, opts *options.FindOptions, slice interface{}) error {
+	// get collection
+	col := c.Database(DBsyncapod).Collection(collection)
+
+	// find operation
+	cur, err := col.Find(context.Background(), filter, opts)
+	if err != nil {
+		return err
+	}
+	// decode all
+	err = cur.All(context.Background(), slice)
+	return err
+
 }
 
 // UpdateWithBSON takes in collection string & bson filter and update objects
@@ -212,7 +221,7 @@ func (c *Client) FindUser(username string) (*models.User, error) {
 	}
 
 	var user models.User
-	err := c.Find(ColUser, param, username, &user, false)
+	err := c.Find(ColUser, param, username, &user)
 
 	return &user, err
 }

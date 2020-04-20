@@ -77,6 +77,13 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 		fmt.Println("error validating token: ", err)
 		resText = "Associated account has invalid toke, please re-link account in settings."
 	}
+	// we have an error
+	if resText != "" {
+		aRes := createEmptyResponse(resText)
+		aResJSON, _ := json.Marshal(&aRes)
+		res.Write(aResJSON)
+		return
+	}
 
 	name := aData.Request.Intent.AlexaSlots.Podcast.Value
 	fmt.Println("request name of podcast: ", name)
@@ -89,15 +96,46 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("the requested intent: ", aData.Request.Intent.Name)
 	switch aData.Request.Intent.Name {
 	case PlayPodcast:
+		// search for the podcast given the name
 		var podcasts []models.Podcast
 		err = h.dbClient.Search(database.ColPodcast, name, &podcasts)
 		if err != nil {
 			resText = "Error occurred searching for podcast"
 			break
 		}
+
+		// TODO: apply own search logic?
+		// if the search came back with results defualt to first
 		if len(podcasts) > 0 {
 			pod = &podcasts[0]
-			epi = &pod.Episodes[0]
+
+			// either find latest episode or find the episode number
+			eNumStr := aData.Request.Intent.AlexaSlots.Episode.Value
+			if eNumStr != "" {
+				epiNumber, err := strconv.Atoi(eNumStr)
+				if err != nil {
+					fmt.Println("coulnd't parse episode number: ", err)
+					resText = "Could not find episode, please try again."
+					break
+				}
+				fmt.Println("episode number: ", epiNumber)
+
+				epi, err = podcast.FindEpisodeByNumber(h.dbClient, pod.ID, epiNumber)
+				if err != nil {
+					fmt.Println("couldn't find episode with that number: ", err)
+					resText = "Could not find episode with that number, please try again."
+					break
+				}
+			} else {
+				fmt.Println("finding latest episode of: ", pod.Title)
+				epi, err = podcast.FindLatestEpisode(h.dbClient, pod.ID)
+				if err != nil {
+					fmt.Println("Latest episode could not be found: ", err)
+					resText = "Could not find episode, please try again."
+					break
+				}
+			}
+
 			directive = DirPlay
 		} else {
 			resText = "Podcast of the name: " + name + ", not found"
@@ -129,20 +167,14 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 		splitID := strings.Split(aData.Context.AudioPlayer.Token, "-")
 		if len(splitID) > 1 {
 			podID, _ := primitive.ObjectIDFromHex(splitID[1])
-			epiID := splitID[2]
+			epiID, _ := primitive.ObjectIDFromHex(splitID[2])
 			err := h.dbClient.FindByID(database.ColPodcast, podID, &pod)
 			if err != nil {
 				fmt.Println("couldn't find podcast from ID: ", err)
 				resText = "Please try playing new podcast"
 				break
 			}
-
-			for i := range pod.Episodes {
-				if pod.Episodes[i].ID.Hex() == epiID {
-					epi = &pod.Episodes[i]
-					break
-				}
-			}
+			epi, err = podcast.FindEpisode(h.dbClient, epiID)
 		} else {
 			pod, epi, offset, err = podcast.FindUserLastPlayed(h.dbClient, user.ID)
 			if err != nil {
@@ -169,7 +201,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	// If we are creating an alexa audio repsonse
 	if directive != "" {
 		// get details from non-nil episode
-		if epi != nil {
+		if user != nil && pod != nil && epi != nil {
 			if resText == "" {
 				resText = "Playing " + pod.Title + ", " + epi.Title
 			}
@@ -247,19 +279,19 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast,
 			offset = 1
 		} else {
 			// check if duration does not exist
-			if epi.DurationInMillis == 0 {
-				epi.DurationInMillis = podcast.FindLength(epi.Enclosure.MP3)
+			if epi.DurationMillis == 0 {
+				epi.DurationMillis = podcast.FindLength(epi.MP3URL)
 				go func() {
 					err := podcast.UpdateEpisode(h.dbClient, pod, epi)
 					if err != nil {
-						fmt.Println("error updating episoe: ", err)
+						fmt.Println("error updating episode: ", err)
 					}
 				}()
 			}
 
 			// check if we are trying to fast forward past end of episode
-			if epi.DurationInMillis < offset {
-				tilEnd := time.Duration(epi.DurationInMillis-curTime) * time.Millisecond
+			if epi.DurationMillis < offset {
+				tilEnd := time.Duration(epi.DurationMillis-curTime) * time.Millisecond
 				resText = "Cannot fast forward further than: " + durationToText(tilEnd)
 				offset = curTime
 			}
@@ -302,6 +334,11 @@ func durationToText(dur time.Duration) string {
 func createAudioResponse(directive, userID, text string,
 	pod *models.Podcast, epi *models.Episode, offset int64) *AlexaResponseData {
 
+	mp3URL := epi.MP3URL
+	if !strings.Contains(mp3URL, "https") {
+		mp3URL = strings.Replace(mp3URL, "http", "https", 1)
+	}
+
 	imgURL := epi.Image.URL
 	if imgURL == "" {
 		imgURL = pod.Image.URL
@@ -320,7 +357,7 @@ func createAudioResponse(directive, userID, text string,
 					PlayBehavior: "REPLACE_ALL",
 					AudioItem: AlexaAudioItem{
 						Stream: AlexaStream{
-							URL:                  epi.Enclosure.MP3,
+							URL:                  mp3URL,
 							Token:                userID + "-" + pod.ID.Hex() + "-" + epi.ID.Hex(),
 							OffsetInMilliseconds: offset,
 						},

@@ -40,6 +40,6 @@ type Episode struct {
 	Episode        int                `json:"episode" bson:"episode"`
 	Category       []Category         `json:"category" bson:"category"`
 	Explicit       string             `json:"explicit" bson:"explicit"`
-	URL            string             `json:"url" bson:"url"`
+	MP3URL         string             `json:"mp3_url" bson:"mp3_url"`
 	DurationMillis int64              `json:"duration_millis" bson:"duration_millis"`
 }

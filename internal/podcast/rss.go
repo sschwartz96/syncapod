@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -25,15 +26,23 @@ func UpdatePodcasts(dbClient *database.Client) {
 			fmt.Println("error getting all podcasts: ", err)
 		}
 
-		for _, pod := range podcasts {
-			go UpdatePodcast(dbClient, &pod)
+		var wg sync.WaitGroup
+
+		for i, _ := range podcasts {
+			pod := &podcasts[i]
+			wg.Add(1)
+			go UpdatePodcast(&wg, dbClient, pod)
 		}
+
+		wg.Wait()
+		fmt.Println("finished updating podcast: waiting...")
 		time.Sleep(time.Minute * 15)
 	}
 }
 
 // UpdatePodcast updates the given podcast via RSS feed
-func UpdatePodcast(dbClient *database.Client, pod *models.Podcast) {
+func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *models.Podcast) {
+	defer wg.Done()
 	newPod, err := ParseRSS(pod.RSS)
 	if err != nil {
 		fmt.Println("failed to load podcast rss: ", err)
@@ -41,7 +50,7 @@ func UpdatePodcast(dbClient *database.Client, pod *models.Podcast) {
 	}
 
 	for e := range newPod.RSSEpisodes {
-		epi := &newPod.RSSEpisodes[e]
+		epi := convertEpisode(pod.ID, &newPod.RSSEpisodes[e])
 		// TODO: maybe check if the episode has the same title but different size
 		// TODO: hopefully the podcast just uses the same URL if they update it
 		// check if the latest episode is in collection
@@ -57,11 +66,14 @@ func UpdatePodcast(dbClient *database.Client, pod *models.Podcast) {
 
 		// episode does not exist
 		if !exists {
-			mongoEpi := convertEpisode(pod.ID, epi)
-			err = dbClient.Insert(database.ColEpisode, &mongoEpi)
+			fmt.Println("episode does not exist: ", epi.Title)
+			err = dbClient.Insert(database.ColEpisode, &epi)
 			if err != nil {
 				fmt.Println("couldn't insert episode: ", err)
 			}
+		} else {
+			// assume that if the first podcast exists so do the rest, no need to loop through all
+			break
 		}
 	}
 }
@@ -103,7 +115,6 @@ func AddNewPodcast(dbClient *database.Client, url string) error {
 	}
 
 	// Set episodes to nil and save podcast info to collection
-	pod := convertPodcast(rssPod)
 	err = dbClient.Insert(database.ColPodcast, pod)
 	if err != nil {
 		fmt.Println("couldn't insert podcast: ", err)
@@ -158,7 +169,7 @@ func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episod
 		Episode:        e.Episode,
 		Category:       e.Category,
 		Explicit:       e.Explicit,
-		URL:            e.Enclosure.MP3,
+		MP3URL:         e.Enclosure.MP3,
 		DurationMillis: parseDuration(e.Duration),
 	}
 }
@@ -171,14 +182,14 @@ func convertPodcast(url string, p *models.RSSPodcast) *models.Podcast {
 		keywords[w] = strings.TrimSpace(keywords[w])
 	}
 
-	lBuildDate, err := parseRFC2822(p.LastBuildDate) 
+	lBuildDate, err := parseRFC2822(p.LastBuildDate)
 	if err != nil {
-		fmt.Println("couldn't parse podcast build date")
+		fmt.Println("couldn't parse podcast build date: ", err)
 	}
 
-	pubDate, err := parseRFC2822(p.PubDate) 
+	pubDate, err := parseRFC2822(p.PubDate)
 	if err != nil {
-		fmt.Println("couldn't parse podcast pubdate")
+		fmt.Println("couldn't parse podcast pubdate: ", err)
 	}
 
 	return &models.Podcast{
@@ -190,56 +201,24 @@ func convertPodcast(url string, p *models.RSSPodcast) *models.Podcast {
 		Keywords:      keywords,
 		Language:      p.Language,
 		LastBuildDate: *lBuildDate,
-		PubDate: *pubDate,
-		Link: p.Link,
-		RSS: url,
-		Subtitle: p.Subtitle,
-		Title: p.Title,
-		Type: p.Type,
+		PubDate:       *pubDate,
+		Link:          p.Link,
+		RSS:           url,
+		Subtitle:      p.Subtitle,
+		Title:         p.Title,
+		Type:          p.Type,
 	}
 }
 
 // parseRFC2822 parses the string in RFC2822 date format
 // returns pointer to time object and error
 func parseRFC2822(s string) (*time.Time, error) {
-	const rfc2822 = "Mon, 02 Jan 15:04:05 2006 MST"
-	t, err := time.Parse(rfc2822, s)
-	if err != nil {
-		return nil, err
+	var rfc2822 string
+	if strings.Contains(s, "+") || strings.Contains(s, "-") {
+		rfc2822 = "Mon, 02 Jan 2006 15:04:05 -0700"
+	} else {
+		rfc2822 = "Mon, 02 Jan 2006 15:04:05 MST"
 	}
-	return &t, nil
-}
-
-//parseDuration takes in the string duration and returns the duration in millis
-func parseDuration(d string) int64 {
-	// check if they just applied the seconds
-	if !strings.Contains(d, ":") {
-		sec, err := strconv.Atoi(d)
-		if err != nil {
-			fmt.Println("error converting duration of episode: ", err)
-			return 0
-		}
-		return int64(sec) * int64(1000)
-	}
-	var millis int64
-	multiplier := int64(1000)
-
-	// format hh:mm:ss || mm:ss
-	split := strings.Split(d, ":")
-
-	for i := len(split) - 1; i >= 0; i-- {
-		v, _ := strconv.Atoi(split[i])
-		millis += int64(v) * multiplier
-		multiplier *= int64(60)
-	}
-
-	return millis
-}
-
-// parseRFC2822 parses the string in RFC2822 date format
-// returns pointer to time object and error
-func parseRFC2822(s string) (*time.Time, error) {
-	const rfc2822 = "Mon, 02 Jan 15:04:05 2006 MST"
 	t, err := time.Parse(rfc2822, s)
 	if err != nil {
 		return nil, err

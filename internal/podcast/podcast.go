@@ -1,13 +1,10 @@
 package podcast
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"io"
 	"math"
 	"net/http"
-	"sort"
 
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -15,6 +12,7 @@ import (
 	"github.com/tcolgate/mp3"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // AddEpiIDs adds missing IDs to the podcast object and episode objects
@@ -30,7 +28,7 @@ import (
 func FindOffset(dbClient *database.Client, user *models.User, episode *models.Episode) int64 {
 	var userEpi models.UserEpisode
 	filter := bson.D{{Key: "user_id", Value: user.ID}, {Key: "episode_id", Value: episode.ID}}
-	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, &userEpi, false)
+	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, nil, &userEpi)
 	if err != nil {
 		fmt.Println("error finding user episode details: ", err)
 		return 0
@@ -59,70 +57,37 @@ func FindPodcast(dbClient *database.Client, podID primitive.ObjectID) (*models.P
 	return &pod, err
 }
 
-// FindEpisode takes a *database.Client and episode ID
-func FindEpisode(dbClient *database.Client, epiID primitive.ObjectID) (*models.Episode, error) {
-	var epi models.Episode
-	err := dbClient.FindByID(database.ColEpisode, epiID, &epi)
-	return &epi, err
-}
-
 // FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
 func FindUserLastPlayed(dbClient *database.Client, userID primitive.ObjectID) (*models.Podcast, *models.Episode, int64, error) {
-	var userEps []models.UserEpisode
-	// look up all the UserEpisodes with the user id
-	err := dbClient.Find(database.ColUserEpisode, "user_id", userID, &userEps, true)
+	var userEp models.UserEpisode
+	var pod models.Podcast
+	var epi models.Episode
+
+	// find the latest played user_episode
+	filter := bson.M{"user_id": userID}
+	opts := options.FindOne().SetSort(bson.M{"last_seen": -1})
+
+	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, opts, &userEp)
 	if err != nil {
-		fmt.Println("find user last played error: ", err)
-		return nil, nil, 0, err
-	}
-	if len(userEps) == 0 {
-		return nil, nil, 0, errors.New("User has no currently played episodes")
-	}
-
-	// sort array
-	sort.Slice(userEps, func(i, j int) bool {
-		return userEps[i].LastSeen.After(userEps[j].LastSeen)
-	})
-
-	// gather ids and perform db lookups
-	podID := userEps[0].PodcastID
-	epiID := userEps[0].EpisodeID
-
-	// find the podcast
-	pod, err := FindPodcast(dbClient, podID)
-	if err != nil {
+		fmt.Println("error finding user_episod: ", err)
 		return nil, nil, 0, err
 	}
 
-	// find the episode
-	epi, err := FindEpisode(dbClient, epiID)
+	// find podcast
+	err = dbClient.FindByID(database.ColPodcast, userEp.PodcastID, &pod)
 	if err != nil {
+		fmt.Println("couldn't find podcast: ", err)
 		return nil, nil, 0, err
 	}
 
-	return pod, epi, userEps[0].Offset, err
-}
-
-// UpdateEpisode takes a pointer to db, podcast, and episode.
-// Attempts to update the episode in the db returning error if not
-func UpdateEpisode(dbClient *database.Client, pod *models.Podcast, epi *models.Episode) error {
-	col := dbClient.Database(database.DBsyncapod).Collection(database.ColPodcast)
-
-	filter := bson.D{
-		{Key: "_id", Value: pod.ID},
-		{Key: "episodes._id", Value: epi.ID},
-	}
-
-	update := bson.D{
-		{Key: "$set", Value: bson.M{"episodes.$": epi}},
-	}
-
-	res, err := col.UpdateOne(context.Background(), filter, update)
+	// find episode
+	err = dbClient.FindByID(database.ColEpisode, userEp.EpisodeID, &epi)
 	if err != nil {
-		return err
+		fmt.Println("couldn't find podcast: ", err)
+		return nil, nil, 0, err
 	}
-	fmt.Println("update result: ", res.ModifiedCount)
-	return nil
+
+	return &pod, &epi, userEp.Offset, err
 }
 
 // FindLength attempts to download only the first few frames of the MP3 to figure out its length

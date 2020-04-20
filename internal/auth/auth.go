@@ -71,7 +71,7 @@ func CreateKey(l int) string {
 func ValidateSession(dbClient *database.Client, key string) (*models.User, error) {
 	// Find the key
 	var sesh models.Session
-	err := dbClient.Find(database.ColSession, "session_key", key, &sesh, false)
+	err := dbClient.Find(database.ColSession, "session_key", key, &sesh)
 	if err != nil {
 		fmt.Println("validate sesion, couldn't find session key")
 		return nil, err
