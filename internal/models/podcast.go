@@ -15,7 +15,7 @@ type Podcast struct {
 	Subtitle      string             `json:"subtitle" bson:"subtitle"`
 	Link          string             `json:"link" bson:"link"`
 	Image         Image              `json:"image" bson:"image"`
-	Explicit      bool               `json:"explicit" bson:"explicit"`
+	Explicit      string             `json:"explicit" bson:"explicit"`
 	Language      string             `json:"locale" bson:"locale"`
 	Keywords      []string           `json:"keywords" bson:"keywords"`
 	Category      []Category         `json:"category" bson:"category"`
@@ -39,7 +39,7 @@ type Episode struct {
 	Season         int                `json:"season" bson:"season"`
 	Episode        int                `json:"episode" bson:"episode"`
 	Category       []Category         `json:"category" bson:"category"`
-	Explicit       bool               `json:"explicit" bson:"explicit"`
+	Explicit       string             `json:"explicit" bson:"explicit"`
 	URL            string             `json:"url" bson:"url"`
 	DurationMillis int64              `json:"duration_millis" bson:"duration_millis"`
 }

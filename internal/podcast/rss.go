@@ -55,10 +55,9 @@ func UpdatePodcast(dbClient *database.Client, pod *models.Podcast) {
 			continue
 		}
 
-		// episode does exists
+		// episode does not exist
 		if !exists {
-			epi.PodcastID = pod.ID
-			mongoEpi := convertEpisode(epi)
+			mongoEpi := convertEpisode(pod.ID, epi)
 			err = dbClient.Insert(database.ColEpisode, &mongoEpi)
 			if err != nil {
 				fmt.Println("couldn't insert episode: ", err)
@@ -81,27 +80,30 @@ func AddNewPodcast(dbClient *database.Client, url string) error {
 	}
 
 	// attempt to download & parse the podcast rss
-	pod, err := ParseRSS(url)
+	rssPod, err := ParseRSS(url)
 	if err != nil {
 		return err
 	}
-	pod.ID = primitive.NewObjectID()
-	pod.RSS = url
+	pod := convertPodcast(url, rssPod)
+
+	rssEpisodes := rssPod.RSSEpisodes
 
 	// loop through episodes and save them
-	for i := range pod.Episodes {
-		epi := pod.Episodes[i]
-		epi.ID = primitive.NewObjectID()
-		epi.PodcastID = pod.ID
+	for i := range rssEpisodes {
+		rssEpi := rssEpisodes[i]
+		rssEpi.ID = primitive.NewObjectID()
+		rssEpi.PodcastID = rssPod.ID
 
-		err = dbClient.Insert(database.ColEpisode, &epi)
+		epi := convertEpisode(pod.ID, &rssEpi)
+
+		err = dbClient.Insert(database.ColEpisode, epi)
 		if err != nil {
 			fmt.Println("couldn't insert episode: ", err)
 		}
 	}
 
 	// Set episodes to nil and save podcast info to collection
-	pod.Episodes = nil
+	pod := convertPodcast(rssPod)
 	err = dbClient.Insert(database.ColPodcast, pod)
 	if err != nil {
 		fmt.Println("couldn't insert podcast: ", err)
@@ -141,12 +143,7 @@ func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episod
 		fmt.Println("error converting episode: ", err)
 	}
 
-	var explicit bool
-	if strings.Contains(e.Explicit, "yes") || strings.Contains(e.Explicit, "explicit") {
-		explicit = false
-	}
-
-	epi := &models.Episode{
+	return &models.Episode{
 		ID:             primitive.NewObjectID(),
 		PodcastID:      pID,
 		Title:          e.Title,
@@ -160,12 +157,83 @@ func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episod
 		Season:         e.Season,
 		Episode:        e.Episode,
 		Category:       e.Category,
-		Explicit:       explicit,
+		Explicit:       e.Explicit,
 		URL:            e.Enclosure.MP3,
 		DurationMillis: parseDuration(e.Duration),
 	}
+}
 
-	return epi
+// convertPodcast
+func convertPodcast(url string, p *models.RSSPodcast) *models.Podcast {
+
+	keywords := strings.Split(p.Keywords, ",")
+	for w := range keywords {
+		keywords[w] = strings.TrimSpace(keywords[w])
+	}
+
+	lBuildDate, err := parseRFC2822(p.LastBuildDate) 
+	if err != nil {
+		fmt.Println("couldn't parse podcast build date")
+	}
+
+	pubDate, err := parseRFC2822(p.PubDate) 
+	if err != nil {
+		fmt.Println("couldn't parse podcast pubdate")
+	}
+
+	return &models.Podcast{
+		ID:            primitive.NewObjectID(),
+		Author:        p.Author,
+		Category:      p.Category,
+		Explicit:      p.Explicit,
+		Image:         p.Image,
+		Keywords:      keywords,
+		Language:      p.Language,
+		LastBuildDate: *lBuildDate,
+		PubDate: *pubDate,
+		Link: p.Link,
+		RSS: url,
+		Subtitle: p.Subtitle,
+		Title: p.Title,
+		Type: p.Type,
+	}
+}
+
+// parseRFC2822 parses the string in RFC2822 date format
+// returns pointer to time object and error
+func parseRFC2822(s string) (*time.Time, error) {
+	const rfc2822 = "Mon, 02 Jan 15:04:05 2006 MST"
+	t, err := time.Parse(rfc2822, s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+//parseDuration takes in the string duration and returns the duration in millis
+func parseDuration(d string) int64 {
+	// check if they just applied the seconds
+	if !strings.Contains(d, ":") {
+		sec, err := strconv.Atoi(d)
+		if err != nil {
+			fmt.Println("error converting duration of episode: ", err)
+			return 0
+		}
+		return int64(sec) * int64(1000)
+	}
+	var millis int64
+	multiplier := int64(1000)
+
+	// format hh:mm:ss || mm:ss
+	split := strings.Split(d, ":")
+
+	for i := len(split) - 1; i >= 0; i-- {
+		v, _ := strconv.Atoi(split[i])
+		millis += int64(v) * multiplier
+		multiplier *= int64(60)
+	}
+
+	return millis
 }
 
 // parseRFC2822 parses the string in RFC2822 date format
