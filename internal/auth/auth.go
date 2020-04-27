@@ -34,9 +34,14 @@ func Compare(hash, password string) bool {
 }
 
 // CreateSession creates a session and stores into database
-func CreateSession(dbClient *database.Client, userID primitive.ObjectID, expires time.Duration) (string, error) {
+func CreateSession(dbClient *database.Client, userID primitive.ObjectID,
+	expires time.Duration, userAgent string) (string, error) {
 	// Create key
 	key := CreateKey(32)
+
+	if userAgent == "" {
+		userAgent = "unknown"
+	}
 
 	// Create Session object
 	session := models.Session{
@@ -46,6 +51,7 @@ func CreateSession(dbClient *database.Client, userID primitive.ObjectID, expires
 		LoginTime:    time.Now(),
 		LastSeenTime: time.Now(),
 		Expires:      time.Now().Add(expires),
+		UserAgent:    userAgent,
 	}
 
 	// Store session in database

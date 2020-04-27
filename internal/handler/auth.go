@@ -63,6 +63,7 @@ func (h *APIHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	if err == nil {
 		authRes.Valid = true
 	}
+	user.Password = ""
 	authRes.User = user
 
 	// marshal json
@@ -107,10 +108,10 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 		// create the proper session token
 		if userCred.Expires {
 			response.AccessToken, err = auth.CreateSession(h.dbClient,
-				user.ID, time.Hour*24)
+				user.ID, time.Hour*24, req.UserAgent())
 		} else {
 			response.AccessToken, err = auth.CreateSession(h.dbClient,
-				user.ID, time.Hour*24*365*10)
+				user.ID, time.Hour*24*365*10, req.UserAgent())
 		}
 		// check for error
 		if err != nil {
@@ -120,10 +121,13 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 		}
 		// authenticated true
 		response.Authenticated = true
+		user.Password = ""
 		response.User = user
 
 		// marshal data and send off
 		marshalRes, _ := json.Marshal(&response)
 		res.Write(marshalRes)
+	} else {
+		fmt.Fprint(res, "Wrong password")
 	}
 }
