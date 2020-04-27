@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/syncapod/internal/models"
 )
 
 // APIHandler handles calls to the syncapod api
@@ -25,7 +27,7 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var head string
 	head, req.URL.Path = ShiftPath(req.URL.Path)
 
-	var handler func(http.ResponseWriter, *http.Request)
+	var handler func(http.ResponseWriter, *http.Request, *models.User)
 
 	switch head {
 	// if endpoint is alexa then we need to just return cause that is handled with oauth
@@ -36,29 +38,47 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	// auth handles authentication
 	case "auth":
 		h.Auth(res, req)
+		return
 
 	// the rest need to be authorized first
+	case "subscriptions":
+		handler = h.Subscriptions
 
 	default:
 		fmt.Fprint(res, "This endpoint is not supported")
 		return
 	}
 
-	if h.checkAuth(req) {
-		handler(res, req)
+	user, ok := h.checkAuth(req)
+
+	if ok {
+		handler(res, req, user)
 	}
 }
 
-func (h *APIHandler) checkAuth(req *http.Request) bool {
-	token := req.URL.Query().Get("access_token")
+// Subscriptions endpoint returns the users subscriptions
+func (h *APIHandler) Subscriptions(res http.ResponseWriter, req *http.Request, user *models.User) {
+	var head string
+	head, req.URL.Path = ShiftPath(req.URL.Path)
+
+	switch head {
+	case "get":
+		subs := h.dbClient.FindUserSubs(user.ID)
+		response, _ := json.Marshal(&subs)
+		res.Write(response)
+	}
+}
+
+func (h *APIHandler) checkAuth(req *http.Request) (*models.User, bool) {
+	token, _, _ := req.BasicAuth()
 
 	if token != "" {
-		_, err := auth.ValidateSession(h.dbClient, token)
+		u, err := auth.ValidateSession(h.dbClient, token)
 		if err != nil {
-			return false
+			return nil, false
 		}
-		return true
+		return u, true
 	}
 
-	return false
+	return nil, false
 }

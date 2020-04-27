@@ -11,6 +11,7 @@ import (
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
 	"github.com/sschwartz96/syncapod/internal/podcast"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func main() {
@@ -30,6 +31,12 @@ func main() {
 	}
 
 	// tests
+	id, _ := primitive.ObjectIDFromHex("5e895b2433b810425c9d1611")
+	subs := dbClient.FindUserSubs(id)
+	fmt.Println(subs[0].Podcast.Title)
+	fmt.Println(subs[0].CurEpi.Title)
+	fmt.Println(subs[0].CurEpiDetails.Offset)
+
 	//err = podcast.AddNewPodcast(dbClient, "http://joeroganexp.joerogan.libsynpro.com/rss")
 	//if err != nil {
 	//	fmt.Println("error adding new podcast: ", err)

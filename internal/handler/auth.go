@@ -34,9 +34,27 @@ func (h *APIHandler) Auth(res http.ResponseWriter, req *http.Request) {
 			return
 		case "authorize":
 			h.Authorize(res, req)
+		case "logout":
+			h.Logout(res, req)
 		}
 	} else {
 		sendMessageJSON(res, "Protocol not supported")
+	}
+}
+
+// Logout takes the response writer and request and removes the session from db
+func (h *APIHandler) Logout(res http.ResponseWriter, req *http.Request) {
+	token, _, _ := req.BasicAuth()
+	if token != "" {
+		err := h.dbClient.Delete(database.ColSession, "session_key", token)
+		if err != nil {
+			fmt.Println("error deleting sesion: ", err)
+			sendMessageJSON(res, "logout failed, internal error")
+		} else {
+			sendMessageJSON(res, "success")
+		}
+	} else {
+		sendMessageJSON(res, "logout failed: token empty")
 	}
 }
 
