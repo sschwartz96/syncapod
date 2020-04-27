@@ -23,7 +23,7 @@ func Hash(password string) (string, error) {
 	return string(hash), nil
 }
 
-// Compare takes a []byte password and hash compares and returns true for match
+// Compare takes a password and hash compares and returns true for match
 func Compare(hash, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
@@ -68,6 +68,7 @@ func CreateKey(l int) string {
 }
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user
+// returns error if the key doesn't exist, or has expired
 func ValidateSession(dbClient *database.Client, key string) (*models.User, error) {
 	// Find the key
 	var sesh models.Session

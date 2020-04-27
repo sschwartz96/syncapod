@@ -28,7 +28,7 @@ func UpdatePodcasts(dbClient *database.Client) {
 
 		var wg sync.WaitGroup
 
-		for i, _ := range podcasts {
+		for i := range podcasts {
 			pod := &podcasts[i]
 			wg.Add(1)
 			go UpdatePodcast(&wg, dbClient, pod)
