@@ -127,11 +127,12 @@ func (h *OauthHandler) Login(res http.ResponseWriter, req *http.Request) {
 
 		http.Redirect(res, req, "/oauth/authorize"+"?"+values.Encode(), http.StatusSeeOther)
 		return
-	} else {
-		h.loginTemplate.Execute(res, true)
 	}
+
+	h.loginTemplate.Execute(res, true)
 }
 
+// Authorize takes a session(access) token and validates it and sents back user info
 func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	// get session key, validate and get user info
 	seshKey := strings.TrimSpace(req.URL.Query().Get("sesh_key"))

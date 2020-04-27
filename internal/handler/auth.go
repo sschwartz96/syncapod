@@ -36,7 +36,7 @@ func (h *APIHandler) Auth(res http.ResponseWriter, req *http.Request) {
 			h.Authorize(res, req)
 		}
 	} else {
-		fmt.Fprint(res, "Protocol not supported")
+		sendMessageJSON(res, "Protocol not supported")
 	}
 }
 
@@ -50,7 +50,7 @@ func (h *APIHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	err := json.Unmarshal(body, &authReq)
 	if err != nil {
 		fmt.Println("error unmarshalling json: ", err)
-		fmt.Fprint(res, "invalid json")
+		sendMessageJSON(res, "invalid json")
 		return
 	}
 
@@ -84,7 +84,7 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 	err := json.Unmarshal(reqBody, &userCred)
 	if err != nil {
 		fmt.Println("error unmarshalling json: ", err)
-		fmt.Fprint(res, "invalid json")
+		sendMessageJSON(res, "invalid json")
 		return
 	}
 
@@ -92,7 +92,7 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 	user, err := h.dbClient.FindUser(userCred.Email)
 	if err != nil {
 		fmt.Println("couldn't find user in db: ", err)
-		fmt.Fprint(res, "user not found")
+		sendMessageJSON(res, "user not found")
 		return
 	}
 
@@ -116,7 +116,7 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 		// check for error
 		if err != nil {
 			fmt.Println("error creating user session")
-			fmt.Fprint(res, "error creating user session")
+			sendMessageJSON(res, "error creating user session")
 			return
 		}
 		// authenticated true
@@ -128,6 +128,16 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 		marshalRes, _ := json.Marshal(&response)
 		res.Write(marshalRes)
 	} else {
-		fmt.Fprint(res, "Wrong password")
+		sendMessageJSON(res, "Wrong password")
 	}
+}
+
+func sendMessageJSON(res http.ResponseWriter, message string) {
+	type Response struct {
+		Message string `json:"message"`
+	}
+	response := Response{Message: message}
+	jsonRes, _ := json.Marshal(&response)
+	res.Header().Add("Content-Type", "application/json")
+	res.Write(jsonRes)
 }
