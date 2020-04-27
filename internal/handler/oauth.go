@@ -111,7 +111,7 @@ func (h *OauthHandler) Login(res http.ResponseWriter, req *http.Request) {
 
 	if auth.Compare(user.Password, password) {
 		// create 5 min session and send auth key
-		key, err := auth.CreateSession(h.dbClient, user.ID, time.Minute*5)
+		key, err := auth.CreateSession(h.dbClient, user.ID, time.Minute*5, req.UserAgent())
 		if err != nil {
 			h.loginTemplate.Execute(res, true)
 			return
