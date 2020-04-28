@@ -80,9 +80,9 @@ func (h *APIHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	user, err := auth.ValidateSession(h.dbClient, authReq.Token)
 	if err == nil {
 		authRes.Valid = true
+		user.Password = ""
+		authRes.User = user
 	}
-	user.Password = ""
-	authRes.User = user
 
 	// marshal json
 	response, _ := json.Marshal(&authRes)
