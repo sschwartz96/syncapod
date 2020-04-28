@@ -50,6 +50,7 @@ func (h *OauthHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Get is the handler for /api/oauth
 func (h *OauthHandler) Get(res http.ResponseWriter, req *http.Request) {
 	var head string
 	var err error
@@ -76,6 +77,7 @@ func (h *OauthHandler) Get(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Post hanldes all post request at the oauth endpoint
 func (h *OauthHandler) Post(res http.ResponseWriter, req *http.Request) {
 	var head string
 
@@ -92,6 +94,7 @@ func (h *OauthHandler) Post(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Login handles the post and get request of a login page
 func (h *OauthHandler) Login(res http.ResponseWriter, req *http.Request) {
 	err := req.ParseForm()
 	if err != nil {
@@ -160,6 +163,7 @@ func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	http.Redirect(res, req, redirectURI+"?"+values.Encode(), http.StatusSeeOther)
 }
 
+// Token handles authenticating the oauth client with the given token
 func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 	// authenticate client
 	id, sec, ok := req.BasicAuth()

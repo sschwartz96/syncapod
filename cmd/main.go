@@ -9,6 +9,7 @@ import (
 
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/syncapod/internal/handler"
 	"github.com/sschwartz96/syncapod/internal/podcast"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

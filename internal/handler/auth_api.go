@@ -149,13 +149,3 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 		sendMessageJSON(res, "Wrong password")
 	}
 }
-
-func sendMessageJSON(res http.ResponseWriter, message string) {
-	type Response struct {
-		Message string `json:"message"`
-	}
-	response := Response{Message: message}
-	jsonRes, _ := json.Marshal(&response)
-	res.Header().Add("Content-Type", "application/json")
-	res.Write(jsonRes)
-}

@@ -640,7 +640,7 @@ type AudioEvent struct {
 type AudioHeader struct {
 	Namespace string `json:"namespace,omitempty"`
 	Name      string `json:"name,omitempty"`
-	MessageId string `json:"messageId,omitempty"`
+	MessageID string `json:"messageId,omitempty"`
 }
 
 // AudioPayload contains the main info of AudioEvent
