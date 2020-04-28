@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -27,6 +26,7 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var head string
 	head, req.URL.Path = ShiftPath(req.URL.Path)
 
+	// setup a handler function var to use at the end of the method
 	var handler func(http.ResponseWriter, *http.Request, *models.User)
 
 	switch head {
@@ -41,8 +41,8 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		return
 
 	// the rest need to be authorized first
-	case "subscriptions":
-		handler = h.Subscriptions
+	case "podcast":
+		handler = h.Podcast
 
 	default:
 		fmt.Fprint(res, "This endpoint is not supported")
@@ -53,20 +53,6 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	if ok {
 		handler(res, req, user)
-	}
-}
-
-// Subscriptions endpoint returns the users subscriptions
-func (h *APIHandler) Subscriptions(res http.ResponseWriter, req *http.Request, user *models.User) {
-	var head string
-	head, req.URL.Path = ShiftPath(req.URL.Path)
-
-	switch head {
-	case "get":
-		subs := h.dbClient.FindUserSubs(user.ID)
-		response, _ := json.Marshal(&subs)
-		res.Header().Add("Content-Type", "application/json")
-		res.Write(response)
 	}
 }
 
