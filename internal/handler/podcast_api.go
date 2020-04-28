@@ -29,7 +29,11 @@ func (h *APIHandler) Subscription(res http.ResponseWriter, req *http.Request, us
 	switch head {
 	case "get":
 		subs := h.dbClient.FindUserSubs(user.ID)
-		err = sendObjectJSON(res, subs)
+		var pods []models.Podcast
+		for i := range subs {
+			pods = append(pods, *subs[i].Podcast)
+		}
+		err = sendObjectJSON(res, pods)
 	default:
 		fmt.Fprint(res, "This endpoint is not supported")
 	}
