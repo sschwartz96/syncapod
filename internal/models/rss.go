@@ -57,8 +57,8 @@ type Enclosure struct {
 
 // Category contains the main category and secondary categories
 type Category struct {
-	Text     string     `xml:"text,attr"`
-	Category []Category `xml:"category"`
+	Text     string     `xml:"text,attr" json:"text"`
+	Category []Category `xml:"category" json:"category"`
 }
 
 // Image is the RSS image container
