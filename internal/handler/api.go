@@ -65,6 +65,7 @@ func (h *APIHandler) Subscriptions(res http.ResponseWriter, req *http.Request, u
 	case "get":
 		subs := h.dbClient.FindUserSubs(user.ID)
 		response, _ := json.Marshal(&subs)
+		res.Header().Add("Content-Type", "application/json")
 		res.Write(response)
 	}
 }
