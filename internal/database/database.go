@@ -159,7 +159,7 @@ func (c *Client) FindWithBSON(collection string, filter interface{}, opts *optio
 	return err
 }
 
-// FindAllWithBSON takes collection string, bson filter, mongo.FindOptions
+// FindAllWithBSON takes collection string, bson filter, options.FindOptions
 // and decodes into slice
 func (c *Client) FindAllWithBSON(collection string, filter interface{}, opts *options.FindOptions, slice interface{}) error {
 	// get collection
@@ -259,76 +259,88 @@ func (c *Client) Search(collection, search string, object interface{}) error {
 	return cur.All(context.Background(), object)
 }
 
-// FindUserSubs takes the user's ID and return a slice of subscriptions
-func (c *Client) FindUserSubs(userID primitive.ObjectID) []models.FullSubscription {
-	lookupPodcast := bson.D{{Key: "$lookup", Value: bson.D{
-		{Key: "from", Value: ColPodcast},
-		{Key: "localField", Value: "podcast_id"},
-		{Key: "foreignField", Value: "_id"},
-		{Key: "as", Value: "podcast"},
-	}}}
-
-	unwindPodcast := bson.D{{Key: "$unwind", Value: bson.D{
-		{Key: "path", Value: "$podcast"},
-		{Key: "preserveNullAndEmptyArrays", Value: false},
-	}}}
-
-	lookupCurEpi := bson.D{{Key: "$lookup", Value: bson.D{
-		{Key: "from", Value: ColEpisode},
-		{Key: "localField", Value: "cur_epi_id"},
-		{Key: "foreignField", Value: "_id"},
-		{Key: "as", Value: "cur_epi"},
-	}}}
-
-	unwindCurEpi := bson.D{{Key: "$unwind", Value: bson.D{
-		{Key: "path", Value: "$cur_epi"},
-		{Key: "preserveNullAndEmptyArrays", Value: false},
-	}}}
-
-	lookupCurEpiDet := bson.D{{Key: "$lookup", Value: bson.D{
-		{Key: "from", Value: ColUserEpisode},
-		{Key: "let", Value: bson.D{
-			{Key: "uid", Value: "$user_id"},
-			{Key: "eid", Value: "$cur_epi_id"},
-		}},
-		{Key: "pipeline", Value: mongo.Pipeline{
-			bson.D{{Key: "$match", Value: bson.D{{Key: "$expr", Value: bson.D{{Key: "$and",
-				Value: []bson.D{
-					{{Key: "$eq", Value: []string{"$user_id", "$$uid"}}},
-					{{Key: "$eq", Value: []string{"$episode_id", "$$eid"}}},
-				},
-			}}}}}},
-		}},
-		{Key: "as", Value: "cur_epi_details"},
-	}}}
-
-	unwindCurEpiDet := bson.D{{Key: "$unwind", Value: bson.D{
-		{Key: "path", Value: "$cur_epi_details"},
-		{Key: "preserveNullAndEmptyArrays", Value: false},
-	}}}
-
-	pipeline := mongo.Pipeline{
-		lookupPodcast,
-		unwindPodcast,
-		lookupCurEpi,
-		unwindCurEpi,
-		lookupCurEpiDet,
-		unwindCurEpiDet,
-	}
-
-	cur, err := c.Database(DBsyncapod).
-		Collection(ColSubscription).
-		Aggregate(context.Background(), pipeline)
+// Aggregate takes in a collection string, filter, pipeline, and pointer to object
+// returns error if anything is malformed
+func (c *Client) Aggregate(collection string, pipeline mongo.Pipeline, object interface{}) error {
+	col := c.Database(DBsyncapod).Collection(collection)
+	cur, err := col.Aggregate(context.Background(), pipeline)
 	if err != nil {
-		fmt.Println("error aggregating: ", err)
-		return nil
+		return err
 	}
-
-	var subs []models.FullSubscription
-	if err = cur.All(context.Background(), &subs); err != nil {
-		fmt.Println("error decoding aggregation: ", err)
-		return nil
-	}
-
-	return subs
+	return cur.All(context.Background(), object)
 }
+
+//FindUserSubs takes the user's ID and return a slice of subscriptions
+// func (c *Client) FindUserSubs(userID primitive.ObjectID) []models.FullSubscription {
+// lookupPodcast := bson.D{{Key: "$lookup", Value: bson.D{
+// {Key: "from", Value: ColPodcast},
+// {Key: "localField", Value: "podcast_id"},
+// {Key: "foreignField", Value: "_id"},
+// {Key: "as", Value: "podcast"},
+// }}}
+//
+// unwindPodcast := bson.D{{Key: "$unwind", Value: bson.D{
+// {Key: "path", Value: "$podcast"},
+// {Key: "preserveNullAndEmptyArrays", Value: false},
+// }}}
+//
+// lookupCurEpi := bson.D{{Key: "$lookup", Value: bson.D{
+// {Key: "from", Value: ColEpisode},
+// {Key: "localField", Value: "cur_epi_id"},
+// {Key: "foreignField", Value: "_id"},
+// {Key: "as", Value: "cur_epi"},
+// }}}
+//
+// unwindCurEpi := bson.D{{Key: "$unwind", Value: bson.D{
+// {Key: "path", Value: "$cur_epi"},
+// {Key: "preserveNullAndEmptyArrays", Value: false},
+// }}}
+//
+// lookupCurEpiDet := bson.D{{Key: "$lookup", Value: bson.D{
+// {Key: "from", Value: ColUserEpisode},
+// {Key: "let", Value: bson.D{
+// {Key: "uid", Value: "$user_id"},
+// {Key: "eid", Value: "$cur_epi_id"},
+// }},
+// {Key: "pipeline", Value: mongo.Pipeline{
+// bson.D{{Key: "$match", Value: bson.D{{Key: "$expr", Value: bson.D{{Key: "$and",
+// Value: []bson.D{
+// {{Key: "$eq", Value: []string{"$user_id", "$$uid"}}},
+// {{Key: "$eq", Value: []string{"$episode_id", "$$eid"}}},
+// },
+// }}}}}},
+// }},
+// {Key: "as", Value: "cur_epi_details"},
+// }}}
+//
+// unwindCurEpiDet := bson.D{{Key: "$unwind", Value: bson.D{
+// {Key: "path", Value: "$cur_epi_details"},
+// {Key: "preserveNullAndEmptyArrays", Value: false},
+// }}}
+//
+// pipeline := mongo.Pipeline{
+// lookupPodcast,
+// unwindPodcast,
+// lookupCurEpi,
+// unwindCurEpi,
+// lookupCurEpiDet,
+// unwindCurEpiDet,
+// }
+//
+// cur, err := c.Database(DBsyncapod).
+// Collection(ColSubscription).
+// Aggregate(context.Background(), pipeline)
+// if err != nil {
+// fmt.Println("error aggregating: ", err)
+// return nil
+// }
+//
+// var subs []models.FullSubscription
+// if err = cur.All(context.Background(), &subs); err != nil {
+// fmt.Println("error decoding aggregation: ", err)
+// return nil
+// }
+//
+// return subs
+// }
+//

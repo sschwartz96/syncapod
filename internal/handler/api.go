@@ -53,6 +53,8 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	if ok {
 		handler(res, req, user)
+	} else {
+		sendMessageJSON(res, "Not authorized, please provide valid token")
 	}
 }
 

@@ -61,3 +61,29 @@ func FindLatestEpisode(dbClient *database.Client, podID primitive.ObjectID) (*mo
 	err := dbClient.FindWithBSON(database.ColEpisode, filter, opts, &epi)
 	return &epi, err
 }
+
+// FindAllEpisodesRange finds the lastest episodes within range(epi # 20-30)
+// s = start, e = end
+func FindAllEpisodesRange(dbClient *database.Client, podID primitive.ObjectID, s, e int) []models.Episode {
+	var epis []models.Episode
+	filter := bson.M{"podcast_id": podID}
+	opts := options.Find().SetLimit(int64(e - s)).SetSkip(int64(s)).SetSort(
+		bson.M{"pub_date": -1},
+	)
+	err := dbClient.FindAllWithBSON(database.ColEpisode, filter, opts, &epis)
+	if err != nil {
+		fmt.Println("error finding all episodes: ", err)
+	}
+	return epis
+}
+
+// FindAllEpisodes takesa pointer to database.Client and a podcast id
+func FindAllEpisodes(dbClient *database.Client, podID primitive.ObjectID) []models.Episode {
+	var epis []models.Episode
+	filter := bson.M{"podcast_id": podID}
+	err := dbClient.FindAllWithBSON(database.ColEpisode, filter, nil, &epis)
+	if err != nil {
+		fmt.Println("error finding all episodes: ", err)
+	}
+	return epis
+}

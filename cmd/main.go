@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
@@ -32,10 +33,12 @@ func main() {
 
 	// tests
 	id, _ := primitive.ObjectIDFromHex("5e895b2433b810425c9d1611")
-	subs := dbClient.FindUserSubs(id)
-	fmt.Println(subs[0].Podcast.Title)
-	fmt.Println(subs[0].CurEpi.Title)
-	fmt.Println(subs[0].CurEpiDetails.Offset)
+	user, err := auth.FindUser(dbClient, id)
+	if err != nil {
+		fmt.Println("error finding user: ", err)
+		return
+	}
+	fmt.Println("user found: ", user)
 
 	//err = podcast.AddNewPodcast(dbClient, "http://joeroganexp.joerogan.libsynpro.com/rss")
 	//if err != nil {
