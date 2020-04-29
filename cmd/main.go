@@ -7,12 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/handler"
 	"github.com/sschwartz96/syncapod/internal/podcast"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func main() {
@@ -32,13 +30,13 @@ func main() {
 	}
 
 	// tests
-	id, _ := primitive.ObjectIDFromHex("5e895b2433b810425c9d1611")
-	user, err := auth.FindUser(dbClient, id)
-	if err != nil {
-		fmt.Println("error finding user: ", err)
-		return
-	}
-	fmt.Println("user found: ", user)
+	// id, _ := primitive.ObjectIDFromHex("5e895b2433b810425c9d1611")
+	// user, err := auth.FindUser(dbClient, id)
+	// if err != nil {
+	// 	fmt.Println("error finding user: ", err)
+	// 	return
+	// }
+	// fmt.Println("user found: ", user)
 
 	//err = podcast.AddNewPodcast(dbClient, "http://joeroganexp.joerogan.libsynpro.com/rss")
 	//if err != nil {

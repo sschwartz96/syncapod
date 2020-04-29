@@ -214,7 +214,7 @@ func (c *Client) Exists(collection string, filter interface{}) (bool, error) {
 }
 
 // FindUser attempts to find user by username/email returns pointer to user or error if not found
-func (c *Client) FindUser(username string) (*models.User, error) {
+func (c *Client) FindUser(username string) (*models.UserDoc, error) {
 	var param string
 	if strings.Contains(username, "@") {
 		param = "email"
@@ -223,7 +223,7 @@ func (c *Client) FindUser(username string) (*models.User, error) {
 		param = "username"
 	}
 
-	var user models.User
+	var user models.UserDoc
 	err := c.Find(ColUser, param, username, &user)
 
 	return &user, err

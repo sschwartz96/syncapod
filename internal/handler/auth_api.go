@@ -116,9 +116,9 @@ func (h *APIHandler) Authenticate(res http.ResponseWriter, req *http.Request) {
 
 	// set up response
 	type Response struct {
-		Authenticated bool         `json:"authenticated"`
-		AccessToken   string       `json:"access_token"`
-		User          *models.User `json:"user"`
+		Authenticated bool            `json:"authenticated"`
+		AccessToken   string          `json:"access_token"`
+		User          *models.UserDoc `json:"user"`
 	}
 	response := Response{Authenticated: false, AccessToken: ""}
 	// match the passwords
