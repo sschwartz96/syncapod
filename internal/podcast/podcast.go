@@ -25,9 +25,9 @@ import (
 // }
 
 // FindOffset takes database client and pointers to user and episode to lookup episode details and offset
-func FindOffset(dbClient *database.Client, user *models.User, episode *models.Episode) int64 {
+func FindOffset(dbClient *database.Client, userID, epiID primitive.ObjectID) int64 {
 	var userEpi models.UserEpisode
-	filter := bson.D{{Key: "user_id", Value: user.ID}, {Key: "episode_id", Value: episode.ID}}
+	filter := bson.D{{Key: "user_id", Value: userID}, {Key: "episode_id", Value: epiID}}
 	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, nil, &userEpi)
 	if err != nil {
 		fmt.Println("error finding user episode details: ", err)

@@ -206,7 +206,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				resText = "Playing " + pod.Title + ", " + epi.Title
 			}
 			if offset == 0 {
-				offset = podcast.FindOffset(h.dbClient, user, epi)
+				offset = podcast.FindOffset(h.dbClient, user.ID, epi.ID)
 			}
 			fmt.Println("offset: ", offset)
 

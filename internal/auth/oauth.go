@@ -50,7 +50,7 @@ func ValidateAuthCode(dbClient *database.Client, code string) (*models.AuthCode,
 }
 
 // ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
-func ValidateAccessToken(dbClient *database.Client, token string) (*models.User, error) {
+func ValidateAccessToken(dbClient *database.Client, token string) (*models.UserDoc, error) {
 	var tokenObj models.AccessToken
 	err := dbClient.Find(database.ColAccessToken, "token", token, &tokenObj)
 	if err != nil {
@@ -62,7 +62,7 @@ func ValidateAccessToken(dbClient *database.Client, token string) (*models.User,
 		return nil, errors.New("expired token")
 	}
 
-	var user models.User
+	var user models.UserDoc
 	err = dbClient.FindByID(database.ColUser, tokenObj.UserID, &user)
 	if err != nil {
 		return nil, err
