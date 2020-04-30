@@ -75,7 +75,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	user, err := auth.ValidateAccessToken(h.dbClient, token)
 	if err != nil {
 		fmt.Println("error validating token: ", err)
-		resText = "Associated account has invalid toke, please re-link account in settings."
+		resText = "Associated account has invalid token, please re-link account in settings."
 	}
 	// we have an error
 	if resText != "" {
