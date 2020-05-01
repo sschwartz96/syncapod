@@ -89,11 +89,13 @@ func getJSONObj(req *http.Request) (*JSONReq, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	// unmarshal json
 	var request JSONReq
 	err = json.Unmarshal(body, &request)
 	if err != nil {
 		return nil, err
 	}
+
 	return &request, err
 }
