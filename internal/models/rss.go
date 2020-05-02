@@ -38,7 +38,8 @@ type RSSEpisode struct {
 	Subtitle    string             `json:"subtitle" bson:"subtitle" xml:"subtitle"`
 	Author      string             `json:"author"  bson:"author"  xml:"author"`
 	Type        string             `json:"type"  bson:"type"  xml:"type"`
-	Image       Image              `json:"image"  bson:"image"  xml:"image"`
+	Image       EpiImage           `json:"image"  bson:"image"  xml:"image"`
+	Thumbnail   EpiThumbnail       `json:"thumbnail"  bson:"thumbnail"  xml:"content>thumbnail"`
 	PubDate     string             `json:"pub_date"  bson:"pub_date"  xml:"pubDate"`
 	Description string             `json:"description"  bson:"description"  xml:"description"`
 	Summary     string             `json:"summary"  bson:"summary"  xml:"summary"`
@@ -65,4 +66,14 @@ type Category struct {
 type Image struct {
 	Title string `json:"title"  bson:"title"  xml:"title"`
 	URL   string `json:"url"  bson:"url"  xml:"url"`
+}
+
+// EpiImage is the image container for episodes
+type EpiImage struct {
+	HREF string `xml:"href,attr"`
+}
+
+// EpiThumbnail is the thumbnail container for rss episodes
+type EpiThumbnail struct {
+	URL string `xml:"url,attr"`
 }

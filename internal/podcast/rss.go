@@ -66,7 +66,7 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *models.Po
 
 		// episode does not exist
 		if !exists {
-			fmt.Println("episode does not exist: ", epi.Title)
+			//fmt.Println("episode does not exist: ", epi.Title)
 			err = dbClient.Insert(database.ColEpisode, &epi)
 			if err != nil {
 				fmt.Println("couldn't insert episode: ", err)
@@ -154,6 +154,8 @@ func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episod
 		fmt.Println("error converting episode: ", err)
 	}
 
+	image := models.Image{Title: "", URL: e.Image.HREF}
+
 	return &models.Episode{
 		ID:             primitive.NewObjectID(),
 		PodcastID:      pID,
@@ -162,7 +164,7 @@ func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episod
 		Subtitle:       e.Subtitle,
 		Author:         e.Author,
 		Type:           e.Type,
-		Image:          e.Image,
+		Image:          image,
 		PubDate:        *pubDate,
 		Summary:        e.Summary,
 		Season:         e.Season,
