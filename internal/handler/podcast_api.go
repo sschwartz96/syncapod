@@ -81,6 +81,9 @@ func (h *APIHandler) Subscription(res http.ResponseWriter, req *http.Request, us
 // UserEpisode handles all requests at /api/podcasts/user_episode/*
 func (h *APIHandler) UserEpisode(res http.ResponseWriter, req *http.Request, user *models.User) {
 	var err error
+	var head string
+	head, req.URL.Path = ShiftPath(req.URL.Path)
+
 	info, err := getJSONObj(req)
 	if err != nil {
 		fmt.Println("couldn't parse the json body of request")
@@ -90,8 +93,8 @@ func (h *APIHandler) UserEpisode(res http.ResponseWriter, req *http.Request, use
 	podID, _ := primitive.ObjectIDFromHex(info.PodID)
 	epiID, _ := primitive.ObjectIDFromHex(info.EpiID)
 
-	switch req.Method {
-	case http.MethodGet:
+	switch head {
+	case "get":
 		userEpi, err := podcast.FindUserEpisode(h.dbClient, user.ID, epiID)
 		if err != nil {
 			fmt.Println("error trying to get userEpi: ", err)
@@ -103,7 +106,7 @@ func (h *APIHandler) UserEpisode(res http.ResponseWriter, req *http.Request, use
 		}
 		res.Write(jsonRes)
 
-	case http.MethodPost:
+	case "update":
 		err = podcast.UpdateOffset(h.dbClient, user.ID, podID, epiID, info.Offset)
 		if err != nil {
 			sendMessageJSON(res, "error updating offest")
