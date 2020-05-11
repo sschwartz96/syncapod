@@ -188,7 +188,8 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 			directive = DirPlay
 			resText = "Resuming"
 			if offset == 0 {
-				offset = aData.Context.AudioPlayer.OffsetInMilliseconds
+				// we want to update the offset via database, so we are sure we have the latest update
+				//offset = aData.Context.AudioPlayer.OffsetInMilliseconds
 			}
 		} else {
 			resText = "Episode not found, please try playing new podcast"
