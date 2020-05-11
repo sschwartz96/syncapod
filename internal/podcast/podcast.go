@@ -24,20 +24,30 @@ import (
 // 	}
 // }
 
-// FindOffset takes database client and pointers to user and episode to lookup episode details and offset
-func FindOffset(dbClient *database.Client, userID, epiID primitive.ObjectID) int64 {
+// FindUserEpisode takes pointer to database client, userID, epiID
+// returns *models.UserEpisode
+func FindUserEpisode(dbClient *database.Client, userID, epiID primitive.ObjectID) (*models.UserEpisode, error) {
 	var userEpi models.UserEpisode
 	filter := bson.D{{Key: "user_id", Value: userID}, {Key: "episode_id", Value: epiID}}
 	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, nil, &userEpi)
 	if err != nil {
-		fmt.Println("error finding user episode details: ", err)
+		return nil, fmt.Errorf("error finding user episodes details, %v", err)
+	}
+	return &userEpi, nil
+}
+
+// FindOffset takes database client and pointers to user and episode to lookup episode details and offset
+func FindOffset(dbClient *database.Client, userID, epiID primitive.ObjectID) int64 {
+	userEpi, err := FindUserEpisode(dbClient, userID, epiID)
+	if err != nil {
+		fmt.Println("error finding offset: ", err)
 		return 0
 	}
 	return userEpi.Offset
 }
 
 // UpdateOffset takes userID epiID and offset and performs upsert to the UserEpisode collection
-func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, offset int64) {
+func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, offset int64) error {
 	userEpi := &models.UserEpisode{UserID: uID, PodcastID: pID, EpisodeID: eID, Offset: offset, Played: false}
 
 	err := dbClient.Upsert(database.ColUserEpisode, bson.D{
@@ -47,7 +57,9 @@ func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, o
 		userEpi)
 	if err != nil {
 		fmt.Println("error upserting offset: ", err)
+		return err
 	}
+	return nil
 }
 
 // FindPodcast takes a *database.Client and podcast ID

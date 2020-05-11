@@ -21,6 +21,8 @@ func (h *APIHandler) Podcast(res http.ResponseWriter, req *http.Request, user *m
 		h.Subscription(res, req, user)
 	case "episodes":
 		h.Episodes(res, req, user)
+	case "user_episode":
+		h.UserEpisode(res, req, user)
 	default:
 		fmt.Fprint(res, "This endpoint is not supported")
 	}
@@ -39,7 +41,7 @@ func (h *APIHandler) Episodes(res http.ResponseWriter, req *http.Request, user *
 			sendMessageJSON(res, fmt.Sprint("Error sending episodes: ", err))
 			return
 		}
-		id, err := primitive.ObjectIDFromHex(jReq.ID)
+		id, err := primitive.ObjectIDFromHex(jReq.PodID)
 		if err != nil {
 			sendMessageJSON(res, "invalid object id")
 			return
@@ -76,11 +78,51 @@ func (h *APIHandler) Subscription(res http.ResponseWriter, req *http.Request, us
 	}
 }
 
+// UserEpisode handles all requests at /api/podcasts/user_episode/*
+func (h *APIHandler) UserEpisode(res http.ResponseWriter, req *http.Request, user *models.User) {
+	var err error
+	info, err := getJSONObj(req)
+	if err != nil {
+		fmt.Println("couldn't parse the json body of request")
+		sendMessageJSON(res, "couldn't parse the json body of the request")
+		return
+	}
+	podID, _ := primitive.ObjectIDFromHex(info.PodID)
+	epiID, _ := primitive.ObjectIDFromHex(info.EpiID)
+
+	switch req.Method {
+	case http.MethodGet:
+		userEpi, err := podcast.FindUserEpisode(h.dbClient, user.ID, epiID)
+		if err != nil {
+			fmt.Println("error trying to get userEpi: ", err)
+			sendMessageJSON(res, fmt.Sprintf("error trying to get userEpi: %v", err))
+		}
+		jsonRes, err := json.Marshal(&userEpi)
+		if err != nil {
+			sendMessageJSON(res, fmt.Sprintf("error marshalling userEpi: %v", err))
+		}
+		res.Write(jsonRes)
+
+	case http.MethodPost:
+		err = podcast.UpdateOffset(h.dbClient, user.ID, podID, epiID, info.Offset)
+		if err != nil {
+			sendMessageJSON(res, "error updating offest")
+			return
+		}
+		sendMessageJSON(res, "success")
+	default:
+		fmt.Fprint(res, "Method not supported")
+	}
+}
+
 // JSONReq is what we could receive in a json request
 type JSONReq struct {
-	ID    string `json:"id,omitempty"`
-	Start int    `json:"start,omitempty"`
-	End   int    `json:"end,omitempty"`
+	PodID  string `json:"pod_id,omitempty"` // podcast id, could be empty
+	EpiID  string `json:"epi_id,omitempty"` // episode id, could be empty
+	Start  int    `json:"start,omitempty"`  // used for getting a list of episodes
+	End    int    `json:"end,omitempty"`    // used for getting list of episodes
+	Offset int64  `json:"offset,omitempty"` // position is the time in milliseconds
+	Played bool   `json:"played,omitempty"` // if the user episode should be marked as played
 }
 
 func getJSONObj(req *http.Request) (*JSONReq, error) {
