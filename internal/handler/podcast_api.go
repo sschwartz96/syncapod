@@ -98,11 +98,11 @@ func (h *APIHandler) UserEpisode(res http.ResponseWriter, req *http.Request, use
 		userEpi, err := podcast.FindUserEpisode(h.dbClient, user.ID, epiID)
 		if err != nil {
 			fmt.Println("error trying to get userEpi: ", err)
-			sendMessageJSON(res, fmt.Sprintf("error trying to get userEpi: %v", err))
+			sendMessageJSON(res, fmt.Sprintf("error trying to get userEpi"))
 		}
 		jsonRes, err := json.Marshal(&userEpi)
 		if err != nil {
-			sendMessageJSON(res, fmt.Sprintf("error marshalling userEpi: %v", err))
+			sendMessageJSON(res, fmt.Sprintf("error marshalling userEpi"))
 		}
 		res.Write(jsonRes)
 
