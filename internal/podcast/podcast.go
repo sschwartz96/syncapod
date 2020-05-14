@@ -5,6 +5,7 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"time"
 
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -48,7 +49,14 @@ func FindOffset(dbClient *database.Client, userID, epiID primitive.ObjectID) int
 
 // UpdateOffset takes userID epiID and offset and performs upsert to the UserEpisode collection
 func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, offset int64) error {
-	userEpi := &models.UserEpisode{UserID: uID, PodcastID: pID, EpisodeID: eID, Offset: offset, Played: false}
+	userEpi := &models.UserEpisode{
+		UserID:    uID,
+		PodcastID: pID,
+		EpisodeID: eID,
+		Offset:    offset,
+		Played:    false,
+		LastSeen:  time.Now(),
+	}
 
 	err := dbClient.Upsert(database.ColUserEpisode, bson.D{
 		{Key: "user_id", Value: uID},
@@ -200,8 +208,9 @@ func UpdateUserEpi(dbClient *database.Client, userID, epiID primitive.ObjectID, 
 		{Key: "episode_id", Value: epiID},
 	}
 
-	update := bson.M{
-		"$set": bson.M{param: data},
+	update := bson.D{
+		{Key: "$set", Value: bson.M{param: data}},
+		{Key: "$set", Value: bson.M{"last_seen": time.Now()}},
 	}
 
 	err := dbClient.UpdateWithBSON(database.ColUserEpisode, filter, update)

@@ -105,6 +105,9 @@ func AddNewPodcast(dbClient *database.Client, url string) error {
 		rssEpi := rssEpisodes[i]
 		rssEpi.ID = primitive.NewObjectID()
 		rssEpi.PodcastID = rssPod.ID
+		if rssEpi.Author == "" {
+			rssEpi.Author = pod.Author
+		}
 
 		epi := convertEpisode(pod.ID, &rssEpi)
 

@@ -49,6 +49,26 @@ func (h *APIHandler) Episodes(res http.ResponseWriter, req *http.Request, user *
 
 		epis := podcast.FindAllEpisodesRange(h.dbClient, id, jReq.Start, jReq.End)
 		err = sendObjectJSON(res, epis)
+	case "latest":
+		// retrieve the last episode
+		pod, epi, offset, err := podcast.FindUserLastPlayed(h.dbClient, user.ID)
+		if err != nil {
+			fmt.Println("error getting the last user played: ", err)
+			sendMessageJSON(res, "User has no last played")
+		}
+
+		// setup information
+		type LatestEpisode struct {
+			Podcast *models.Podcast `json:"podcast"`
+			Episode *models.Episode `json:"episode"`
+			Offset  int64           `json:"offset"`
+		}
+		latestEpisode := &LatestEpisode{Podcast: pod, Episode: epi, Offset: offset}
+
+		// marshal and send
+		jsonRes, _ := json.Marshal(latestEpisode)
+		res.Write(jsonRes)
+
 	default:
 		sendMessageJSON(res, "This endpoint is not supported")
 	}
@@ -98,11 +118,11 @@ func (h *APIHandler) UserEpisode(res http.ResponseWriter, req *http.Request, use
 		userEpi, err := podcast.FindUserEpisode(h.dbClient, user.ID, epiID)
 		if err != nil {
 			fmt.Println("error trying to get userEpi: ", err)
-			sendMessageJSON(res, fmt.Sprintf("error trying to get userEpi"))
+			sendMessageJSON(res, fmt.Sprint("error trying to get userEpi"))
 		}
 		jsonRes, err := json.Marshal(&userEpi)
 		if err != nil {
-			sendMessageJSON(res, fmt.Sprintf("error marshalling userEpi"))
+			sendMessageJSON(res, fmt.Sprint("error marshalling userEpi"))
 		}
 		res.Write(jsonRes)
 
