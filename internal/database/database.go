@@ -8,9 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/protos"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -45,6 +44,7 @@ func Connect(user, pass, URI string) (*Client, error) {
 		opts.Auth.Username = user
 		opts.Auth.Password = pass
 	}
+	opts.SetRegistry(createRegistry())
 
 	// connect to client
 	client, err := mongo.Connect(ctx, opts)
@@ -92,7 +92,7 @@ func (c *Client) Delete(collection, param string, value interface{}) error {
 }
 
 // FindByID takes collection name and pointer to object
-func (c *Client) FindByID(collection string, objID primitive.ObjectID, object interface{}) error {
+func (c *Client) FindByID(collection string, objID *protos.ObjectID, object interface{}) error {
 	return c.Find(collection, "_id", objID, object)
 }
 
@@ -193,7 +193,7 @@ func (c *Client) UpdateWithBSON(collection string, filter, update interface{}) e
 }
 
 // ExistsByID attempts to find a document in the collection based on its ID
-func (c *Client) ExistsByID(collection string, id primitive.ObjectID) (bool, error) {
+func (c *Client) ExistsByID(collection string, id *protos.ObjectID) (bool, error) {
 	return c.Exists(collection, bson.M{"_id": id})
 }
 
@@ -214,7 +214,7 @@ func (c *Client) Exists(collection string, filter interface{}) (bool, error) {
 }
 
 // FindUser attempts to find user by username/email returns pointer to user or error if not found
-func (c *Client) FindUser(username string) (*models.UserDoc, error) {
+func (c *Client) FindUser(username string) (*protos.User, error) {
 	var param string
 	if strings.Contains(username, "@") {
 		param = "email"
@@ -223,7 +223,7 @@ func (c *Client) FindUser(username string) (*models.UserDoc, error) {
 		param = "username"
 	}
 
-	var user models.UserDoc
+	var user protos.User
 	err := c.Find(ColUser, param, username, &user)
 
 	return &user, err

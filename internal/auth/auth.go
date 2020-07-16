@@ -7,11 +7,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/syncapod/internal/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -79,7 +81,7 @@ func CreateKey(l int) string {
 // returns error if the key doesn't exist, or has expired
 func ValidateSession(dbClient *database.Client, key string) (*models.User, error) {
 	// Find the key
-	var sesh models.Session
+	var sesh protos.Session
 	err := dbClient.Find(database.ColSession, "session_key", key, &sesh)
 	if err != nil {
 		fmt.Println("validate sesion, couldn't find session key")
@@ -87,22 +89,22 @@ func ValidateSession(dbClient *database.Client, key string) (*models.User, error
 	}
 
 	// Check if expired
-	if sesh.Expires.Before(time.Now()) {
-		err := dbClient.Delete(database.ColSession, "_id", sesh.ID)
+	if sesh.Expires.AsTime().Before(time.Now()) {
+		err := dbClient.Delete(database.ColSession, "_id", sesh.Id)
 		if err != nil {
 			fmt.Println("couldn't delete session: ", err)
 		}
 		return nil, errors.New("session expired")
 	}
 
-	sesh.LastSeenTime = time.Now()
-	sesh.Expires.Add(time.Hour * 1)
-	go dbClient.Upsert(database.ColSession, bson.M{"_id": sesh.ID}, sesh)
+	sesh.LastSeenTime = ptypes.TimestampNow()
+	util.AddToTimestamp(sesh.Expires, (time.Hour * 1))
+	go dbClient.Upsert(database.ColSession, bson.M{"_id": sesh.Id}, sesh)
 
 	// Find the user
-	//var user models.User
-	//err = dbClient.FindByID(database.ColUser, sesh.UserID, &user)
-	user, err := FindUser(dbClient, sesh.UserID)
+	var user protos.User
+	err = dbClient.FindByID(database.ColUser, sesh.UserID, &user)
+	// user, err := FindUser(dbClient, sesh.UserID)
 	if err != nil {
 		fmt.Println("validate sesion, couldn't find user")
 		return nil, err
@@ -111,27 +113,27 @@ func ValidateSession(dbClient *database.Client, key string) (*models.User, error
 	return user, nil
 }
 
-// FindUser takes a pointer to database.Client and userID and returns user if
-// found, error otherwise
-func FindUser(dbClient *database.Client, userID primitive.ObjectID) (*models.User, error) {
-	match := bson.D{{Key: "$match", Value: bson.M{"_id": userID}}}
-	lookup := bson.D{{Key: "$lookup", Value: bson.D{
-		{Key: "from", Value: database.ColPodcast},
-		{Key: "localField", Value: "subs"},
-		{Key: "foreignField", Value: "_id"},
-		{Key: "as", Value: "subs"},
-	}}}
-	pipeline := mongo.Pipeline{match, lookup}
+// // FindUser takes a pointer to database.Client and userID and returns user if
+// // found, error otherwise
+// func FindUser(dbClient *database.Client, userID primitive.ObjectID) (*models.User, error) {
+// 	match := bson.D{{Key: "$match", Value: bson.M{"_id": userID}}}
+// 	lookup := bson.D{{Key: "$lookup", Value: bson.D{
+// 		{Key: "from", Value: database.ColPodcast},
+// 		{Key: "localField", Value: "subs"},
+// 		{Key: "foreignField", Value: "_id"},
+// 		{Key: "as", Value: "subs"},
+// 	}}}
+// 	pipeline := mongo.Pipeline{match, lookup}
 
-	var user []models.User
-	err := dbClient.Aggregate(database.ColUser, pipeline, &user)
-	if err != nil {
-		return nil, err
-	}
+// 	var user []models.User
+// 	err := dbClient.Aggregate(database.ColUser, pipeline, &user)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	if len(user) == 1 {
-		return &user[0], nil
-	}
+// 	if len(user) == 1 {
+// 		return &user[0], nil
+// 	}
 
-	return nil, errors.New("user not found")
-}
+// 	return nil, errors.New("user not found")
+// }

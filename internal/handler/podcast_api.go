@@ -17,6 +17,7 @@ func (h *APIHandler) Podcast(res http.ResponseWriter, req *http.Request, user *m
 	head, req.URL.Path = ShiftPath(req.URL.Path)
 
 	switch head {
+	// deprecated
 	case "subscriptions":
 		h.Subscription(res, req, user)
 	case "episodes":

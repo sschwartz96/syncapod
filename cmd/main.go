@@ -9,12 +9,12 @@ import (
 
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/syncapod/internal/grpc"
 	"github.com/sschwartz96/syncapod/internal/handler"
 	"github.com/sschwartz96/syncapod/internal/podcast"
 )
 
 func main() {
-
 	// read config
 	config, err := config.ReadConfig("config.json")
 	if err != nil {
@@ -29,29 +29,8 @@ func main() {
 		log.Fatal("couldn't connect to db: ", err)
 	}
 
-	// tests
-	// id, _ := primitive.ObjectIDFromHex("5e895b2433b810425c9d1611")
-	// user, err := auth.FindUser(dbClient, id)
-	// if err != nil {
-	// 	fmt.Println("error finding user: ", err)
-	// 	return
-	// }
-	// fmt.Println("user found: ", user)
-
-	//err = podcast.AddNewPodcast(dbClient, "http://joeroganexp.joerogan.libsynpro.com/rss")
-	//if err != nil {
-	//	fmt.Println("error adding new podcast: ", err)
-	//}
-
-	//err = podcast.AddNewPodcast(dbClient, "http://feeds.99percentinvisible.org/99percentinvisible")
-	//if err != nil {
-	//	fmt.Println("error adding new podcast: ", err)
-	//}
-
-	//err = podcast.AddNewPodcast(dbClient, "http://feeds.twit.tv/twit.xml")
-	//if err != nil {
-	//	fmt.Println("error adding new podcast: ", err)
-	//}
+	// setup gRPC server
+	grpcServer, err := grpc.CreateServer(dbClient)
 
 	// start updating podcasts
 	go podcast.UpdatePodcasts(dbClient)

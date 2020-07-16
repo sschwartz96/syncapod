@@ -16,3 +16,4 @@
 
 # User specified
 config.json
+compile_protos.sh
