@@ -9,11 +9,9 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/syncapod/internal/database"
-	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/util"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -37,8 +35,8 @@ func Compare(hash, password string) bool {
 	return true
 }
 
-// CreateSession creates a session and stores into database
-func CreateSession(dbClient *database.Client, userID primitive.ObjectID,
+// CreateSession creates a session and stores it into database
+func CreateSession(dbClient *database.Client, userID *protos.ObjectID,
 	expires time.Duration, userAgent string) (string, error) {
 	// Create key
 	key := CreateKey(32)
@@ -48,13 +46,13 @@ func CreateSession(dbClient *database.Client, userID primitive.ObjectID,
 	}
 
 	// Create Session object
-	session := models.Session{
-		ID:           primitive.NewObjectID(),
+	session := &protos.Session{
+		Id:           protos.NewObjectID(),
 		UserID:       userID,
 		SessionKey:   key,
-		LoginTime:    time.Now(),
-		LastSeenTime: time.Now(),
-		Expires:      time.Now().Add(expires),
+		LoginTime:    ptypes.TimestampNow(),
+		LastSeenTime: ptypes.TimestampNow(),
+		Expires:      util.AddToTimestamp(ptypes.TimestampNow(), expires),
 		UserAgent:    userAgent,
 	}
 
@@ -79,7 +77,7 @@ func CreateKey(l int) string {
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user
 // returns error if the key doesn't exist, or has expired
-func ValidateSession(dbClient *database.Client, key string) (*models.User, error) {
+func ValidateSession(dbClient *database.Client, key string) (*protos.User, error) {
 	// Find the key
 	var sesh protos.Session
 	err := dbClient.Find(database.ColSession, "session_key", key, &sesh)
@@ -109,8 +107,7 @@ func ValidateSession(dbClient *database.Client, key string) (*models.User, error
 		fmt.Println("validate sesion, couldn't find user")
 		return nil, err
 	}
-
-	return user, nil
+	return &user, nil
 }
 
 // // FindUser takes a pointer to database.Client and userID and returns user if

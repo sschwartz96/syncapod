@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -31,6 +32,7 @@ func main() {
 
 	// setup gRPC server
 	grpcServer, err := grpc.CreateServer(dbClient)
+	net.Listen("tcp", "")
 
 	// start updating podcasts
 	go podcast.UpdatePodcasts(dbClient)

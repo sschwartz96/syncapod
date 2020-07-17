@@ -6,6 +6,7 @@ import (
 
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/protos"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -50,7 +51,7 @@ func ValidateAuthCode(dbClient *database.Client, code string) (*models.AuthCode,
 }
 
 // ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
-func ValidateAccessToken(dbClient *database.Client, token string) (*models.UserDoc, error) {
+func ValidateAccessToken(dbClient *database.Client, token string) (*protos.User, error) {
 	var tokenObj models.AccessToken
 	err := dbClient.Find(database.ColAccessToken, "token", token, &tokenObj)
 	if err != nil {
@@ -62,8 +63,8 @@ func ValidateAccessToken(dbClient *database.Client, token string) (*models.UserD
 		return nil, errors.New("expired token")
 	}
 
-	var user models.UserDoc
-	err = dbClient.FindByID(database.ColUser, tokenObj.UserID, &user)
+	var user protos.User
+	err = dbClient.FindByID(database.ColUser, protos.FromBSONID(&tokenObj.UserID), &user)
 	if err != nil {
 		return nil, err
 	}
