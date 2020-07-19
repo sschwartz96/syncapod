@@ -10,8 +10,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/protos"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -19,7 +21,7 @@ import (
 // UpdatePodcasts attempts to go through the list of podcasts update them via RSS feed
 func UpdatePodcasts(dbClient *database.Client) {
 	for {
-		var podcasts []models.Podcast
+		var podcasts []protos.Podcast
 		// TODO: use mongo "skip" and "limit" to access only a few podcasts say 100 at a time
 		err := dbClient.FindAll(database.ColPodcast, &podcasts)
 		if err != nil {
@@ -41,16 +43,16 @@ func UpdatePodcasts(dbClient *database.Client) {
 }
 
 // UpdatePodcast updates the given podcast via RSS feed
-func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *models.Podcast) {
+func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *protos.Podcast) {
 	defer wg.Done()
-	newPod, err := ParseRSS(pod.RSS)
+	newPod, err := ParseRSS(pod.Rss)
 	if err != nil {
 		fmt.Println("failed to load podcast rss: ", err)
 		return
 	}
 
 	for e := range newPod.RSSEpisodes {
-		epi := convertEpisode(pod.ID, &newPod.RSSEpisodes[e])
+		epi := convertEpisode(pod.Id, &newPod.RSSEpisodes[e])
 		// TODO: maybe check if the episode has the same title but different size
 		// TODO: hopefully the podcast just uses the same URL if they update it
 		// check if the latest episode is in collection
@@ -109,7 +111,7 @@ func AddNewPodcast(dbClient *database.Client, url string) error {
 			rssEpi.Author = pod.Author
 		}
 
-		epi := convertEpisode(pod.ID, &rssEpi)
+		epi := convertEpisode(pod.Id, &rssEpi)
 
 		err = dbClient.Insert(database.ColEpisode, epi)
 		if err != nil {
@@ -151,16 +153,18 @@ func ParseRSS(path string) (*models.RSSPodcast, error) {
 
 // convertEpisode takes in id of parent podcast and RSSEpisode
 // and returns a pointer to Episode
-func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episode {
+func convertEpisode(pID *protos.ObjectID, e *models.RSSEpisode) *protos.Episode {
 	pubDate, err := parseRFC2822(e.PubDate)
 	if err != nil {
 		fmt.Println("error converting episode: ", err)
 	}
+	// no error since we are checking for one above
+	pubTimestamp, _ := ptypes.TimestampProto(*pubDate)
 
-	image := models.Image{Title: "", URL: e.Image.HREF}
+	image := &protos.Image{Title: "", Url: e.Image.HREF}
 
-	return &models.Episode{
-		ID:             primitive.NewObjectID(),
+	return &protos.Episode{
+		Id:             protos.NewObjectID(),
 		PodcastID:      pID,
 		Title:          e.Title,
 		Description:    e.Description,
@@ -168,11 +172,11 @@ func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episod
 		Author:         e.Author,
 		Type:           e.Type,
 		Image:          image,
-		PubDate:        *pubDate,
+		PubDate:        pubTimestamp,
 		Summary:        e.Summary,
-		Season:         e.Season,
-		Episode:        e.Episode,
-		Category:       e.Category,
+		Season:         int32(e.Season),
+		Episode:        int32(e.Episode),
+		Category:       convertCategories(e.Category),
 		Explicit:       e.Explicit,
 		MP3URL:         e.Enclosure.MP3,
 		DurationMillis: parseDuration(e.Duration),
@@ -180,7 +184,7 @@ func convertEpisode(pID primitive.ObjectID, e *models.RSSEpisode) *models.Episod
 }
 
 // convertPodcast
-func convertPodcast(url string, p *models.RSSPodcast) *models.Podcast {
+func convertPodcast(url string, p *models.RSSPodcast) *protos.Podcast {
 
 	keywords := strings.Split(p.Keywords, ",")
 	for w := range keywords {
@@ -191,24 +195,26 @@ func convertPodcast(url string, p *models.RSSPodcast) *models.Podcast {
 	if err != nil {
 		fmt.Println("couldn't parse podcast build date: ", err)
 	}
+	buildTimestamp, _ := ptypes.TimestampProto(*lBuildDate)
 
 	pubDate, err := parseRFC2822(p.PubDate)
 	if err != nil {
 		fmt.Println("couldn't parse podcast pubdate: ", err)
 	}
+	pubTimestamp, _ := ptypes.TimestampProto(*pubDate)
 
-	return &models.Podcast{
-		ID:            primitive.NewObjectID(),
+	return &protos.Podcast{
+		Id:            protos.NewObjectID(),
 		Author:        p.Author,
-		Category:      p.Category,
+		Category:      convertCategories(p.Category),
 		Explicit:      p.Explicit,
-		Image:         p.Image,
+		Image:         &protos.Image{Title: p.Image.Title, Url: p.Image.URL},
 		Keywords:      keywords,
 		Language:      p.Language,
-		LastBuildDate: *lBuildDate,
-		PubDate:       *pubDate,
+		LastBuildDate: buildTimestamp,
+		PubDate:       pubTimestamp,
 		Link:          p.Link,
-		RSS:           url,
+		Rss:           url,
 		Subtitle:      p.Subtitle,
 		Title:         p.Title,
 		Type:          p.Type,
@@ -255,4 +261,20 @@ func parseDuration(d string) int64 {
 	}
 
 	return millis
+}
+
+func convertCategories(cats []models.Category) []*protos.Category {
+	protoCats := make([]*protos.Category, len(cats))
+	for i := range cats {
+		protoCats[i] = convertCategory(cats[i])
+	}
+	return protoCats
+}
+
+func convertCategory(cat models.Category) *protos.Category {
+	newCat := &protos.Category{
+		Text:     cat.Text,
+		Category: convertCategories(cat.Category),
+	}
+	return newCat
 }

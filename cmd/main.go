@@ -8,46 +8,48 @@ import (
 	"strconv"
 	"strings"
 
+	"google.golang.org/grpc"
+
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
-	"github.com/sschwartz96/syncapod/internal/grpc"
 	"github.com/sschwartz96/syncapod/internal/handler"
 	"github.com/sschwartz96/syncapod/internal/podcast"
+	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/syncapod/internal/services"
 )
 
 func main() {
 	// read config
-	config, err := config.ReadConfig("config.json")
+	cfg, err := config.ReadConfig("config.json")
 	if err != nil {
 		log.Fatal("error reading config: ", err)
 	}
-	fmt.Println("Running syncapod version: ", config.Version)
+	fmt.Println("Running syncapod version: ", cfg.Version)
 
 	// connect to db
 	fmt.Println("connecting to db")
-	dbClient, err := database.Connect(config.DbUser, config.DbPass, config.DbURI)
+	dbClient, err := database.Connect(cfg.DbUser, cfg.DbPass, cfg.DbURI)
 	if err != nil {
 		log.Fatal("couldn't connect to db: ", err)
 	}
 
 	// setup gRPC server
-	grpcServer, err := grpc.CreateServer(dbClient)
-	net.Listen("tcp", "")
+	go startGRPC(cfg, dbClient)
 
 	// start updating podcasts
 	go podcast.UpdatePodcasts(dbClient)
 
 	fmt.Println("setting up handlers")
 	// setup handler
-	handler, err := handler.CreateHandler(dbClient, config)
+	handler, err := handler.CreateHandler(dbClient, cfg)
 	if err != nil {
 		log.Fatal("could not setup handlers: ", err)
 	}
 
 	// start server
 	fmt.Println("starting server")
-	port := strings.TrimSpace(strconv.Itoa(config.Port))
-	if config.Port == 443 {
+	port := strings.TrimSpace(strconv.Itoa(cfg.Port))
+	if cfg.Port == 443 {
 		// setup redirect server
 		go func() {
 			if err = http.ListenAndServe(":80", http.HandlerFunc(redirect)); err != nil {
@@ -55,7 +57,7 @@ func main() {
 			}
 		}()
 
-		err = http.ListenAndServeTLS(":"+port, config.CertFile, config.KeyFile, handler)
+		err = http.ListenAndServeTLS(":"+port, cfg.CertFile, cfg.KeyFile, handler)
 	} else {
 		err = http.ListenAndServe(":"+port, handler)
 	}
@@ -68,4 +70,23 @@ func main() {
 
 func redirect(res http.ResponseWriter, req *http.Request) {
 	http.Redirect(res, req, "https://syncapod.com"+req.RequestURI, http.StatusMovedPermanently)
+}
+
+func startGRPC(config *config.Config, dbClient *database.Client) {
+	grpcServer := grpc.NewServer()
+
+	// start listener
+	grpcListener, err := net.Listen("tcp", ":"+strconv.Itoa(config.GRPCPort))
+	if err != nil {
+		log.Fatalf("could not listen on port %d, err: %v", config.GRPCPort, err)
+	}
+
+	// register services
+	protos.RegisterAuthServer(grpcServer, services.NewAuthService(dbClient))
+
+	// serve
+	err = grpcServer.Serve(grpcListener)
+	if err != nil {
+		log.Fatal("could not serve services:", err)
+	}
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
-	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/protos"
 )
 
 // APIHandler handles calls to the syncapod api
@@ -26,8 +26,9 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var head string
 	head, req.URL.Path = ShiftPath(req.URL.Path)
 
+	// TODO: clean up old rest api code
 	// setup a handler function var to use at the end of the method
-	var handler func(http.ResponseWriter, *http.Request, *models.User)
+	// var handler func(http.ResponseWriter, *http.Request, *protos.User)
 
 	switch head {
 	// if endpoint is alexa then we need to just return cause that is handled with oauth
@@ -36,29 +37,29 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		return
 
 	// auth handles authentication
-	case "auth":
-		h.Auth(res, req)
-		return
+	// case "auth":
+	// h.Auth(res, req)
+	// return
 
 	// the rest need to be authorized first
-	case "podcast":
-		handler = h.Podcast
+	// case "podcast":
+	// handler = h.Podcast
 
 	default:
 		fmt.Fprint(res, "This endpoint is not supported")
 		return
 	}
 
-	user, ok := h.checkAuth(req)
+	// user, ok := h.checkAuth(req)
 
-	if ok {
-		handler(res, req, user)
-	} else {
-		sendMessageJSON(res, "Not authorized, please provide valid token")
-	}
+	// if ok {
+	// 	handler(res, req, user)
+	// } else {
+	// 	sendMessageJSON(res, "Not authorized, please provide valid token")
+	// }
 }
 
-func (h *APIHandler) checkAuth(req *http.Request) (*models.User, bool) {
+func (h *APIHandler) checkAuth(req *http.Request) (*protos.User, bool) {
 	token, _, _ := req.BasicAuth()
 
 	if token != "" {

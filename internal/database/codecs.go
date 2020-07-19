@@ -33,7 +33,7 @@ func (o *ObjectIDCodec) EncodeValue(en bsoncodec.EncodeContext, vw bsonrw.ValueW
 		return bsoncodec.ValueEncoderError{Name: "ObjectIDEncodeValue", Kinds: []reflect.Kind{objectIDKind}, Received: val}
 	}
 
-	obj := val.Interface().(protos.ObjectID)
+	obj := &protos.ObjectID{Hex: val.Interface().(protos.ObjectID).Hex}
 	pObj, err := primitive.ObjectIDFromHex(obj.Hex)
 	if err != nil {
 		return err
@@ -74,8 +74,10 @@ func (t *TimestampCodec) EncodeValue(en bsoncodec.EncodeContext, vw bsonrw.Value
 		return bsoncodec.ValueEncoderError{Name: "TimestampEncodeValue", Kinds: []reflect.Kind{timestampKind}, Received: val}
 	}
 
-	ts := val.Interface().(timestamppb.Timestamp)
-	return vw.WriteDateTime(ts.Seconds*1000 + int64(ts.Nanos)/1000000)
+	seconds := val.Interface().(timestamppb.Timestamp).Seconds
+	nanos := val.Interface().(timestamppb.Timestamp).Nanos
+
+	return vw.WriteDateTime(seconds*1000 + int64(nanos)/1000000)
 }
 
 // DecodeValue decodes the bson to timestamp

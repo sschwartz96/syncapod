@@ -36,8 +36,15 @@ func Compare(hash, password string) bool {
 }
 
 // CreateSession creates a session and stores it into database
-func CreateSession(dbClient *database.Client, userID *protos.ObjectID,
-	expires time.Duration, userAgent string) (string, error) {
+func CreateSession(dbClient *database.Client, userID *protos.ObjectID, userAgent string, stayLoggedIn bool) (string, error) {
+	// determine expires
+	var expires time.Duration
+	if stayLoggedIn {
+		expires = time.Hour * 26280
+	} else {
+		expires = time.Hour
+	}
+
 	// Create key
 	key := CreateKey(32)
 
@@ -97,7 +104,7 @@ func ValidateSession(dbClient *database.Client, key string) (*protos.User, error
 
 	sesh.LastSeenTime = ptypes.TimestampNow()
 	util.AddToTimestamp(sesh.Expires, (time.Hour * 1))
-	go dbClient.Upsert(database.ColSession, bson.M{"_id": sesh.Id}, sesh)
+	go dbClient.Upsert(database.ColSession, bson.M{"_id": sesh.Id}, &sesh)
 
 	// Find the user
 	var user protos.User

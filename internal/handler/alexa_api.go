@@ -13,9 +13,8 @@ import (
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
-	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/podcast"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/sschwartz96/syncapod/internal/protos"
 )
 
 // Alexa intents events and directives
@@ -89,15 +88,15 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("request name of podcast: ", name)
 
 	var response *AlexaResponseData
-	var pod *models.Podcast
-	var epi *models.Episode
+	var pod *protos.Podcast
+	var epi *protos.Episode
 	var offset int64
 
 	fmt.Println("the requested intent: ", aData.Request.Intent.Name)
 	switch aData.Request.Intent.Name {
 	case PlayPodcast:
 		// search for the podcast given the name
-		var podcasts []models.Podcast
+		var podcasts []*protos.Podcast
 		err = h.dbClient.Search(database.ColPodcast, name, &podcasts)
 		if err != nil {
 			resText = "Error occurred searching for podcast"
@@ -107,7 +106,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 		// TODO: apply own search logic?
 		// if the search came back with results defualt to first
 		if len(podcasts) > 0 {
-			pod = &podcasts[0]
+			pod = podcasts[0]
 
 			// either find latest episode or find the episode number
 			eNumStr := aData.Request.Intent.AlexaSlots.Episode.Value
@@ -120,7 +119,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				}
 				fmt.Println("episode number: ", epiNumber)
 
-				epi, err = podcast.FindEpisodeByNumber(h.dbClient, pod.ID, epiNumber)
+				epi, err = podcast.FindEpisodeByNumber(h.dbClient, pod.Id, epiNumber)
 				if err != nil {
 					fmt.Println("couldn't find episode with that number: ", err)
 					resText = "Could not find episode with that number, please try again."
@@ -128,7 +127,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				}
 			} else {
 				fmt.Println("finding latest episode of: ", pod.Title)
-				epi, err = podcast.FindLatestEpisode(h.dbClient, pod.ID)
+				epi, err = podcast.FindLatestEpisode(h.dbClient, pod.Id)
 				if err != nil {
 					fmt.Println("Latest episode could not be found: ", err)
 					resText = "Could not find episode, please try again."
@@ -154,10 +153,10 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	case Pause:
 		audioTokens := strings.Split(aData.Context.AudioPlayer.Token, "-")
 		if len(audioTokens) > 1 {
-			podID, _ := primitive.ObjectIDFromHex(audioTokens[1])
-			epiID, _ := primitive.ObjectIDFromHex(audioTokens[2])
+			podID := protos.ObjectIDFromHex(audioTokens[1])
+			epiID := protos.ObjectIDFromHex(audioTokens[2])
 			directive = DirStop
-			defer podcast.UpdateOffset(h.dbClient, user.ID, podID,
+			defer podcast.UpdateOffset(h.dbClient, user.Id, podID,
 				epiID, aData.Context.AudioPlayer.OffsetInMilliseconds)
 		} else {
 			resText = "Please play a podcast first"
@@ -166,8 +165,8 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	case Resume:
 		splitID := strings.Split(aData.Context.AudioPlayer.Token, "-")
 		if len(splitID) > 1 {
-			podID, _ := primitive.ObjectIDFromHex(splitID[1])
-			epiID, _ := primitive.ObjectIDFromHex(splitID[2])
+			podID := protos.ObjectIDFromHex(splitID[1])
+			epiID := protos.ObjectIDFromHex(splitID[2])
 			err := h.dbClient.FindByID(database.ColPodcast, podID, &pod)
 			if err != nil {
 				fmt.Println("couldn't find podcast from ID: ", err)
@@ -176,7 +175,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 			}
 			epi, err = podcast.FindEpisode(h.dbClient, epiID)
 		} else {
-			pod, epi, offset, err = podcast.FindUserLastPlayed(h.dbClient, user.ID)
+			pod, epi, offset, err = podcast.FindUserLastPlayed(h.dbClient, user.Id)
 			if err != nil {
 				fmt.Println("couldn't find user last played: ", err)
 				resText = "Couldn't find any currently played podcast, please play new one"
@@ -207,11 +206,11 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				resText = "Playing " + pod.Title + ", " + epi.Title
 			}
 			if offset == 0 {
-				offset = podcast.FindOffset(h.dbClient, user.ID, epi.ID)
+				offset = podcast.FindOffset(h.dbClient, user.Id, epi.Id)
 			}
 			fmt.Println("offset: ", offset)
 
-			response = createAudioResponse(directive, user.ID.Hex(),
+			response = createAudioResponse(directive, user.Id.GetHex(),
 				resText, pod, epi, offset)
 		} else {
 			response = createPauseResponse(directive)
@@ -231,17 +230,17 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 
 // moveAudio takes pointer to aData and bool for direction
 // returns pointers to podcast and episode, response text and offset in millis
-func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*models.Podcast, *models.Episode, string, int64) {
-	var pod *models.Podcast
-	var epi *models.Episode
+func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*protos.Podcast, *protos.Episode, string, int64) {
+	var pod *protos.Podcast
+	var epi *protos.Episode
 	var resText string
 	var offset int64
 	var err error
 
 	audioTokens := strings.Split(aData.Context.AudioPlayer.Token, "-")
 	if len(audioTokens) > 1 {
-		pID, _ := primitive.ObjectIDFromHex(audioTokens[1])
-		eID, _ := primitive.ObjectIDFromHex(audioTokens[2])
+		pID := protos.ObjectIDFromHex(audioTokens[1])
+		eID := protos.ObjectIDFromHex(audioTokens[2])
 
 		// find podcast
 		pod, err = podcast.FindPodcast(h.dbClient, pID)
@@ -333,16 +332,16 @@ func durationToText(dur time.Duration) string {
 }
 
 func createAudioResponse(directive, userID, text string,
-	pod *models.Podcast, epi *models.Episode, offset int64) *AlexaResponseData {
+	pod *protos.Podcast, epi *protos.Episode, offset int64) *AlexaResponseData {
 
 	mp3URL := epi.MP3URL
 	if !strings.Contains(mp3URL, "https") {
 		mp3URL = strings.Replace(mp3URL, "http", "https", 1)
 	}
 
-	imgURL := epi.Image.URL
+	imgURL := epi.Image.Url
 	if imgURL == "" {
-		imgURL = pod.Image.URL
+		imgURL = pod.Image.Url
 		if imgURL == "" {
 			// custom generic defualt image
 			imgURL = "https://emby.media/community/uploads/inline/355992/5c1cc71abf1ee_genericcoverart.jpg"
@@ -359,7 +358,7 @@ func createAudioResponse(directive, userID, text string,
 					AudioItem: AlexaAudioItem{
 						Stream: AlexaStream{
 							URL:                  mp3URL,
-							Token:                userID + "-" + pod.ID.Hex() + "-" + epi.ID.Hex(),
+							Token:                userID + "-" + pod.Id.GetHex() + "-" + epi.Id.GetHex(),
 							OffsetInMilliseconds: offset,
 						},
 						Metadata: AlexaMetadata{
@@ -475,9 +474,9 @@ func (h *APIHandler) AudioEvent(res http.ResponseWriter, req *http.Request, body
 	}
 
 	uID, pID, eID, err := getIDsFromToken(data.Event.Payload.Token)
-	userID, _ := primitive.ObjectIDFromHex(uID)
-	podID, _ := primitive.ObjectIDFromHex(pID)
-	epiID, _ := primitive.ObjectIDFromHex(eID)
+	userID := protos.ObjectIDFromHex(uID)
+	podID := protos.ObjectIDFromHex(pID)
+	epiID := protos.ObjectIDFromHex(eID)
 
 	if err != nil {
 		fmt.Println(err)

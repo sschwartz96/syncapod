@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"strings"
 	"text/template"
-	"time"
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -113,8 +112,7 @@ func (h *OauthHandler) Login(res http.ResponseWriter, req *http.Request) {
 	}
 
 	if auth.Compare(user.Password, password) {
-		// create 5 min session and send auth key
-		key, err := auth.CreateSession(h.dbClient, user.ID, time.Minute*5, req.UserAgent())
+		key, err := auth.CreateSession(h.dbClient, user.Id, req.UserAgent(), false)
 		if err != nil {
 			h.loginTemplate.Execute(res, true)
 			return
@@ -148,7 +146,7 @@ func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 
 	// create auth code
 	clientID := strings.TrimSpace(req.URL.Query().Get("client_id"))
-	authCode := auth.CreateAuthorizationCode(h.dbClient, user.ID, clientID)
+	authCode := auth.CreateAuthorizationCode(h.dbClient, user.Id, clientID)
 
 	// setup redirect url
 	redirectURI := strings.TrimSpace(req.URL.Query().Get("redirect_uri"))

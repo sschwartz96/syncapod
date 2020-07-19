@@ -7,11 +7,10 @@ import (
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/protos"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateAuthorizationCode creates and saves an authorization code with the client & user id
-func CreateAuthorizationCode(dbClient *database.Client, userID primitive.ObjectID, clientID string) string {
+func CreateAuthorizationCode(dbClient *database.Client, userID *protos.ObjectID, clientID string) string {
 	code := models.AuthCode{
 		Code:     CreateKey(64),
 		ClientID: clientID,
@@ -64,7 +63,7 @@ func ValidateAccessToken(dbClient *database.Client, token string) (*protos.User,
 	}
 
 	var user protos.User
-	err = dbClient.FindByID(database.ColUser, protos.FromBSONID(&tokenObj.UserID), &user)
+	err = dbClient.FindByID(database.ColUser, tokenObj.UserID, &user)
 	if err != nil {
 		return nil, err
 	}

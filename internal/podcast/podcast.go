@@ -7,28 +7,28 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/golang/protobuf/ptypes"
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
-	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/tcolgate/mp3"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // AddEpiIDs adds missing IDs to the podcast object and episode objects
-// func AddEpiIDs(podcast *models.RSSPodcast) {
-// 	podcast.ID = primitive.NewObjectID()
+// func AddEpiIDs(podcast *protos.RSSPodcast) {
+// 	podcast.ID = *protos.NewObjectID()
 
 // 	for i := range podcast.Episodes {
-// 		podcast.Episodes[i].ID = primitive.NewObjectID()
+// 		podcast.Episodes[i].ID = *protos.NewObjectID()
 // 	}
 // }
 
 // FindUserEpisode takes pointer to database client, userID, epiID
-// returns *models.UserEpisode
-func FindUserEpisode(dbClient *database.Client, userID, epiID primitive.ObjectID) (*models.UserEpisode, error) {
-	var userEpi models.UserEpisode
+// returns *protos.UserEpisode
+func FindUserEpisode(dbClient *database.Client, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
+	var userEpi protos.UserEpisode
 	filter := bson.D{{Key: "user_id", Value: userID}, {Key: "episode_id", Value: epiID}}
 	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, nil, &userEpi)
 	if err != nil {
@@ -38,7 +38,7 @@ func FindUserEpisode(dbClient *database.Client, userID, epiID primitive.ObjectID
 }
 
 // FindOffset takes database client and pointers to user and episode to lookup episode details and offset
-func FindOffset(dbClient *database.Client, userID, epiID primitive.ObjectID) int64 {
+func FindOffset(dbClient *database.Client, userID, epiID *protos.ObjectID) int64 {
 	userEpi, err := FindUserEpisode(dbClient, userID, epiID)
 	if err != nil {
 		fmt.Println("error finding offset: ", err)
@@ -48,14 +48,14 @@ func FindOffset(dbClient *database.Client, userID, epiID primitive.ObjectID) int
 }
 
 // UpdateOffset takes userID epiID and offset and performs upsert to the UserEpisode collection
-func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, offset int64) error {
-	userEpi := &models.UserEpisode{
+func UpdateOffset(dbClient *database.Client, uID, pID, eID *protos.ObjectID, offset int64) error {
+	userEpi := &protos.UserEpisode{
 		UserID:    uID,
 		PodcastID: pID,
 		EpisodeID: eID,
 		Offset:    offset,
 		Played:    false,
-		LastSeen:  time.Now(),
+		LastSeen:  ptypes.TimestampNow(),
 	}
 
 	err := dbClient.Upsert(database.ColUserEpisode, bson.D{
@@ -71,17 +71,17 @@ func UpdateOffset(dbClient *database.Client, uID, pID, eID primitive.ObjectID, o
 }
 
 // FindPodcast takes a *database.Client and podcast ID
-func FindPodcast(dbClient *database.Client, podID primitive.ObjectID) (*models.Podcast, error) {
-	var pod models.Podcast
+func FindPodcast(dbClient *database.Client, podID *protos.ObjectID) (*protos.Podcast, error) {
+	var pod protos.Podcast
 	err := dbClient.FindByID(database.ColPodcast, podID, &pod)
 	return &pod, err
 }
 
 // FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
-func FindUserLastPlayed(dbClient *database.Client, userID primitive.ObjectID) (*models.Podcast, *models.Episode, int64, error) {
-	var userEp models.UserEpisode
-	var pod models.Podcast
-	var epi models.Episode
+func FindUserLastPlayed(dbClient *database.Client, userID *protos.ObjectID) (*protos.Podcast, *protos.Episode, int64, error) {
+	var userEp protos.UserEpisode
+	var pod protos.Podcast
+	var epi protos.Episode
 
 	// find the latest played user_episode
 	filter := bson.M{"user_id": userID}
@@ -192,17 +192,17 @@ func FindLength(url string) int64 {
 }
 
 // UpdateUserEpiOffset changes the offset in the collection
-func UpdateUserEpiOffset(dbClient *database.Client, userID, epiID primitive.ObjectID, offset int64) error {
+func UpdateUserEpiOffset(dbClient *database.Client, userID, epiID *protos.ObjectID, offset int64) error {
 	return UpdateUserEpi(dbClient, userID, epiID, "offset", offset)
 }
 
 // UpdateUserEpiPlayed marks the episode as played in db
-func UpdateUserEpiPlayed(dbClient *database.Client, userID, epiID primitive.ObjectID, played bool) error {
+func UpdateUserEpiPlayed(dbClient *database.Client, userID, epiID *protos.ObjectID, played bool) error {
 	return UpdateUserEpi(dbClient, userID, epiID, "played", played)
 }
 
 // UpdateUserEpi updates the user's episode data based on param and data
-func UpdateUserEpi(dbClient *database.Client, userID, epiID primitive.ObjectID, param string, data interface{}) error {
+func UpdateUserEpi(dbClient *database.Client, userID, epiID *protos.ObjectID, param string, data interface{}) error {
 	filter := bson.D{
 		{Key: "user_id", Value: userID},
 		{Key: "episode_id", Value: epiID},
@@ -223,10 +223,10 @@ func UpdateUserEpi(dbClient *database.Client, userID, epiID primitive.ObjectID, 
 // TODO:
 
 // MatchTitle is a helper function to match search with a list of podcasts titles
-func MatchTitle(search string, podcasts []models.Podcast) {
+func MatchTitle(search string, podcasts []protos.Podcast) {
 	var titles []string
-	for _, podcast := range podcasts {
-		titles = append(titles, podcast.Title)
+	for i := range podcasts {
+		titles = append(titles, podcasts[i].Title)
 	}
 
 	bagSizes := []int{2, 3, 4}

@@ -17,6 +17,8 @@ type Config struct {
 	KeyFile       string  `json:"key_file"`
 	AlexaClientID string  `json:"alexa_client_id"`
 	AlexaSecret   string  `json:"alexa_secret"`
+
+	GRPCPort int `json:"grpc_port"`
 }
 
 // ReadConfig reads the config file encoded in JSON

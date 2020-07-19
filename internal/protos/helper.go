@@ -17,3 +17,8 @@ func FromBSONID(o *primitive.ObjectID) *ObjectID {
 func NewObjectID() *ObjectID {
 	return &ObjectID{Hex: primitive.NewObjectID().Hex()}
 }
+
+// ObjectIDFromHex takes the hex and wraps it in a ObjectID struct
+func ObjectIDFromHex(hex string) *ObjectID {
+	return &ObjectID{Hex: hex}
+}
