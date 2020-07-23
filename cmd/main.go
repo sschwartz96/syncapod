@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -82,6 +83,7 @@ func startGRPC(config *config.Config, dbClient *database.Client) {
 	}
 
 	// register services
+	reflection.Register(grpcServer)
 	protos.RegisterAuthServer(grpcServer, services.NewAuthService(dbClient))
 
 	// serve

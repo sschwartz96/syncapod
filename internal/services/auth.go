@@ -10,14 +10,17 @@ import (
 	"github.com/sschwartz96/syncapod/internal/database"
 )
 
+// AuthService is the gRPC service for authentication and authorization
 type AuthService struct {
 	dbClient *database.Client
 }
 
+// NewAuthService creates a new *AuthService
 func NewAuthService(dbClient *database.Client) *AuthService {
 	return &AuthService{dbClient: dbClient}
 }
 
+// Authenticate handles the authentication to syncapod and returns response
 func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
 	res := &protos.AuthRes{}
 
@@ -38,6 +41,7 @@ func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*p
 			res.Success = true
 			res.User = user
 			res.SessionKey = key
+			res.User.Password = ""
 		}
 	} else {
 		res.Success = false
@@ -47,6 +51,7 @@ func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*p
 
 // Authorize authorizes user based on a session key
 func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
+	fmt.Println("received grpc authorize request")
 	res := &protos.AuthRes{}
 
 	user, err := auth.ValidateSession(a.dbClient, req.SessionKey)

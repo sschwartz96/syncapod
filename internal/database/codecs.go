@@ -105,8 +105,8 @@ func (t *TimestampCodec) DecodeValue(dc bsoncodec.DecodeContext, vr bsonrw.Value
 func createRegistry() *bsoncodec.Registry {
 	// register our custom codec
 	rb := bsoncodec.NewRegistryBuilder().
-		RegisterCodec(reflect.TypeOf(timestampType), &TimestampCodec{}).
-		RegisterCodec(reflect.TypeOf(objectIDType), &ObjectIDCodec{})
+		RegisterCodec(timestampType, &TimestampCodec{}).
+		RegisterCodec(objectIDType, &ObjectIDCodec{})
 
 	// register the default encoders & decoders, and primitive codecs
 	bsoncodec.DefaultValueDecoders{}.RegisterDefaultDecoders(rb)

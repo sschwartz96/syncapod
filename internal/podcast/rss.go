@@ -58,7 +58,7 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *protos.Po
 		// check if the latest episode is in collection
 		filter := bson.D{
 			{Key: "title", Value: epi.Title},
-			{Key: "pub_date", Value: epi.PubDate},
+			{Key: "pubdate", Value: epi.PubDate},
 		}
 		exists, err := dbClient.Exists(database.ColEpisode, filter)
 		if err != nil {
@@ -68,7 +68,6 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *protos.Po
 
 		// episode does not exist
 		if !exists {
-			//fmt.Println("episode does not exist: ", epi.Title)
 			err = dbClient.Insert(database.ColEpisode, &epi)
 			if err != nil {
 				fmt.Println("couldn't insert episode: ", err)

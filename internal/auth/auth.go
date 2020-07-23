@@ -87,7 +87,7 @@ func CreateKey(l int) string {
 func ValidateSession(dbClient *database.Client, key string) (*protos.User, error) {
 	// Find the key
 	var sesh protos.Session
-	err := dbClient.Find(database.ColSession, "session_key", key, &sesh)
+	err := dbClient.Find(database.ColSession, "sessionkey", key, &sesh)
 	if err != nil {
 		fmt.Println("validate sesion, couldn't find session key")
 		return nil, err
@@ -102,8 +102,12 @@ func ValidateSession(dbClient *database.Client, key string) (*protos.User, error
 		return nil, errors.New("session expired")
 	}
 
+	// calculate time to add to expiration
+	lastSeen, _ := ptypes.Timestamp(sesh.LastSeenTime)
+	timeToAdd := time.Now().Sub(lastSeen)
+
 	sesh.LastSeenTime = ptypes.TimestampNow()
-	util.AddToTimestamp(sesh.Expires, (time.Hour * 1))
+	util.AddToTimestamp(sesh.Expires, timeToAdd)
 	go dbClient.Upsert(database.ColSession, bson.M{"_id": sesh.Id}, &sesh)
 
 	// Find the user
