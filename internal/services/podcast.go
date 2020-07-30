@@ -26,7 +26,7 @@ func (p *PodcastService) GetEpisodes(ctx context.Context, req *protos.Request) (
 
 	// get the id and validate
 	if req.PodcastID != nil || len(req.PodcastID.Hex) > 0 {
-		episodes = podcast.FindAllEpisodes(p.dbClient, req.PodcastID)
+		episodes = podcast.FindAllEpisodesRange(p.dbClient, req.PodcastID, req.start, req.end)
 	}
 	return &protos.Episodes{Episodes: episodes}, nil
 }
@@ -41,9 +41,16 @@ func (p *PodcastService) GetUserEpisode(ctx context.Context, req *protos.Request
 }
 
 // UpdateUserEpisode updates the user playback metadata via episode id & user id
-func (p *PodcastService) UpdateUserEpisode(ctx context.Context, req *protos.UserEpisode) (*protos.Response, error) {
+func (p *PodcastService) UpdateUserEpisode(ctx context.Context, req *protos.UserEpisodeReq) (*protos.Response, error) {
 	if req.LastSeen == nil {
 		req.LastSeen = ptypes.TimestampNow()
+	}
+	userEpi := &protos.UserEpisode{
+
+		EpisodeID: req.EpisodeID,
+		PodcastID: req.PodcastID,
+		Played:    req.Played,
+		Offset:    req.Offset,
 	}
 	err := podcast.UpdateUserEpi(p.dbClient, req)
 	if err != nil {

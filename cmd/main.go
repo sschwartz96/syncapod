@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 
 	"github.com/sschwartz96/syncapod/internal/config"
@@ -74,6 +75,13 @@ func redirect(res http.ResponseWriter, req *http.Request) {
 }
 
 func startGRPC(config *config.Config, dbClient *database.Client) {
+	// whether or not we are running on the server
+	if config.CertFile != "" {
+
+	}
+
+	// setup tls for grpc
+	creds, err := credentials.NewClientTLSFromFile(config.CertFile, "syncapod")
 	grpcServer := grpc.NewServer()
 
 	// start listener
