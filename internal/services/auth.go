@@ -66,3 +66,14 @@ func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*prot
 
 	return res, nil
 }
+
+// Logout removes the given session key
+func (a *AuthService) Logout(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
+	success := true
+	err := a.dbClient.Delete(database.ColSession, "sessionkey", req.SessionKey)
+	if err != nil {
+		fmt.Println("error logging out:", err)
+		success = false
+	}
+	return &protos.AuthRes{Success: success}, nil
+}

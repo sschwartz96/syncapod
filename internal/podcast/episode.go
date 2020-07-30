@@ -65,9 +65,9 @@ func FindLatestEpisode(dbClient *database.Client, podID *protos.ObjectID) (*prot
 // s = start, e = end
 func FindAllEpisodesRange(dbClient *database.Client, podID *protos.ObjectID, s, e int) []protos.Episode {
 	var epis []protos.Episode
-	filter := bson.M{"podcast_id": podID}
+	filter := bson.M{"podcastid": podID}
 	opts := options.Find().SetLimit(int64(e - s)).SetSkip(int64(s)).SetSort(
-		bson.M{"pub_date": -1},
+		bson.M{"pubdate": -1},
 	)
 	err := dbClient.FindAllWithBSON(database.ColEpisode, filter, opts, &epis)
 	if err != nil {
@@ -77,10 +77,11 @@ func FindAllEpisodesRange(dbClient *database.Client, podID *protos.ObjectID, s, 
 }
 
 // FindAllEpisodes takesa pointer to database.Client and a podcast id
-func FindAllEpisodes(dbClient *database.Client, podID *protos.ObjectID) []protos.Episode {
-	var epis []protos.Episode
-	filter := bson.M{"podcast_id": podID}
-	err := dbClient.FindAllWithBSON(database.ColEpisode, filter, nil, &epis)
+func FindAllEpisodes(dbClient *database.Client, podID *protos.ObjectID) []*protos.Episode {
+	var epis []*protos.Episode
+	filter := bson.M{"podcastid": podID}
+	opts := options.Find().SetSort(bson.M{"pubdate": -1})
+	err := dbClient.FindAllWithBSON(database.ColEpisode, filter, opts, &epis)
 	if err != nil {
 		fmt.Println("error finding all episodes: ", err)
 	}

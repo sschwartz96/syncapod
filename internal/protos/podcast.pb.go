@@ -647,6 +647,116 @@ func (x *UserEpiReq) GetPlayed() bool {
 	return false
 }
 
+type LastPlayedRes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Podcast *Podcast `protobuf:"bytes,1,opt,name=podcast,proto3" json:"podcast,omitempty"`
+	Episode *Episode `protobuf:"bytes,2,opt,name=episode,proto3" json:"episode,omitempty"`
+	Millis  int64    `protobuf:"varint,3,opt,name=millis,proto3" json:"millis,omitempty"`
+}
+
+func (x *LastPlayedRes) Reset() {
+	*x = LastPlayedRes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_podcast_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LastPlayedRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LastPlayedRes) ProtoMessage() {}
+
+func (x *LastPlayedRes) ProtoReflect() protoreflect.Message {
+	mi := &file_podcast_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LastPlayedRes.ProtoReflect.Descriptor instead.
+func (*LastPlayedRes) Descriptor() ([]byte, []int) {
+	return file_podcast_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *LastPlayedRes) GetPodcast() *Podcast {
+	if x != nil {
+		return x.Podcast
+	}
+	return nil
+}
+
+func (x *LastPlayedRes) GetEpisode() *Episode {
+	if x != nil {
+		return x.Episode
+	}
+	return nil
+}
+
+func (x *LastPlayedRes) GetMillis() int64 {
+	if x != nil {
+		return x.Millis
+	}
+	return 0
+}
+
+type Subscriptions struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Subscriptions []*Subscription `protobuf:"bytes,1,rep,name=subscriptions,proto3" json:"subscriptions,omitempty"`
+}
+
+func (x *Subscriptions) Reset() {
+	*x = Subscriptions{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_podcast_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Subscriptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Subscriptions) ProtoMessage() {}
+
+func (x *Subscriptions) ProtoReflect() protoreflect.Message {
+	mi := &file_podcast_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Subscriptions.ProtoReflect.Descriptor instead.
+func (*Subscriptions) Descriptor() ([]byte, []int) {
+	return file_podcast_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *Subscriptions) GetSubscriptions() []*Subscription {
+	if x != nil {
+		return x.Subscriptions
+	}
+	return nil
+}
+
 type Episodes struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -658,7 +768,7 @@ type Episodes struct {
 func (x *Episodes) Reset() {
 	*x = Episodes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_podcast_proto_msgTypes[7]
+		mi := &file_podcast_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -671,7 +781,7 @@ func (x *Episodes) String() string {
 func (*Episodes) ProtoMessage() {}
 
 func (x *Episodes) ProtoReflect() protoreflect.Message {
-	mi := &file_podcast_proto_msgTypes[7]
+	mi := &file_podcast_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -684,7 +794,7 @@ func (x *Episodes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Episodes.ProtoReflect.Descriptor instead.
 func (*Episodes) Descriptor() ([]byte, []int) {
-	return file_podcast_proto_rawDescGZIP(), []int{7}
+	return file_podcast_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Episodes) GetEpisodes() []*Episode {
@@ -795,30 +905,44 @@ var file_podcast_proto_rawDesc = []byte{
 	0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18, 0x03, 0x20, 0x01,
 	0x28, 0x03, 0x52, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x6c,
 	0x61, 0x79, 0x65, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79,
-	0x65, 0x64, 0x22, 0x37, 0x0a, 0x08, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x12, 0x2b,
-	0x0a, 0x08, 0x65, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64,
-	0x65, 0x52, 0x08, 0x65, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x32, 0xad, 0x02, 0x0a, 0x0e,
-	0x50, 0x6f, 0x64, 0x63, 0x61, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x32,
-	0x0a, 0x0b, 0x47, 0x65, 0x74, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x12, 0x0f, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73,
-	0x22, 0x00, 0x12, 0x38, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x45, 0x70, 0x69,
-	0x73, 0x6f, 0x64, 0x65, 0x12, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x55,
-	0x73, 0x65, 0x72, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x22, 0x00, 0x12, 0x3b, 0x0a, 0x11,
-	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64,
-	0x65, 0x12, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x45,
-	0x70, 0x69, 0x52, 0x65, 0x71, 0x1a, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x37, 0x0a, 0x10, 0x47, 0x65, 0x74,
-	0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x0f, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73,
-	0x22, 0x00, 0x12, 0x37, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x4c, 0x61, 0x73,
-	0x74, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x64, 0x12, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73,
-	0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x73, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x2e,
-	0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x64, 0x22, 0x7d, 0x0a, 0x0d, 0x4c, 0x61, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x64,
+	0x52, 0x65, 0x73, 0x12, 0x29, 0x0a, 0x07, 0x70, 0x6f, 0x64, 0x63, 0x61, 0x73, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x50, 0x6f,
+	0x64, 0x63, 0x61, 0x73, 0x74, 0x52, 0x07, 0x70, 0x6f, 0x64, 0x63, 0x61, 0x73, 0x74, 0x12, 0x29,
+	0x0a, 0x07, 0x65, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65,
+	0x52, 0x07, 0x65, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x69, 0x6c,
+	0x6c, 0x69, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x6d, 0x69, 0x6c, 0x6c, 0x69,
+	0x73, 0x22, 0x4b, 0x0a, 0x0d, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x12, 0x3a, 0x0a, 0x0d, 0x73, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x73, 0x2e, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x0d, 0x73, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x37,
+	0x0a, 0x08, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x12, 0x2b, 0x0a, 0x08, 0x65, 0x70,
+	0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x52, 0x08, 0x65,
+	0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x32, 0xb9, 0x02, 0x0a, 0x0e, 0x50, 0x6f, 0x64, 0x63,
+	0x61, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x32, 0x0a, 0x0b, 0x47, 0x65,
+	0x74, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x12, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x73, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x73, 0x22, 0x00, 0x12, 0x38,
+	0x0a, 0x0e, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65,
+	0x12, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x45,
+	0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x11, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x12, 0x13, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x45, 0x70, 0x69, 0x73, 0x6f,
+	0x64, 0x65, 0x1a, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x75, 0x62,
+	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x0f, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x4c,
+	0x61, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x64, 0x12, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x73, 0x2e, 0x4c, 0x61, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x64, 0x52, 0x65,
+	0x73, 0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -833,7 +957,7 @@ func file_podcast_proto_rawDescGZIP() []byte {
 	return file_podcast_proto_rawDescData
 }
 
-var file_podcast_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_podcast_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_podcast_proto_goTypes = []interface{}{
 	(*Image)(nil),               // 0: protos.Image
 	(*Category)(nil),            // 1: protos.Category
@@ -842,44 +966,50 @@ var file_podcast_proto_goTypes = []interface{}{
 	(*Request)(nil),             // 4: protos.Request
 	(*Response)(nil),            // 5: protos.Response
 	(*UserEpiReq)(nil),          // 6: protos.UserEpiReq
-	(*Episodes)(nil),            // 7: protos.Episodes
-	(*ObjectID)(nil),            // 8: protos.ObjectID
-	(*timestamp.Timestamp)(nil), // 9: google.protobuf.Timestamp
-	(*UserEpisode)(nil),         // 10: protos.UserEpisode
+	(*LastPlayedRes)(nil),       // 7: protos.LastPlayedRes
+	(*Subscriptions)(nil),       // 8: protos.Subscriptions
+	(*Episodes)(nil),            // 9: protos.Episodes
+	(*ObjectID)(nil),            // 10: protos.ObjectID
+	(*timestamp.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*Subscription)(nil),        // 12: protos.Subscription
+	(*UserEpisode)(nil),         // 13: protos.UserEpisode
 }
 var file_podcast_proto_depIdxs = []int32{
 	1,  // 0: protos.Category.category:type_name -> protos.Category
-	8,  // 1: protos.Podcast.id:type_name -> protos.ObjectID
+	10, // 1: protos.Podcast.id:type_name -> protos.ObjectID
 	0,  // 2: protos.Podcast.image:type_name -> protos.Image
 	1,  // 3: protos.Podcast.category:type_name -> protos.Category
-	9,  // 4: protos.Podcast.pubDate:type_name -> google.protobuf.Timestamp
-	9,  // 5: protos.Podcast.lastBuildDate:type_name -> google.protobuf.Timestamp
-	8,  // 6: protos.Episode.id:type_name -> protos.ObjectID
-	8,  // 7: protos.Episode.podcastID:type_name -> protos.ObjectID
+	11, // 4: protos.Podcast.pubDate:type_name -> google.protobuf.Timestamp
+	11, // 5: protos.Podcast.lastBuildDate:type_name -> google.protobuf.Timestamp
+	10, // 6: protos.Episode.id:type_name -> protos.ObjectID
+	10, // 7: protos.Episode.podcastID:type_name -> protos.ObjectID
 	0,  // 8: protos.Episode.image:type_name -> protos.Image
-	9,  // 9: protos.Episode.pubDate:type_name -> google.protobuf.Timestamp
+	11, // 9: protos.Episode.pubDate:type_name -> google.protobuf.Timestamp
 	1,  // 10: protos.Episode.category:type_name -> protos.Category
-	8,  // 11: protos.Request.userID:type_name -> protos.ObjectID
-	8,  // 12: protos.Request.podcastID:type_name -> protos.ObjectID
-	8,  // 13: protos.Request.episodeID:type_name -> protos.ObjectID
-	8,  // 14: protos.UserEpiReq.userID:type_name -> protos.ObjectID
-	8,  // 15: protos.UserEpiReq.episodeID:type_name -> protos.ObjectID
-	3,  // 16: protos.Episodes.episodes:type_name -> protos.Episode
-	4,  // 17: protos.PodcastService.GetEpisodes:input_type -> protos.Request
-	4,  // 18: protos.PodcastService.GetUserEpisode:input_type -> protos.Request
-	6,  // 19: protos.PodcastService.UpdateUserEpisode:input_type -> protos.UserEpiReq
-	4,  // 20: protos.PodcastService.GetSubscriptions:input_type -> protos.Request
-	4,  // 21: protos.PodcastService.GetUserLastPlayed:input_type -> protos.Request
-	7,  // 22: protos.PodcastService.GetEpisodes:output_type -> protos.Episodes
-	10, // 23: protos.PodcastService.GetUserEpisode:output_type -> protos.UserEpisode
-	5,  // 24: protos.PodcastService.UpdateUserEpisode:output_type -> protos.Response
-	7,  // 25: protos.PodcastService.GetSubscriptions:output_type -> protos.Episodes
-	3,  // 26: protos.PodcastService.GetUserLastPlayed:output_type -> protos.Episode
-	22, // [22:27] is the sub-list for method output_type
-	17, // [17:22] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	10, // 11: protos.Request.userID:type_name -> protos.ObjectID
+	10, // 12: protos.Request.podcastID:type_name -> protos.ObjectID
+	10, // 13: protos.Request.episodeID:type_name -> protos.ObjectID
+	10, // 14: protos.UserEpiReq.userID:type_name -> protos.ObjectID
+	10, // 15: protos.UserEpiReq.episodeID:type_name -> protos.ObjectID
+	2,  // 16: protos.LastPlayedRes.podcast:type_name -> protos.Podcast
+	3,  // 17: protos.LastPlayedRes.episode:type_name -> protos.Episode
+	12, // 18: protos.Subscriptions.subscriptions:type_name -> protos.Subscription
+	3,  // 19: protos.Episodes.episodes:type_name -> protos.Episode
+	4,  // 20: protos.PodcastService.GetEpisodes:input_type -> protos.Request
+	4,  // 21: protos.PodcastService.GetUserEpisode:input_type -> protos.Request
+	13, // 22: protos.PodcastService.UpdateUserEpisode:input_type -> protos.UserEpisode
+	4,  // 23: protos.PodcastService.GetSubscriptions:input_type -> protos.Request
+	4,  // 24: protos.PodcastService.GetUserLastPlayed:input_type -> protos.Request
+	9,  // 25: protos.PodcastService.GetEpisodes:output_type -> protos.Episodes
+	13, // 26: protos.PodcastService.GetUserEpisode:output_type -> protos.UserEpisode
+	5,  // 27: protos.PodcastService.UpdateUserEpisode:output_type -> protos.Response
+	8,  // 28: protos.PodcastService.GetSubscriptions:output_type -> protos.Subscriptions
+	7,  // 29: protos.PodcastService.GetUserLastPlayed:output_type -> protos.LastPlayedRes
+	25, // [25:30] is the sub-list for method output_type
+	20, // [20:25] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_podcast_proto_init() }
@@ -975,6 +1105,30 @@ func file_podcast_proto_init() {
 			}
 		}
 		file_podcast_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LastPlayedRes); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_podcast_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Subscriptions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_podcast_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Episodes); i {
 			case 0:
 				return &v.state
@@ -993,7 +1147,7 @@ func file_podcast_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_podcast_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -1021,9 +1175,9 @@ const _ = grpc.SupportPackageIsVersion6
 type PodcastServiceClient interface {
 	GetEpisodes(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episodes, error)
 	GetUserEpisode(ctx context.Context, in *Request, opts ...grpc.CallOption) (*UserEpisode, error)
-	UpdateUserEpisode(ctx context.Context, in *UserEpiReq, opts ...grpc.CallOption) (*Response, error)
-	GetSubscriptions(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episodes, error)
-	GetUserLastPlayed(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episode, error)
+	UpdateUserEpisode(ctx context.Context, in *UserEpisode, opts ...grpc.CallOption) (*Response, error)
+	GetSubscriptions(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Subscriptions, error)
+	GetUserLastPlayed(ctx context.Context, in *Request, opts ...grpc.CallOption) (*LastPlayedRes, error)
 }
 
 type podcastServiceClient struct {
@@ -1052,7 +1206,7 @@ func (c *podcastServiceClient) GetUserEpisode(ctx context.Context, in *Request, 
 	return out, nil
 }
 
-func (c *podcastServiceClient) UpdateUserEpisode(ctx context.Context, in *UserEpiReq, opts ...grpc.CallOption) (*Response, error) {
+func (c *podcastServiceClient) UpdateUserEpisode(ctx context.Context, in *UserEpisode, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/protos.PodcastService/UpdateUserEpisode", in, out, opts...)
 	if err != nil {
@@ -1061,8 +1215,8 @@ func (c *podcastServiceClient) UpdateUserEpisode(ctx context.Context, in *UserEp
 	return out, nil
 }
 
-func (c *podcastServiceClient) GetSubscriptions(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episodes, error) {
-	out := new(Episodes)
+func (c *podcastServiceClient) GetSubscriptions(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Subscriptions, error) {
+	out := new(Subscriptions)
 	err := c.cc.Invoke(ctx, "/protos.PodcastService/GetSubscriptions", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1070,8 +1224,8 @@ func (c *podcastServiceClient) GetSubscriptions(ctx context.Context, in *Request
 	return out, nil
 }
 
-func (c *podcastServiceClient) GetUserLastPlayed(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episode, error) {
-	out := new(Episode)
+func (c *podcastServiceClient) GetUserLastPlayed(ctx context.Context, in *Request, opts ...grpc.CallOption) (*LastPlayedRes, error) {
+	out := new(LastPlayedRes)
 	err := c.cc.Invoke(ctx, "/protos.PodcastService/GetUserLastPlayed", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1083,9 +1237,9 @@ func (c *podcastServiceClient) GetUserLastPlayed(ctx context.Context, in *Reques
 type PodcastServiceServer interface {
 	GetEpisodes(context.Context, *Request) (*Episodes, error)
 	GetUserEpisode(context.Context, *Request) (*UserEpisode, error)
-	UpdateUserEpisode(context.Context, *UserEpiReq) (*Response, error)
-	GetSubscriptions(context.Context, *Request) (*Episodes, error)
-	GetUserLastPlayed(context.Context, *Request) (*Episode, error)
+	UpdateUserEpisode(context.Context, *UserEpisode) (*Response, error)
+	GetSubscriptions(context.Context, *Request) (*Subscriptions, error)
+	GetUserLastPlayed(context.Context, *Request) (*LastPlayedRes, error)
 }
 
 // UnimplementedPodcastServiceServer can be embedded to have forward compatible implementations.
@@ -1098,13 +1252,13 @@ func (*UnimplementedPodcastServiceServer) GetEpisodes(context.Context, *Request)
 func (*UnimplementedPodcastServiceServer) GetUserEpisode(context.Context, *Request) (*UserEpisode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserEpisode not implemented")
 }
-func (*UnimplementedPodcastServiceServer) UpdateUserEpisode(context.Context, *UserEpiReq) (*Response, error) {
+func (*UnimplementedPodcastServiceServer) UpdateUserEpisode(context.Context, *UserEpisode) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserEpisode not implemented")
 }
-func (*UnimplementedPodcastServiceServer) GetSubscriptions(context.Context, *Request) (*Episodes, error) {
+func (*UnimplementedPodcastServiceServer) GetSubscriptions(context.Context, *Request) (*Subscriptions, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSubscriptions not implemented")
 }
-func (*UnimplementedPodcastServiceServer) GetUserLastPlayed(context.Context, *Request) (*Episode, error) {
+func (*UnimplementedPodcastServiceServer) GetUserLastPlayed(context.Context, *Request) (*LastPlayedRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserLastPlayed not implemented")
 }
 
@@ -1149,7 +1303,7 @@ func _PodcastService_GetUserEpisode_Handler(srv interface{}, ctx context.Context
 }
 
 func _PodcastService_UpdateUserEpisode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserEpiReq)
+	in := new(UserEpisode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1161,7 +1315,7 @@ func _PodcastService_UpdateUserEpisode_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/protos.PodcastService/UpdateUserEpisode",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PodcastServiceServer).UpdateUserEpisode(ctx, req.(*UserEpiReq))
+		return srv.(PodcastServiceServer).UpdateUserEpisode(ctx, req.(*UserEpisode))
 	}
 	return interceptor(ctx, in, info, handler)
 }

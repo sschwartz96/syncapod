@@ -160,7 +160,7 @@ func (c *Client) FindWithBSON(collection string, filter interface{}, opts *optio
 }
 
 // FindAllWithBSON takes collection string, bson filter, options.FindOptions
-// and decodes into slice
+// and decodes into pointer to the slice
 func (c *Client) FindAllWithBSON(collection string, filter interface{}, opts *options.FindOptions, slice interface{}) error {
 	// get collection
 	col := c.Database(DBsyncapod).Collection(collection)

@@ -1,0 +1,14 @@
+# GetEpisodes
+grpcurl -plaintext  -d '{"podcastID":{"hex":"5e9db23dc2b5219713703afb"}}' localhost:50051 protos.PodcastService/GetEpisodes
+
+# GetUserEpisode
+grpcurl -plaintext  -d '{"userID":{"hex": "5e895b2433b810425c9d1611"}, "episodeID":{"hex":"5f150ca3519de1414331cfbe"}}' localhost:50051 protos.PodcastService/GetUserEpisode
+
+# UpdateUserEpisode
+grpcurl -plaintext  -d '{"userID":{"hex": "5e895b2433b810425c9d1611"}, "episodeID":{"hex":"5f150ca3519de1414331cfbe"}, "offset": 123, "played": false}' localhost:50051 protos.PodcastService/UpdateUserEpisode
+
+# GetSubscriptions
+grpcurl -plaintext  -d '{"userID":{"hex": "5e895b2433b810425c9d1611"}}' localhost:50051 protos.PodcastService/GetSubscriptions
+
+# GetUserLastPlayed
+grpcurl -plaintext  -d '{"userID":{"hex": "5e895b2433b810425c9d1611"}}' localhost:50051 protos.PodcastService/GetUserLastPlayed

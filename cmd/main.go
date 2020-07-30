@@ -85,6 +85,7 @@ func startGRPC(config *config.Config, dbClient *database.Client) {
 	// register services
 	reflection.Register(grpcServer)
 	protos.RegisterAuthServer(grpcServer, services.NewAuthService(dbClient))
+	protos.RegisterPodcastServiceServer(grpcServer, services.NewPodcastService(dbClient))
 
 	// serve
 	err = grpcServer.Serve(grpcListener)
