@@ -75,15 +75,22 @@ func redirect(res http.ResponseWriter, req *http.Request) {
 }
 
 func startGRPC(config *config.Config, dbClient *database.Client) {
-	// whether or not we are running on the server
+	var creds credentials.TransportCredentials
+	// whether or not we are running tls
 	if config.CertFile != "" {
-
+		creds, err := credentials.NewServerTLSFromFile(config.CertFile, config.KeyFile)
+		if err != nil {
+			log.Fatal("error setting up creds for grpc:", creds)
+		}
 	}
 
-	// setup tls for grpc
-	creds, err := credentials.NewClientTLSFromFile(config.CertFile, "syncapod")
-	grpcServer := grpc.NewServer()
-
+	// setup server
+	var grpcServer *grpc.Server
+	if creds != nil {
+		grpcServer = grpc.NewServer()
+	} else {
+		grpcServer = grpc.NewServer(grpc.Creds(creds))
+	}
 	// start listener
 	grpcListener, err := net.Listen("tcp", ":"+strconv.Itoa(config.GRPCPort))
 	if err != nil {
