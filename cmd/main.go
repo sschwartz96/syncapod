@@ -85,12 +85,15 @@ func startGRPC(config *config.Config, dbClient *database.Client) {
 	}
 
 	// setup server
-	var grpcServer *grpc.Server
+	var gOptCred grpc.ServerOption
+	gOptInter := grpc.StreamInterceptor(AuthIntercept)
 	if creds != nil {
-		grpcServer = grpc.NewServer()
+		gOptInter = grpc.StreamInterceptor(AuthIntercept)
 	} else {
-		grpcServer = grpc.NewServer(grpc.Creds(creds))
+		gOptCred = grpc.Creds(creds)
 	}
+	grpcServer := grpc.NewServer(gOptCred, gOptInter)
+
 	// start listener
 	grpcListener, err := net.Listen("tcp", ":"+strconv.Itoa(config.GRPCPort))
 	if err != nil {
@@ -107,4 +110,10 @@ func startGRPC(config *config.Config, dbClient *database.Client) {
 	if err != nil {
 		log.Fatal("could not serve services:", err)
 	}
+}
+
+// AuthIntercept intercepts the gRPC request and authorizes
+func AuthIntercept(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+
+	return nil
 }
