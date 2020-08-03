@@ -3,21 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 	"strconv"
 	"strings"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/reflection"
-
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
+	sGRPC "github.com/sschwartz96/syncapod/internal/grpc"
 	"github.com/sschwartz96/syncapod/internal/handler"
 	"github.com/sschwartz96/syncapod/internal/podcast"
-	"github.com/sschwartz96/syncapod/internal/protos"
-	"github.com/sschwartz96/syncapod/internal/services"
 )
 
 func main() {
@@ -36,7 +30,8 @@ func main() {
 	}
 
 	// setup gRPC server
-	go startGRPC(cfg, dbClient)
+	grpcServer := sGRPC.NewServer(cfg, dbClient)
+	go grpcServer.Start()
 
 	// start updating podcasts
 	go podcast.UpdatePodcasts(dbClient)
@@ -72,48 +67,4 @@ func main() {
 
 func redirect(res http.ResponseWriter, req *http.Request) {
 	http.Redirect(res, req, "https://syncapod.com"+req.RequestURI, http.StatusMovedPermanently)
-}
-
-func startGRPC(config *config.Config, dbClient *database.Client) {
-	var creds credentials.TransportCredentials
-	// whether or not we are running tls
-	if config.CertFile != "" {
-		creds, err := credentials.NewServerTLSFromFile(config.CertFile, config.KeyFile)
-		if err != nil {
-			log.Fatal("error setting up creds for grpc:", creds)
-		}
-	}
-
-	// setup server
-	var gOptCred grpc.ServerOption
-	gOptInter := grpc.StreamInterceptor(AuthIntercept)
-	if creds != nil {
-		gOptInter = grpc.StreamInterceptor(AuthIntercept)
-	} else {
-		gOptCred = grpc.Creds(creds)
-	}
-	grpcServer := grpc.NewServer(gOptCred, gOptInter)
-
-	// start listener
-	grpcListener, err := net.Listen("tcp", ":"+strconv.Itoa(config.GRPCPort))
-	if err != nil {
-		log.Fatalf("could not listen on port %d, err: %v", config.GRPCPort, err)
-	}
-
-	// register services
-	reflection.Register(grpcServer)
-	protos.RegisterAuthServer(grpcServer, services.NewAuthService(dbClient))
-	protos.RegisterPodcastServiceServer(grpcServer, services.NewPodcastService(dbClient))
-
-	// serve
-	err = grpcServer.Serve(grpcListener)
-	if err != nil {
-		log.Fatal("could not serve services:", err)
-	}
-}
-
-// AuthIntercept intercepts the gRPC request and authorizes
-func AuthIntercept(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-
-	return nil
 }
