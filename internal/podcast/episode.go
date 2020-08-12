@@ -63,8 +63,8 @@ func FindLatestEpisode(dbClient *database.Client, podID *protos.ObjectID) (*prot
 
 // FindAllEpisodesRange finds the lastest episodes within range(epi # 20-30)
 // s = start, e = end
-func FindAllEpisodesRange(dbClient *database.Client, podID *protos.ObjectID, s, e int) []protos.Episode {
-	var epis []protos.Episode
+func FindAllEpisodesRange(dbClient *database.Client, podID *protos.ObjectID, s, e int) []*protos.Episode {
+	var epis []*protos.Episode
 	filter := bson.M{"podcastid": podID}
 	opts := options.Find().SetLimit(int64(e - s)).SetSkip(int64(s)).SetSort(
 		bson.M{"pubdate": -1},
