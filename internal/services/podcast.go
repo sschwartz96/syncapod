@@ -96,6 +96,7 @@ func (p *PodcastService) GetUserLastPlayed(ctx context.Context, req *protos.Requ
 		fmt.Println("error getting last play:", err)
 		return nil, err
 	}
+
 	return &protos.LastPlayedRes{
 		Podcast: pod,
 		Episode: epi,

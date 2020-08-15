@@ -29,9 +29,14 @@ func main() {
 		log.Fatal("couldn't connect to db: ", err)
 	}
 
-	// setup gRPC server
+	// setup & start gRPC server
 	grpcServer := sGRPC.NewServer(cfg, dbClient)
-	go grpcServer.Start()
+	go func() {
+		err = grpcServer.Start()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	// start updating podcasts
 	go podcast.UpdatePodcasts(dbClient)
@@ -60,7 +65,7 @@ func main() {
 	}
 
 	if err != nil {
-		log.Fatal("couldn't not start server: ", err)
+		log.Fatal("couldn't not start server:", err)
 	}
 
 }
