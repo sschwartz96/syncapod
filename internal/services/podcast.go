@@ -16,15 +16,15 @@ const (
 
 // PodcastService is the gRPC service for podcast
 type PodcastService struct {
-	dbClient *database.Client
+	dbClient *database.MongoClient
 }
 
 // NewPodcastService creates a new *PodcastService
-func NewPodcastService(dbClient *database.Client) *PodcastService {
+func NewPodcastService(dbClient *database.MongoClient) *PodcastService {
 	return &PodcastService{dbClient: dbClient}
 }
 
-// GetEpisodes returns a list of episodes via episode id
+// GetEpisodes returns a list of episodes via podcast id
 func (p *PodcastService) GetEpisodes(ctx context.Context, req *protos.Request) (*protos.Episodes, error) {
 	var episodes []*protos.Episode
 

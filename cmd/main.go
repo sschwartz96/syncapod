@@ -24,7 +24,7 @@ func main() {
 
 	// connect to db
 	fmt.Println("connecting to db")
-	dbClient, err := database.Connect(cfg.DbUser, cfg.DbPass, cfg.DbURI)
+	dbClient, err := database.ConnectMongo(cfg.DbUser, cfg.DbPass, cfg.DbURI)
 	if err != nil {
 		log.Fatal("couldn't connect to db: ", err)
 	}

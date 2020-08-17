@@ -11,11 +11,11 @@ import (
 
 // APIHandler handles calls to the syncapod api
 type APIHandler struct {
-	dbClient *database.Client
+	dbClient *database.MongoClient
 }
 
 // CreateAPIHandler instatiates an APIHandler
-func CreateAPIHandler(dbClient *database.Client) (*APIHandler, error) {
+func CreateAPIHandler(dbClient *database.MongoClient) (*APIHandler, error) {
 	return &APIHandler{
 		dbClient: dbClient,
 	}, nil

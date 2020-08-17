@@ -36,7 +36,7 @@ func Compare(hash, password string) bool {
 }
 
 // CreateSession creates a session and stores it into database
-func CreateSession(dbClient *database.Client, userID *protos.ObjectID, userAgent string, stayLoggedIn bool) (string, error) {
+func CreateSession(dbClient *database.MongoClient, userID *protos.ObjectID, userAgent string, stayLoggedIn bool) (string, error) {
 	// determine expires
 	var expires time.Duration
 	if stayLoggedIn {
@@ -84,7 +84,7 @@ func CreateKey(l int) string {
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user
 // returns error if the key doesn't exist, or has expired
-func ValidateSession(dbClient *database.Client, key string) (*protos.User, error) {
+func ValidateSession(dbClient *database.MongoClient, key string) (*protos.User, error) {
 	// Find the key
 	var sesh protos.Session
 	err := dbClient.Find(database.ColSession, "sessionkey", key, &sesh)

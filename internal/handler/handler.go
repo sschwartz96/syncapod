@@ -12,13 +12,13 @@ import (
 
 // Handler is the main handler for syncapod, all routes go through it
 type Handler struct {
-	dbClient     *database.Client
+	dbClient     *database.MongoClient
 	oauthHandler *OauthHandler
 	apiHandler   *APIHandler
 }
 
 // CreateHandler sets up the main handler
-func CreateHandler(dbClient *database.Client, config *config.Config) (*Handler, error) {
+func CreateHandler(dbClient *database.MongoClient, config *config.Config) (*Handler, error) {
 	handler := &Handler{}
 	var err error
 

@@ -10,7 +10,7 @@ import (
 )
 
 // CreateAuthorizationCode creates and saves an authorization code with the client & user id
-func CreateAuthorizationCode(dbClient *database.Client, userID *protos.ObjectID, clientID string) string {
+func CreateAuthorizationCode(dbClient *database.MongoClient, userID *protos.ObjectID, clientID string) string {
 	code := models.AuthCode{
 		Code:     CreateKey(64),
 		ClientID: clientID,
@@ -23,7 +23,7 @@ func CreateAuthorizationCode(dbClient *database.Client, userID *protos.ObjectID,
 }
 
 // CreateAccessToken creates and saves an access token with a year of validity
-func CreateAccessToken(dbClient *database.Client, authCode *models.AuthCode) *models.AccessToken {
+func CreateAccessToken(dbClient *database.MongoClient, authCode *models.AuthCode) *models.AccessToken {
 	token := models.AccessToken{
 		AuthCode:     authCode.Code,
 		Token:        CreateKey(32),
@@ -38,7 +38,7 @@ func CreateAccessToken(dbClient *database.Client, authCode *models.AuthCode) *mo
 }
 
 // ValidateAuthCode takes pointer to db client and code string, finds the code and returns it
-func ValidateAuthCode(dbClient *database.Client, code string) (*models.AuthCode, error) {
+func ValidateAuthCode(dbClient *database.MongoClient, code string) (*models.AuthCode, error) {
 	var authCode models.AuthCode
 
 	err := dbClient.Find(database.ColAuthCode, "code", code, &authCode)
@@ -50,7 +50,7 @@ func ValidateAuthCode(dbClient *database.Client, code string) (*models.AuthCode,
 }
 
 // ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
-func ValidateAccessToken(dbClient *database.Client, token string) (*protos.User, error) {
+func ValidateAccessToken(dbClient *database.MongoClient, token string) (*protos.User, error) {
 	var tokenObj models.AccessToken
 	err := dbClient.Find(database.ColAccessToken, "token", token, &tokenObj)
 	if err != nil {

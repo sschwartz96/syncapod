@@ -15,7 +15,7 @@ import (
 
 // OauthHandler handles authorization and authentication to oauth clients
 type OauthHandler struct {
-	dbClient      *database.Client
+	dbClient      *database.MongoClient
 	loginTemplate *template.Template
 	authTemplate  *template.Template
 	// only used for alexa, need these in database if suppport more than one client
@@ -24,7 +24,7 @@ type OauthHandler struct {
 }
 
 // CreateOauthHandler just intantiates an OauthHandler
-func CreateOauthHandler(dbClient *database.Client, clientID, clientSecret string) (*OauthHandler, error) {
+func CreateOauthHandler(dbClient *database.MongoClient, clientID, clientSecret string) (*OauthHandler, error) {
 	loginT, err := template.ParseFiles("templates/oauth/login.gohtml")
 	authT, err := template.ParseFiles("templates/oauth/auth.gohtml")
 	if err != nil {

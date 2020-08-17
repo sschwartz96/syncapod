@@ -20,10 +20,10 @@ import (
 
 type Server struct {
 	config   *config.Config
-	dbClient *database.Client
+	dbClient *database.MongoClient
 }
 
-func NewServer(config *config.Config, dbClient *database.Client) *Server {
+func NewServer(config *config.Config, dbClient *database.MongoClient) *Server {
 	return &Server{config: config, dbClient: dbClient}
 }
 

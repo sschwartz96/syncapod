@@ -19,7 +19,7 @@ import (
 )
 
 // UpdatePodcasts attempts to go through the list of podcasts update them via RSS feed
-func UpdatePodcasts(dbClient *database.Client) {
+func UpdatePodcasts(dbClient *database.MongoClient) {
 	for {
 		var podcasts []protos.Podcast
 		// TODO: use mongo "skip" and "limit" to access only a few podcasts say 100 at a time
@@ -43,7 +43,7 @@ func UpdatePodcasts(dbClient *database.Client) {
 }
 
 // UpdatePodcast updates the given podcast via RSS feed
-func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *protos.Podcast) {
+func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.MongoClient, pod *protos.Podcast) {
 	defer wg.Done()
 	newPod, err := ParseRSS(pod.Rss)
 	if err != nil {
@@ -81,7 +81,7 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.Client, pod *protos.Po
 
 // AddNewPodcast takes RSS url and downloads contents inserts the podcast and its episodes into the db
 // returns error if podcast already exists or connection error
-func AddNewPodcast(dbClient *database.Client, url string) error {
+func AddNewPodcast(dbClient *database.MongoClient, url string) error {
 	// check if podcast already contains that rss url
 	filter := bson.D{{Key: "rss", Value: url}}
 	exists, err := dbClient.Exists(database.ColPodcast, filter)

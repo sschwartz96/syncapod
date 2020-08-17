@@ -12,11 +12,11 @@ import (
 
 // AuthService is the gRPC service for authentication and authorization
 type AuthService struct {
-	dbClient *database.Client
+	dbClient *database.MongoClient
 }
 
 // NewAuthService creates a new *AuthService
-func NewAuthService(dbClient *database.Client) *AuthService {
+func NewAuthService(dbClient *database.MongoClient) *AuthService {
 	return &AuthService{dbClient: dbClient}
 }
 

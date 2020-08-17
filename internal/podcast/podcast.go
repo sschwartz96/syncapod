@@ -27,7 +27,7 @@ import (
 
 // FindUserEpisode takes pointer to database client, userID, epiID
 // returns *protos.UserEpisode
-func FindUserEpisode(dbClient *database.Client, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
+func FindUserEpisode(dbClient *database.MongoClient, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
 	var userEpi protos.UserEpisode
 	filter := bson.D{{Key: "userid", Value: userID}, {Key: "episodeid", Value: epiID}}
 	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, nil, &userEpi)
@@ -38,7 +38,7 @@ func FindUserEpisode(dbClient *database.Client, userID, epiID *protos.ObjectID) 
 }
 
 // FindOffset takes database client and pointers to user and episode to lookup episode details and offset
-func FindOffset(dbClient *database.Client, userID, epiID *protos.ObjectID) int64 {
+func FindOffset(dbClient *database.MongoClient, userID, epiID *protos.ObjectID) int64 {
 	userEpi, err := FindUserEpisode(dbClient, userID, epiID)
 	if err != nil {
 		fmt.Println("error finding offset: ", err)
@@ -48,7 +48,7 @@ func FindOffset(dbClient *database.Client, userID, epiID *protos.ObjectID) int64
 }
 
 // UpdateOffset takes userID epiID and offset and performs upsert to the UserEpisode collection
-func UpdateOffset(dbClient *database.Client, uID, pID, eID *protos.ObjectID, offset int64) error {
+func UpdateOffset(dbClient *database.MongoClient, uID, pID, eID *protos.ObjectID, offset int64) error {
 	userEpi := &protos.UserEpisode{
 		UserID:    uID,
 		PodcastID: pID,
@@ -71,14 +71,14 @@ func UpdateOffset(dbClient *database.Client, uID, pID, eID *protos.ObjectID, off
 }
 
 // FindPodcast takes a *database.Client and podcast ID
-func FindPodcast(dbClient *database.Client, podID *protos.ObjectID) (*protos.Podcast, error) {
+func FindPodcast(dbClient *database.MongoClient, podID *protos.ObjectID) (*protos.Podcast, error) {
 	var pod protos.Podcast
 	err := dbClient.FindByID(database.ColPodcast, podID, &pod)
 	return &pod, err
 }
 
 // FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
-func FindUserLastPlayed(dbClient *database.Client, userID *protos.ObjectID) (*protos.Podcast, *protos.Episode, int64, error) {
+func FindUserLastPlayed(dbClient *database.MongoClient, userID *protos.ObjectID) (*protos.Podcast, *protos.Episode, int64, error) {
 	var userEp protos.UserEpisode
 	var pod protos.Podcast
 	var epi protos.Episode
@@ -111,24 +111,24 @@ func FindUserLastPlayed(dbClient *database.Client, userID *protos.ObjectID) (*pr
 }
 
 // GetSubscriptions returns a list of subscriptions via userID
-func GetSubscriptions(dbClient *database.Client, userID *protos.ObjectID) ([]*protos.Subscription, error) {
+func GetSubscriptions(dbClient *database.MongoClient, userID *protos.ObjectID) ([]*protos.Subscription, error) {
 	var subs []*protos.Subscription
 	err := dbClient.FindAllWithBSON(database.ColSubscription, bson.M{"userid": userID}, nil, &subs)
 	return subs, err
 }
 
 // UpdateUserEpiOffset changes the offset in the collection
-func UpdateUserEpiOffset(dbClient *database.Client, userID, epiID *protos.ObjectID, offset int64) error {
+func UpdateUserEpiOffset(dbClient *database.MongoClient, userID, epiID *protos.ObjectID, offset int64) error {
 	return UpdateUserEpiParam(dbClient, userID, epiID, "offset", offset)
 }
 
 // UpdateUserEpiPlayed marks the episode as played in db
-func UpdateUserEpiPlayed(dbClient *database.Client, userID, epiID *protos.ObjectID, played bool) error {
+func UpdateUserEpiPlayed(dbClient *database.MongoClient, userID, epiID *protos.ObjectID, played bool) error {
 	return UpdateUserEpiParam(dbClient, userID, epiID, "played", played)
 }
 
 // UpdateUserEpiParam updates the user's episode data based on param and data
-func UpdateUserEpiParam(dbClient *database.Client, userID, epiID *protos.ObjectID, param string, data interface{}) error {
+func UpdateUserEpiParam(dbClient *database.MongoClient, userID, epiID *protos.ObjectID, param string, data interface{}) error {
 	filter := bson.D{
 		{Key: "userid", Value: userID},
 		{Key: "episodeid", Value: epiID},
@@ -143,7 +143,7 @@ func UpdateUserEpiParam(dbClient *database.Client, userID, epiID *protos.ObjectI
 }
 
 // UpdateUserEpi updates an entire UserEpisode
-func UpdateUserEpi(dbClient *database.Client, userEpi *protos.UserEpisode) error {
+func UpdateUserEpi(dbClient *database.MongoClient, userEpi *protos.UserEpisode) error {
 	filter := bson.D{
 		{Key: "userid", Value: userEpi.UserID},
 		{Key: "episodeid", Value: userEpi.EpisodeID},
