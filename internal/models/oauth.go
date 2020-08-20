@@ -19,7 +19,7 @@ type AuthCode struct {
 	Scope    Scope            `json:"scope" bson:"scope"`
 }
 
-// AccessToken contains the information to provide user access
+// AccessToken contains the information to provide user access within oAuth scope
 type AccessToken struct {
 	AuthCode     string           `json:"auth_code" bson:"auth_code"`
 	Token        string           `json:"token" bson:"token"`
