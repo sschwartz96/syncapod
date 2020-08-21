@@ -7,10 +7,22 @@ import (
 	"github.com/sschwartz96/syncapod/internal/protos"
 )
 
-// Database is the interface that shows the behavior of our data storage of the app
-type Database interface {
-	// * Database *
+type Filter map[string]interface{}
 
+// Database defines database functionality
+type Database interface {
+	Open(ctx context.Context) error
+	Close(ctx context.Context) error
+
+	Insert(collection string, object interface{}) error
+	Find(collection string, object interface{}, filter Filter) error
+	Update(collection string, object interface{}, filter Filter) error
+	Upsert(collection string, object interface{}, filter Filter) error
+	Delete(collection string, filter Filter) error
+}
+
+// SyncapodStore is the interface that shows the behavior of our data storage of the app
+type SyncapodStore interface {
 	Open(context.Context) error
 	Close(context.Context) error
 
@@ -57,6 +69,6 @@ type Database interface {
 
 	// Subscriptions
 
-	FindSubscriptions(userID *protos.ObjectID) ([]*protos.Podcast, error)
+	FindSubscriptions(userID *protos.ObjectID) ([]*protos.Subscription, error)
 	UpsertSubscription(subscription *protos.Subscription) error
 }

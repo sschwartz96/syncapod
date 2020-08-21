@@ -4,10 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
-	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -20,26 +18,26 @@ const (
 	DBsyncapod = "syncapod"
 
 	// Collections
-	colPodcast      = "podcast"
-	colEpisode      = "episode"
-	colSession      = "session"
-	colUser         = "user"
-	colUserEpisode  = "user_episode"
-	colSubscription = "subscription"
-	colAuthCode     = "oauth_auth_code"
-	colAccessToken  = "oauth_access_token"
+	ColPodcast      = "podcast"
+	ColEpisode      = "episode"
+	ColSession      = "session"
+	ColUser         = "user"
+	ColUserEpisode  = "user_episode"
+	ColSubscription = "subscription"
+	ColAuthCode     = "oauth_auth_code"
+	ColAccessToken  = "oauth_access_token"
 )
 
 var (
 	collections = []string{
-		colPodcast,
-		colEpisode,
-		colSession,
-		colUser,
-		colUserEpisode,
-		colSubscription,
-		colAuthCode,
-		colAccessToken,
+		ColPodcast,
+		ColEpisode,
+		ColSession,
+		ColUser,
+		ColUserEpisode,
+		ColSubscription,
+		ColAuthCode,
+		ColAccessToken,
 	}
 )
 
@@ -80,6 +78,8 @@ func ConnectMongo(user, pass, URI string) (*MongoClient, error) {
 	}, nil
 }
 
+// createCollectionMap creates a map of mongo collections so the program doesn't
+// reallocate space for a collection every time a request is called
 func createCollectionMap(db *mongo.Database) map[string]*mongo.Collection {
 	collectionMap := make(map[string]*mongo.Collection, len(collections))
 	for _, collection := range collections {
@@ -155,12 +155,11 @@ func (c *MongoClient) Upsert(collection string, filter interface{}, object inter
 		Upsert: &upsert,
 	}
 
-	res, err := col.UpdateOne(context.Background(), filter, update, opts)
+	_, err := col.UpdateOne(context.Background(), filter, update, opts)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("result: ", res)
 	return nil
 }
 
@@ -203,7 +202,7 @@ func (c *MongoClient) FindAllWithBSON(collection string, filter interface{}, opt
 
 }
 
-// UpdateWithBSON takes in collection string & bson filter and update objects
+// UpdateWithBSON takes in collection string & bson filter and update object
 func (c *MongoClient) UpdateWithBSON(collection string, filter, update interface{}) error {
 	col := c.collectionMap[collection]
 	r, err := col.UpdateOne(context.Background(), filter, update)
@@ -281,115 +280,13 @@ func (c *MongoClient) Aggregate(collection string, pipeline mongo.Pipeline, obje
 	return cur.All(context.Background(), object)
 }
 
-// * Database *
-func (c *MongoClient) Open(ctx context.Context) error {
-	fmt.Println("connection should be opened")
-	return nil
-}
-
-func (c *MongoClient) Close(ctx context.Context) error {
-	if err := c.Disconnect(ctx); err != nil {
-		return fmt.Errorf("error disconnecting mongo client: %v", err)
-	}
-	return nil
-}
-
 // * oAuth *
-func (c *MongoClient) InsertAuthCode(code *models.AuthCode) error {
-	if err := c.Insert(colAuthCode, code); err != nil {
-		return fmt.Errorf("error inserting auth code: %v", err)
-	}
-	return nil
-}
-
-func (c *MongoClient) FindAuthCode(code string) (*models.AuthCode, error) {
-	var authCode *models.AuthCode
-	err := c.Find(colAuthCode, "auth_code", &code, authCode)
-	if err != nil {
-		return nil, fmt.Errorf("error finding auth code: %v", err)
-	}
-	return authCode, nil
-}
-
-func (c *MongoClient) InsertAccessToken(token *models.AccessToken) error {
-	if err := c.Insert(colAccessToken, token); err != nil {
-		return fmt.Errorf("error inserting access token: %v", err)
-	}
-	return nil
-}
-
-func (c *MongoClient) FindAccessToken(token string) (*models.AccessToken, error) {
-	var accessToken *models.AccessToken
-	err := c.Find(colAccessToken, "token", &token, accessToken)
-	if err != nil {
-		return nil, fmt.Errorf("error finding access token: %v", err)
-	}
-	return accessToken, nil
-}
-
-// * Auth *
-func (c *MongoClient) FindSession(key string) (*protos.Session, error) {
-	var session *protos.Session
-	err := c.Find(colSession, "sessionkey", &key, session)
-
-	if err != nil {
-		return nil, fmt.Errorf("error finding session: %v", err)
-	}
-	return session, nil
-}
-
-func (c *MongoClient) UpsertSession(session *protos.Session) error {
-	if err := c.Upsert(colSession, bson.M{"_id": session.Id}, session); err != nil {
-		return fmt.Errorf("error upserting session: %v", err)
-	}
-	return nil
-}
-
-func (c *MongoClient) DeleteSession(id *protos.ObjectID) error {
-	err := c.Delete(colSession, "_id", id)
-	return fmt.Errorf("error deleting session: %v", err)
-}
-
-func (c *MongoClient) FindUserByID(id *protos.ObjectID) (*protos.User, error) {
-	var user *protos.User
-	err := c.Find(colUser, "_id", id, user)
-	if err != nil {
-		return nil, fmt.Errorf("error finding user by id: %v", err)
-	}
-	return user, nil
-}
-
-// FindUser attempts to find user by username/email returns pointer to user or error if not found
-func (c *MongoClient) FindUser(username string) (*protos.User, error) {
-	var param string
-	if strings.Contains(username, "@") {
-		param = "email"
-		username = strings.ToLower(username)
-	} else {
-		param = "username"
-	}
-
-	var user protos.User
-	err := c.Find(colUser, param, username, &user)
-	if err != nil {
-		return nil, fmt.Errorf("error finding user by %s: %v", param, err)
-	}
-
-	return &user, nil
-}
-
-func (c *MongoClient) DeleteUser(id *protos.ObjectID) error {
-	if err := c.Delete(colUser, "_id", id); err != nil {
-		return fmt.Errorf("error deleting user: %v", err)
-	}
-	return nil
-}
 
 // * Podcast *
 func (c *MongoClient) FindAllPodcasts() ([]*protos.Podcast, error) {
 	// TODO: get rid of?
 	var podcasts []*protos.Podcast
-	err := c.FindAll(colPodcast, &podcasts)
+	err := c.FindAll(ColPodcast, &podcasts)
 	if err != nil {
 		return nil, fmt.Errorf("error finding all podcasts: %v", err)
 	}
@@ -402,7 +299,7 @@ func (c *MongoClient) FindPodcastsByRange(start, end int) ([]*protos.Podcast, er
 	opts := options.Find().SetLimit(int64(end - start)).SetSkip(int64(start)).SetSort(
 		bson.M{"pubdate": -1},
 	)
-	err := c.FindAllWithBSON(colEpisode, filter, opts, &podcasts)
+	err := c.FindAllWithBSON(ColEpisode, filter, opts, &podcasts)
 	if err != nil {
 		return podcasts, fmt.Errorf("error finding podcasts within range %d - %d: %v", start, end, err)
 	}
@@ -411,7 +308,7 @@ func (c *MongoClient) FindPodcastsByRange(start, end int) ([]*protos.Podcast, er
 
 func (c *MongoClient) FindPodcastByID(id *protos.ObjectID) (*protos.Podcast, error) {
 	var podcast *protos.Podcast
-	if err := c.Find(colPodcast, "_id", id, podcast); err != nil {
+	if err := c.Find(ColPodcast, "_id", id, podcast); err != nil {
 		return nil, fmt.Errorf("error finding podcast by id: %v", err)
 	}
 	return podcast, nil
@@ -426,7 +323,7 @@ func (c *MongoClient) FindEpisodesByRange(podcastID *protos.ObjectID, start int,
 	opts := options.Find().SetLimit(int64(end - start)).SetSkip(int64(start)).SetSort(
 		bson.M{"pubdate": -1},
 	)
-	err := c.FindAllWithBSON(colEpisode, filter, opts, &episodes)
+	err := c.FindAllWithBSON(ColEpisode, filter, opts, &episodes)
 	if err != nil {
 		return nil, fmt.Errorf("error finding episodes by range %d - %d: %v", start, end, err)
 	}
@@ -437,7 +334,7 @@ func (c *MongoClient) FindAllEpisodes(podcastID *protos.ObjectID) ([]*protos.Epi
 	var episodes []*protos.Episode
 	filter := bson.M{"podcastid": podcastID}
 	opts := options.Find().SetSort(bson.M{"pubdate": -1})
-	err := c.FindAllWithBSON(colEpisode, filter, opts, &episodes)
+	err := c.FindAllWithBSON(ColEpisode, filter, opts, &episodes)
 	if err != nil {
 		return nil, fmt.Errorf("error finding all episodes: %v", err)
 	}
@@ -446,7 +343,7 @@ func (c *MongoClient) FindAllEpisodes(podcastID *protos.ObjectID) ([]*protos.Epi
 
 func (c *MongoClient) FindLatestEpisode(podcastID *protos.ObjectID) (*protos.Episode, error) {
 	var episode *protos.Episode
-	col := c.collectionMap[colEpisode]
+	col := c.collectionMap[ColEpisode]
 	filter := bson.M{"podcastid": podcastID}
 	opts := options.FindOne().SetSort(bson.M{"pubdate": -1})
 	res := col.FindOne(context.Background(), filter, opts)
@@ -458,7 +355,7 @@ func (c *MongoClient) FindLatestEpisode(podcastID *protos.ObjectID) (*protos.Epi
 
 func (c *MongoClient) FindEpisodeByID(id *protos.ObjectID) (*protos.Episode, error) {
 	var episode *protos.Episode
-	err := c.Find(colEpisode, "_id", id, &episode)
+	err := c.Find(ColEpisode, "_id", id, &episode)
 	if err != nil {
 		return nil, fmt.Errorf("error finding episode by id: %v", err)
 	}
@@ -473,18 +370,28 @@ func (c *MongoClient) FindEpisodeBySeason(id *protos.ObjectID, seasonNum int, ep
 		{Key: "season", Value: seasonNum},
 		{Key: "episode", Value: episodeNum},
 	}
-	err := c.FindWithBSON(colEpisode, filter, nil, &episode)
+	err := c.FindWithBSON(ColEpisode, filter, nil, &episode)
 
 	return &episode, err
 }
 
 func (c *MongoClient) UpsertEpisode(episode *protos.Episode) error {
-	panic("not implemented") // TODO: Implement
+	err := c.Upsert(ColEpisode, bson.M{"_id": episode.Id}, episode)
+	if err != nil {
+		return fmt.Errorf("error upserting episode: %v", err)
+	}
+	return nil
 }
 
 // * UserEpisode *
 func (c *MongoClient) FindUserEpisode(userID *protos.ObjectID, episodeID *protos.ObjectID) (*protos.UserEpisode, error) {
-	panic("not implemented") // TODO: Implement
+	var userEpisode protos.UserEpisode
+	filter := bson.D{{Key: "userid", Value: userID}, {Key: "episodeid", Value: episodeID}}
+	err := c.FindWithBSON(ColUserEpisode, filter, nil, &userEpisode)
+	if err != nil {
+		return nil, fmt.Errorf("error finding user episode details: %v", err)
+	}
+	return &userEpisode, nil
 }
 
 func (c *MongoClient) FindLatestUserEpisode(userID *protos.ObjectID) (*protos.UserEpisode, error) {
@@ -492,14 +399,27 @@ func (c *MongoClient) FindLatestUserEpisode(userID *protos.ObjectID) (*protos.Us
 }
 
 func (c *MongoClient) UpsertUserEpisode(userEpisode *protos.UserEpisode) error {
-	panic("not implemented") // TODO: Implement
+	err := c.Upsert(ColUserEpisode, bson.M{"_id": userEpisode.Id}, userEpisode)
+	if err != nil {
+		return fmt.Errorf("error upserting user episode: %v", err)
+	}
+	return nil
 }
 
 // Subscriptions
-func (c *MongoClient) FindSubscriptions(userID *protos.ObjectID) ([]*protos.Podcast, error) {
-	panic("not implemented") // TODO: Implement
+func (c *MongoClient) FindSubscriptions(userID *protos.ObjectID) ([]*protos.Subscription, error) {
+	var subs []*protos.Subscription
+	err := c.Find(ColSubscription, "userid", userID, &subs)
+	if err != nil {
+		return nil, fmt.Errorf("error finding subscriptions: %v", err)
+	}
+	return subs, nil
 }
 
 func (c *MongoClient) UpsertSubscription(subscription *protos.Subscription) error {
-	panic("not implemented") // TODO: Implement
+	err := c.Upsert(ColSubscription, bson.M{"_id": subscription.Id}, subscription)
+	if err != nil {
+		return fmt.Errorf("error upserting subscription: %v", err)
+	}
+	return nil
 }
