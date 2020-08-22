@@ -5,158 +5,76 @@ import (
 	"io"
 	"math"
 	"net/http"
-	"time"
 
-	"github.com/golang/protobuf/ptypes"
 	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/tcolgate/mp3"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// AddEpiIDs adds missing IDs to the podcast object and episode objects
-// func AddEpiIDs(podcast *protos.RSSPodcast) {
-// 	podcast.ID = *protos.NewObjectID()
-
-// 	for i := range podcast.Episodes {
-// 		podcast.Episodes[i].ID = *protos.NewObjectID()
-// 	}
-// }
-
-// FindUserEpisode takes pointer to database client, userID, epiID
-// returns *protos.UserEpisode
-func FindUserEpisode(dbClient *database.MongoClient, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
-	var userEpi protos.UserEpisode
-	filter := bson.D{{Key: "userid", Value: userID}, {Key: "episodeid", Value: epiID}}
-	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, nil, &userEpi)
+func InsertPodcast(db database.Database, podcast *protos.Podcast) error {
+	err := db.Insert(database.ColPodcast, podcast)
 	if err != nil {
-		return nil, fmt.Errorf("error finding user episodes details, %v", err)
-	}
-	return &userEpi, nil
-}
-
-// FindOffset takes database client and pointers to user and episode to lookup episode details and offset
-func FindOffset(dbClient *database.MongoClient, userID, epiID *protos.ObjectID) int64 {
-	userEpi, err := FindUserEpisode(dbClient, userID, epiID)
-	if err != nil {
-		fmt.Println("error finding offset: ", err)
-		return 0
-	}
-	return userEpi.Offset
-}
-
-// UpdateOffset takes userID epiID and offset and performs upsert to the UserEpisode collection
-func UpdateOffset(dbClient *database.MongoClient, uID, pID, eID *protos.ObjectID, offset int64) error {
-	userEpi := &protos.UserEpisode{
-		UserID:    uID,
-		PodcastID: pID,
-		EpisodeID: eID,
-		Offset:    offset,
-		Played:    false,
-		LastSeen:  ptypes.TimestampNow(),
-	}
-
-	err := dbClient.Upsert(database.ColUserEpisode, bson.D{
-		{Key: "userid", Value: uID},
-		{Key: "podcastid", Value: pID},
-		{Key: "episodeid", Value: eID}},
-		userEpi)
-	if err != nil {
-		fmt.Println("error upserting offset: ", err)
-		return err
+		return fmt.Errorf("error inserting podcast: %v", err)
 	}
 	return nil
 }
 
-// FindPodcast takes a *database.Client and podcast ID
-func FindPodcast(dbClient *database.MongoClient, podID *protos.ObjectID) (*protos.Podcast, error) {
-	var pod protos.Podcast
-	err := dbClient.FindByID(database.ColPodcast, podID, &pod)
-	return &pod, err
-}
-
-// FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
-func FindUserLastPlayed(dbClient *database.MongoClient, userID *protos.ObjectID) (*protos.Podcast, *protos.Episode, int64, error) {
-	var userEp protos.UserEpisode
-	var pod protos.Podcast
-	var epi protos.Episode
-
-	// find the latest played user_episode
-	filter := bson.M{"userid": userID}
-	opts := options.FindOne().SetSort(bson.M{"lastseen": -1})
-
-	err := dbClient.FindWithBSON(database.ColUserEpisode, filter, opts, &userEp)
+func FindAllPodcasts(db database.Database) ([]*protos.Podcast, error) {
+	// TODO: get rid of?
+	var podcasts []*protos.Podcast
+	err := db.FindAll(database.ColPodcast, &podcasts, nil, nil)
 	if err != nil {
-		fmt.Println("error finding user_episod: ", err)
-		return nil, nil, 0, err
+		return nil, fmt.Errorf("error finding all podcasts: %v", err)
 	}
+	return podcasts, nil
+}
 
-	// find podcast
-	err = dbClient.FindByID(database.ColPodcast, userEp.PodcastID, &pod)
+func DoesPodcastExist(db database.Database, rssURL string) (bool, error) {
+	var podcast *protos.Podcast
+	filter := &database.Filter{"rss": rssURL}
+	err := db.FindOne(database.ColPodcast, podcast, filter, nil)
 	if err != nil {
-		fmt.Println("couldn't find podcast: ", err)
-		return nil, nil, 0, err
+		return false, fmt.Errorf("error does podcast exist: %v", err)
 	}
+	if podcast != nil {
+		return false, nil
+	}
+	return true, nil
+}
 
-	// find episode
-	err = dbClient.FindByID(database.ColEpisode, userEp.EpisodeID, &epi)
+func FindPodcastsByRange(db database.Database, start, end int) ([]*protos.Podcast, error) {
+	var podcasts []*protos.Podcast
+	opts := database.CreateOptions().SetLimit(int64(end-start)).SetSkip(int64(start)).SetSort("pubdate", -1)
+
+	err := db.FindAll(database.ColEpisode, &podcasts, nil, opts)
 	if err != nil {
-		fmt.Println("couldn't find podcast: ", err)
-		return nil, nil, 0, err
+		return podcasts, fmt.Errorf("error finding podcasts within range %d - %d: %v", start, end, err)
 	}
-
-	return &pod, &epi, userEp.Offset, err
+	return podcasts, nil
 }
 
-// GetSubscriptions returns a list of subscriptions via userID
-func GetSubscriptions(dbClient *database.MongoClient, userID *protos.ObjectID) ([]*protos.Subscription, error) {
-	var subs []*protos.Subscription
-	err := dbClient.FindAllWithBSON(database.ColSubscription, bson.M{"userid": userID}, nil, &subs)
-	return subs, err
-}
-
-// UpdateUserEpiOffset changes the offset in the collection
-func UpdateUserEpiOffset(dbClient *database.MongoClient, userID, epiID *protos.ObjectID, offset int64) error {
-	return UpdateUserEpiParam(dbClient, userID, epiID, "offset", offset)
-}
-
-// UpdateUserEpiPlayed marks the episode as played in db
-func UpdateUserEpiPlayed(dbClient *database.MongoClient, userID, epiID *protos.ObjectID, played bool) error {
-	return UpdateUserEpiParam(dbClient, userID, epiID, "played", played)
-}
-
-// UpdateUserEpiParam updates the user's episode data based on param and data
-func UpdateUserEpiParam(dbClient *database.MongoClient, userID, epiID *protos.ObjectID, param string, data interface{}) error {
-	filter := bson.D{
-		{Key: "userid", Value: userID},
-		{Key: "episodeid", Value: epiID},
+func FindPodcastByID(db database.Database, id *protos.ObjectID) (*protos.Podcast, error) {
+	var podcast *protos.Podcast
+	if err := db.FindOne(database.ColPodcast, podcast, &database.Filter{"_id": id}, nil); err != nil {
+		return nil, fmt.Errorf("error finding podcast by id: %v", err)
 	}
-
-	update := bson.D{
-		{Key: "$set", Value: bson.M{param: data}},
-		{Key: "$set", Value: bson.M{"lastseen": time.Now()}},
-	}
-
-	return dbClient.Upsert(database.ColUserEpisode, filter, update)
+	return podcast, nil
 }
 
-// UpdateUserEpi updates an entire UserEpisode
-func UpdateUserEpi(dbClient *database.MongoClient, userEpi *protos.UserEpisode) error {
-	filter := bson.D{
-		{Key: "userid", Value: userEpi.UserID},
-		{Key: "episodeid", Value: userEpi.EpisodeID},
+// FindUserEpisode takes pointer to database client, userID, epiID
+// returns *protos.UserEpisode
+func FindUserEpisode(db database.Database, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
+	var userEpi protos.UserEpisode
+	filter := &database.Filter{
+		"userid":    userID,
+		"episodeid": epiID,
 	}
-
-	// update := bson.D{
-	// 	{Key: "$set", Value: bson.D{
-	// 		{Key: "offset", Value: userEpi.Offset},
-	// 		{Key: "played", Value: userEpi.Played},
-	// 	}},
-	// }
-
-	return dbClient.Upsert(database.ColUserEpisode, filter, userEpi)
+	err := db.FindOne(database.ColUserEpisode, &userEpi, filter, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error finding user episodes details, %v", err)
+	}
+	return &userEpi, nil
 }
 
 // MatchTitle is a helper function to match search with a list of podcasts titles

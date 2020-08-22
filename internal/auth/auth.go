@@ -5,13 +5,14 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/syncapod/internal/user"
 	"github.com/sschwartz96/syncapod/internal/util"
-	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -36,7 +37,7 @@ func Compare(hash, password string) bool {
 }
 
 // CreateSession creates a session and stores it into database
-func CreateSession(dbClient *database.MongoClient, userID *protos.ObjectID, userAgent string, stayLoggedIn bool) (string, error) {
+func CreateSession(db database.Database, userID *protos.ObjectID, userAgent string, stayLoggedIn bool) (string, error) {
 	// determine expires
 	var expires time.Duration
 	if stayLoggedIn {
@@ -64,7 +65,7 @@ func CreateSession(dbClient *database.MongoClient, userID *protos.ObjectID, user
 	}
 
 	// Store session in database
-	err := dbClient.Insert(database.ColSession, &session)
+	err := user.UpsertSession(db, session)
 	if err != nil {
 		return "", err
 	}
@@ -84,20 +85,18 @@ func CreateKey(l int) string {
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user
 // returns error if the key doesn't exist, or has expired
-func ValidateSession(dbClient *database.MongoClient, key string) (*protos.User, error) {
+func ValidateSession(db database.Database, key string) (*protos.User, error) {
 	// Find the key
-	var sesh protos.Session
-	err := dbClient.Find(database.ColSession, "sessionkey", key, &sesh)
+	sesh, err := user.FindSession(db, key)
 	if err != nil {
-		fmt.Println("validate sesion, couldn't find session key")
-		return nil, err
+		return nil, fmt.Errorf("error validating session: %v", err)
 	}
 
 	// Check if expired
 	if sesh.Expires.AsTime().Before(time.Now()) {
-		err := dbClient.Delete(database.ColSession, "_id", sesh.Id)
+		err := user.DeleteSession(db, sesh.Id)
 		if err != nil {
-			fmt.Println("couldn't delete session: ", err)
+			return nil, fmt.Errorf("error (ValidateSession) deleting session: %v", err)
 		}
 		return nil, errors.New("session expired")
 	}
@@ -108,17 +107,27 @@ func ValidateSession(dbClient *database.MongoClient, key string) (*protos.User, 
 
 	sesh.LastSeenTime = ptypes.TimestampNow()
 	util.AddToTimestamp(sesh.Expires, timeToAdd)
-	go dbClient.Upsert(database.ColSession, bson.M{"_id": sesh.Id}, &sesh)
+	var wg *sync.WaitGroup
+	var upsertErr chan error
+	wg.Add(1)
+	go func() {
+		upsertErr <- user.UpsertSession(db, sesh)
+		wg.Done()
+	}()
 
 	// Find the user
-	var user protos.User
-	err = dbClient.FindByID(database.ColUser, sesh.UserID, &user)
-	// user, err := FindUser(dbClient, sesh.UserID)
+	u, err := user.FindUserByID(db, sesh.UserID)
 	if err != nil {
-		fmt.Println("validate sesion, couldn't find user")
-		return nil, err
+		return nil, fmt.Errorf("error (ValidateSession) finding user: %v", err)
 	}
-	return &user, nil
+
+	// check the upsertErr
+	wg.Wait()
+	if upsertErr != nil {
+		return nil, fmt.Errorf("error (ValidateSession) upsert new session: %v", err)
+	}
+
+	return u, nil
 }
 
 // // FindUser takes a pointer to database.Client and userID and returns user if

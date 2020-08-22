@@ -86,7 +86,7 @@ func insertAuthCode(db database.Database, code *models.AuthCode) error {
 
 func findAuthCode(db database.Database, code string) (*models.AuthCode, error) {
 	var authCode *models.AuthCode
-	err := db.Find(database.ColAuthCode, authCode, database.Filter{"auth_code": code})
+	err := db.FindOne(database.ColAuthCode, authCode, &database.Filter{"auth_code": code}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding auth code: %v", err)
 	}
@@ -102,7 +102,7 @@ func insertAccessToken(db database.Database, token *models.AccessToken) error {
 
 func findAccessToken(db database.Database, token string) (*models.AccessToken, error) {
 	var accessToken *models.AccessToken
-	err := db.Find(database.ColAccessToken, accessToken, database.Filter{"token": token})
+	err := db.FindOne(database.ColAccessToken, accessToken, &database.Filter{"token": token}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding access token: %v", err)
 	}

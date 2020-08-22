@@ -14,16 +14,15 @@ import (
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/protos"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // UpdatePodcasts attempts to go through the list of podcasts update them via RSS feed
-func UpdatePodcasts(dbClient *database.MongoClient) {
+func UpdatePodcasts(db database.Database) {
 	for {
 		var podcasts []protos.Podcast
 		// TODO: use mongo "skip" and "limit" to access only a few podcasts say 100 at a time
-		err := dbClient.FindAll(database.ColPodcast, &podcasts)
+		err := db.FindAll(database.ColPodcast, &podcasts, nil, nil)
 		if err != nil {
 			fmt.Println("error getting all podcasts: ", err)
 		}
@@ -33,7 +32,7 @@ func UpdatePodcasts(dbClient *database.MongoClient) {
 		for i := range podcasts {
 			pod := &podcasts[i]
 			wg.Add(1)
-			go UpdatePodcast(&wg, dbClient, pod)
+			go UpdatePodcast(&wg, db, pod)
 		}
 
 		wg.Wait()
@@ -43,7 +42,7 @@ func UpdatePodcasts(dbClient *database.MongoClient) {
 }
 
 // UpdatePodcast updates the given podcast via RSS feed
-func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.MongoClient, pod *protos.Podcast) {
+func UpdatePodcast(wg *sync.WaitGroup, db database.Database, pod *protos.Podcast) {
 	defer wg.Done()
 	newPod, err := ParseRSS(pod.Rss)
 	if err != nil {
@@ -56,11 +55,7 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.MongoClient, pod *prot
 		// TODO: maybe check if the episode has the same title but different size
 		// TODO: hopefully the podcast just uses the same URL if they update it
 		// check if the latest episode is in collection
-		filter := bson.D{
-			{Key: "title", Value: epi.Title},
-			{Key: "pubdate", Value: epi.PubDate},
-		}
-		exists, err := dbClient.Exists(database.ColEpisode, filter)
+		exists, err := DoesEpisodeExist(db, epi.Title, epi.PubDate)
 		if err != nil {
 			fmt.Println("couldn't tell if object exists: ", err)
 			continue
@@ -68,7 +63,7 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.MongoClient, pod *prot
 
 		// episode does not exist
 		if !exists {
-			err = dbClient.Insert(database.ColEpisode, &epi)
+			err = UpsertEpisode(db, epi)
 			if err != nil {
 				fmt.Println("couldn't insert episode: ", err)
 			}
@@ -81,12 +76,11 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient *database.MongoClient, pod *prot
 
 // AddNewPodcast takes RSS url and downloads contents inserts the podcast and its episodes into the db
 // returns error if podcast already exists or connection error
-func AddNewPodcast(dbClient *database.MongoClient, url string) error {
+func AddNewPodcast(db database.Database, url string) error {
 	// check if podcast already contains that rss url
-	filter := bson.D{{Key: "rss", Value: url}}
-	exists, err := dbClient.Exists(database.ColPodcast, filter)
+	exists, err := DoesPodcastExist(db, url)
 	if err != nil {
-		return err
+		return fmt.Errorf("error add new podcast: %v", err)
 	}
 	if exists {
 		return errors.New("podcast already exists")
@@ -98,6 +92,12 @@ func AddNewPodcast(dbClient *database.MongoClient, url string) error {
 		return err
 	}
 	pod := convertPodcast(url, rssPod)
+
+	// insert podcast first that way we don't add episodes without podcast
+	err = InsertPodcast(db, pod)
+	if err != nil {
+		return fmt.Errorf("error adding new podcast: %v", err)
+	}
 
 	rssEpisodes := rssPod.RSSEpisodes
 
@@ -112,17 +112,10 @@ func AddNewPodcast(dbClient *database.MongoClient, url string) error {
 
 		epi := convertEpisode(pod.Id, &rssEpi)
 
-		err = dbClient.Insert(database.ColEpisode, epi)
+		err = UpsertEpisode(db, epi)
 		if err != nil {
 			fmt.Println("couldn't insert episode: ", err)
 		}
-	}
-
-	// Set episodes to nil and save podcast info to collection
-	err = dbClient.Insert(database.ColPodcast, pod)
-	if err != nil {
-		fmt.Println("couldn't insert podcast: ", err)
-		return err
 	}
 
 	return nil
