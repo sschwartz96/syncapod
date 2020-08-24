@@ -3,7 +3,6 @@ package user
 import (
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -142,8 +141,6 @@ func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.
 
 	// concurrently
 	var poderr, epierr chan error
-	var wg sync.WaitGroup
-	wg.Add(2)
 
 	// find podcast
 	go func() {
@@ -152,7 +149,6 @@ func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.
 			poderr <- err
 		}
 		poderr <- nil
-		wg.Done()
 	}()
 
 	// find episode
@@ -164,12 +160,13 @@ func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.
 		epierr <- nil
 	}()
 
-	wg.Wait()
-	if poderr != nil {
-		return nil, nil, nil, fmt.Errorf("error finding laster user episode: %v", poderr)
+	err = <-poderr
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("error finding laster user episode: %v", err)
 	}
-	if epierr != nil {
-		return nil, nil, nil, fmt.Errorf("error finding laster user episode: %v", epierr)
+	err = <-epierr
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("error finding laster user episode: %v", err)
 	}
 
 	return pod, epi, userEpi, nil

@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
@@ -107,12 +106,9 @@ func ValidateSession(db database.Database, key string) (*protos.User, error) {
 
 	sesh.LastSeenTime = ptypes.TimestampNow()
 	util.AddToTimestamp(sesh.Expires, timeToAdd)
-	var wg *sync.WaitGroup
 	var upsertErr chan error
-	wg.Add(1)
 	go func() {
 		upsertErr <- user.UpsertSession(db, sesh)
-		wg.Done()
 	}()
 
 	// Find the user
@@ -122,8 +118,8 @@ func ValidateSession(db database.Database, key string) (*protos.User, error) {
 	}
 
 	// check the upsertErr
-	wg.Wait()
-	if upsertErr != nil {
+	err = <-upsertErr
+	if err != nil {
 		return nil, fmt.Errorf("error (ValidateSession) upsert new session: %v", err)
 	}
 
