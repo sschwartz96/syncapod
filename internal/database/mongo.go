@@ -47,6 +47,85 @@ type mongoClient struct {
 	collectionMap map[string]*mongo.Collection
 }
 
+func (m *mongoClient) Open(ctx context.Context) error {
+	// already opened when using CreateMongoClient
+	return nil
+}
+
+func (m *mongoClient) Close(ctx context.Context) error {
+	return m.Client.Disconnect(ctx)
+}
+
+func (m *mongoClient) FindOne(collection string, object interface{}, filter *Filter, opts *Options) error {
+	col := m.collectionMap[collection]
+	f := convertToMongoFilter(filter)
+	o := convertToFindOneOptions(opts)
+	res := col.FindOne(context.Background(), f, o)
+	return res.Decode(object)
+}
+
+// FindAll finds all within the collection, using filter and options if applicable
+func (m *mongoClient) FindAll(collection string, object interface{}, filter *Filter, opts *Options) error {
+	col := m.collectionMap[collection]
+	f := convertToMongoFilter(filter)
+	o := convertToFindOptions(opts)
+	cur, err := col.Find(context.Background(), f, o)
+	if err != nil {
+		return err
+	}
+	err = cur.All(context.Background(), object)
+	return err
+}
+
+func (m *mongoClient) Update(collection string, object interface{}, filter *Filter) error {
+	col := m.collectionMap[collection]
+	f := convertToMongoFilter(filter)
+	u := bson.M{"$set": object}
+	res, err := col.UpdateOne(context.Background(), f, u)
+	if err != nil {
+		return err
+	}
+	if res.MatchedCount > 1 {
+		if res.ModifiedCount == 0 {
+			return fmt.Errorf("error mongo update: matched %v, but didn't modify", res.MatchedCount)
+		}
+	} else {
+		return fmt.Errorf("error mongo update: did not match any documents")
+	}
+	return nil
+}
+
+// Upsert updates or inserts object within collection with premade filter
+func (c *mongoClient) Upsert(collection string, object interface{}, filter *Filter) error {
+	col := c.collectionMap[collection]
+	update := bson.M{"$set": object}
+	f := convertToMongoFilter(filter)
+
+	upsert := true
+	opts := &options.UpdateOptions{Upsert: &upsert}
+
+	_, err := col.UpdateOne(context.Background(), f, update, opts)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Delete deletes the certain document based on param and value
+func (c *mongoClient) Delete(collection string, filter *Filter) error {
+	col := c.collectionMap[collection]
+	f := convertToMongoFilter(filter)
+	res, err := col.DeleteOne(context.Background(), f)
+	if err != nil {
+		return err
+	}
+	if res.DeletedCount == 0 {
+		return errors.New("error mongo delete: deleted count == 0")
+	}
+	return nil
+}
+
 // CreateMongoClient makes a connection with the mongo client
 func CreateMongoClient(user, pass, URI string) (*mongoClient, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -78,6 +157,38 @@ func CreateMongoClient(user, pass, URI string) (*mongoClient, error) {
 	}, nil
 }
 
+// convertToMongoFilter converts database.Filter to a bson.M document
+func convertToMongoFilter(filter *Filter) interface{} {
+	return bson.M(*filter)
+}
+
+// convertToFindOptions converts database.Options to options.FindOptions
+func convertToFindOptions(opts *Options) *options.FindOptions {
+	o := options.Find()
+	if opts.limit > 0 {
+		o.SetLimit(opts.limit)
+	}
+	if opts.skip > 0 {
+		o.SetSkip(opts.skip)
+	}
+	if opts.sort != nil {
+		o.SetSort(bson.M{opts.sort.key: opts.sort.value})
+	}
+	return o
+}
+
+// convertToMongoOne converts database.Options to options.FindOneOptions
+func convertToFindOneOptions(opts *Options) *options.FindOneOptions {
+	o := options.FindOne()
+	if opts.skip > 0 {
+		o.SetSkip(opts.skip)
+	}
+	if opts.sort != nil {
+		o.SetSort(bson.M{opts.sort.key: opts.sort.value})
+	}
+	return o
+}
+
 // createCollectionMap creates a map of mongo collections so the program doesn't
 // reallocate space for a collection every time a request is called
 func createCollectionMap(db *mongo.Database) map[string]*mongo.Collection {
@@ -103,21 +214,6 @@ func (c *mongoClient) Insert(collection string, object interface{}) error {
 	return errors.New("failed to insert object into: " + collection)
 }
 
-// Delete deletes the certain document based on param and value
-func (c *mongoClient) Delete(collection, param string, value interface{}) error {
-	filter := bson.D{{
-		Key:   param,
-		Value: value,
-	}}
-
-	res, err := c.collectionMap[collection].DeleteOne(context.Background(), filter)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("successfully deleted: %v documents\n", res.DeletedCount)
-	return nil
-}
-
 // FindByID takes collection name and pointer to object
 func (c *mongoClient) FindByID(collection string, objID *protos.ObjectID, object interface{}) error {
 	return c.Find(collection, "_id", objID, object)
@@ -131,36 +227,6 @@ func (c *mongoClient) Find(collection, param string, value interface{}, object i
 	}}
 
 	return c.FindWithBSON(collection, filter, options.FindOne(), object)
-}
-
-// FindAll finds all objects in the collection and inserts them into provided slice
-// returns error if the operation fails
-func (c *mongoClient) FindAll(collection string, slice interface{}) error {
-	col := c.collectionMap[collection]
-	cur, err := col.Find(context.Background(), bson.D{{}})
-	if err != nil {
-		return err
-	}
-	err = cur.All(context.Background(), slice)
-	return err
-}
-
-// Upsert updates or inserts object within collection with premade filter
-func (c *mongoClient) Upsert(collection string, filter interface{}, object interface{}) error {
-	col := c.collectionMap[collection]
-	update := bson.M{"$set": object}
-
-	upsert := true
-	opts := &options.UpdateOptions{
-		Upsert: &upsert,
-	}
-
-	_, err := col.UpdateOne(context.Background(), filter, update, opts)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // FindWithBSON takes in object and already made bson filter

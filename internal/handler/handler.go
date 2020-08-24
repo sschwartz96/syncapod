@@ -12,22 +12,22 @@ import (
 
 // Handler is the main handler for syncapod, all routes go through it
 type Handler struct {
-	dbClient     *database.MongoClient
+	db           *database.Database
 	oauthHandler *OauthHandler
 	apiHandler   *APIHandler
 }
 
 // CreateHandler sets up the main handler
-func CreateHandler(dbClient *database.MongoClient, config *config.Config) (*Handler, error) {
+func CreateHandler(db database.Database, config *config.Config) (*Handler, error) {
 	handler := &Handler{}
 	var err error
 
-	handler.oauthHandler, err = CreateOauthHandler(dbClient, config.AlexaClientID, config.AlexaSecret)
+	handler.oauthHandler, err = CreateOauthHandler(db, config.AlexaClientID, config.AlexaSecret)
 	if err != nil {
 		return nil, err
 	}
 
-	handler.apiHandler, err = CreateAPIHandler(dbClient)
+	handler.apiHandler, err = CreateAPIHandler(db)
 	if err != nil {
 		return nil, err
 	}

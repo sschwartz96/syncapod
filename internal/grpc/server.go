@@ -19,12 +19,12 @@ import (
 )
 
 type Server struct {
-	config   *config.Config
-	dbClient *database.MongoClient
+	config *config.Config
+	db     database.Database
 }
 
-func NewServer(config *config.Config, dbClient *database.MongoClient) *Server {
-	return &Server{config: config, dbClient: dbClient}
+func NewServer(config *config.Config, db database.Database) *Server {
+	return &Server{config: config, db: db}
 }
 
 func (s *Server) Start() error {
@@ -43,8 +43,8 @@ func (s *Server) Start() error {
 
 	// register services
 	reflection.Register(grpcServer)
-	protos.RegisterAuthServer(grpcServer, services.NewAuthService(s.dbClient))
-	protos.RegisterPodcastServiceServer(grpcServer, services.NewPodcastService(s.dbClient))
+	protos.RegisterAuthServer(grpcServer, services.NewAuthService(s.db))
+	protos.RegisterPodcastServiceServer(grpcServer, services.NewPodcastService(s.db))
 
 	// serve
 	return grpcServer.Serve(grpcListener)
@@ -74,7 +74,7 @@ func (s *Server) Intercept() grpc.UnaryServerInterceptor {
 			return nil, errors.New("invalid access token, empty")
 		}
 
-		user, err := auth.ValidateAccessToken(s.dbClient, token)
+		user, err := auth.ValidateAccessToken(s.db, token)
 		if err != nil {
 			return nil, errors.New("invalid access token")
 		}

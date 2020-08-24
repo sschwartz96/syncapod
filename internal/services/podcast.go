@@ -16,21 +16,27 @@ const (
 
 // PodcastService is the gRPC service for podcast
 type PodcastService struct {
-	dbClient *database.MongoClient
+	db database.Database
 }
 
 // NewPodcastService creates a new *PodcastService
-func NewPodcastService(dbClient *database.MongoClient) *PodcastService {
-	return &PodcastService{dbClient: dbClient}
+func NewPodcastService(db database.Database) *PodcastService {
+	return &PodcastService{db: db}
 }
 
 // GetEpisodes returns a list of episodes via podcast id
 func (p *PodcastService) GetEpisodes(ctx context.Context, req *protos.Request) (*protos.Episodes, error) {
 	var episodes []*protos.Episode
-
+	var err error
 	// get the id and validate
 	if req.PodcastID != nil || len(req.PodcastID.Hex) > 0 {
-		episodes = podcast.FindAllEpisodesRange(p.dbClient, req.PodcastID, int(req.Start), int(req.End))
+		episodes, err = podcast.FindEpisodesByRange(p.db, req.PodcastID, req.Start, req.End)
+		if err != nil {
+			fmt.Println("error grpc GetEpisodes: %v", err)
+			return &protos.Episodes{Episodes: []*protos.Episode{}}, nil
+		}
+	} else {
+		return &protos.Episodes{Episodes: []*protos.Episode{}}, fmt.Errorf("no podcast id supplied")
 	}
 	return &protos.Episodes{Episodes: episodes}, nil
 }

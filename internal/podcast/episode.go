@@ -10,10 +10,10 @@ import (
 
 // FindEpisodes returns a list of episodes based on podcast id
 // returns in chronological order, sectioned by start & end
-func FindEpisodesByRange(db database.Database, podcastID *protos.ObjectID, start int, end int) ([]*protos.Episode, error) {
+func FindEpisodesByRange(db database.Database, podcastID *protos.ObjectID, start int64, end int64) ([]*protos.Episode, error) {
 	var episodes []*protos.Episode
 	filter := &database.Filter{"podcastid": podcastID}
-	opts := database.CreateOptions().SetLimit(int64(end-start)).SetSkip(int64(start)).SetSort("pubdate", -1)
+	opts := database.CreateOptions().SetLimit(end-start).SetSkip(start).SetSort("pubdate", -1)
 	err := db.FindAll(database.ColEpisode, &episodes, filter, opts)
 	if err != nil {
 		return nil, fmt.Errorf("error finding episodes by range %d - %d: %v", start, end, err)

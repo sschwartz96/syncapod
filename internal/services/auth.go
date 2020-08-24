@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/syncapod/internal/user"
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -12,12 +13,12 @@ import (
 
 // AuthService is the gRPC service for authentication and authorization
 type AuthService struct {
-	dbClient *database.MongoClient
+	db database.Database
 }
 
 // NewAuthService creates a new *AuthService
-func NewAuthService(dbClient *database.MongoClient) *AuthService {
-	return &AuthService{dbClient: dbClient}
+func NewAuthService(db database.Database) *AuthService {
+	return &AuthService{db: db}
 }
 
 // Authenticate handles the authentication to syncapod and returns response
@@ -25,7 +26,7 @@ func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*p
 	res := &protos.AuthRes{}
 
 	// find user from database
-	user, err := a.dbClient.FindUser(req.Username)
+	user, err := user.FindUser(a.db, req.Username)
 	if err != nil {
 		res.Success = false
 	}
@@ -33,7 +34,7 @@ func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*p
 	// authenticate
 	if auth.Compare(user.Password, req.Password) {
 		// create session
-		key, err := auth.CreateSession(a.dbClient, user.Id, req.UserAgent, req.StayLoggedIn)
+		key, err := auth.CreateSession(a.db, user.Id, req.UserAgent, req.StayLoggedIn)
 		if err != nil {
 			fmt.Println("error creating session:", err)
 			res.Success = false
@@ -54,7 +55,7 @@ func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*prot
 	fmt.Println("received grpc authorize request")
 	res := &protos.AuthRes{}
 
-	user, err := auth.ValidateSession(a.dbClient, req.SessionKey)
+	user, err := auth.ValidateSession(a.db, req.SessionKey)
 	if err != nil {
 		fmt.Println("error validating user session:", err)
 		res.Success = false
@@ -70,7 +71,7 @@ func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*prot
 // Logout removes the given session key
 func (a *AuthService) Logout(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
 	success := true
-	err := a.dbClient.Delete(database.ColSession, "sessionkey", req.SessionKey)
+	err := user.DeleteSessionByKey(a.db, req.SessionKey)
 	if err != nil {
 		fmt.Println("error logging out:", err)
 		success = false

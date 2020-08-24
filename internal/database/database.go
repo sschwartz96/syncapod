@@ -15,6 +15,7 @@ type Database interface {
 	Update(collection string, object interface{}, filter *Filter) error
 	Upsert(collection string, object interface{}, filter *Filter) error
 	Delete(collection string, filter *Filter) error
+	Search(collection string)
 }
 
 type Filter map[string]interface{}
@@ -22,7 +23,7 @@ type Filter map[string]interface{}
 type Options struct {
 	limit int64
 	skip  int64
-	sort  sortOption
+	sort  *sortOption
 }
 
 type sortOption struct {
@@ -52,6 +53,6 @@ func (o *Options) SetSort(key string, value int) *Options {
 	} else {
 		value = -1
 	}
-	o.sort = sortOption{key: key, value: value}
+	o.sort = &sortOption{key: key, value: value}
 	return o
 }

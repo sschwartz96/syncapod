@@ -11,13 +11,13 @@ import (
 
 // APIHandler handles calls to the syncapod api
 type APIHandler struct {
-	dbClient *database.MongoClient
+	db database.Database
 }
 
 // CreateAPIHandler instatiates an APIHandler
-func CreateAPIHandler(dbClient *database.MongoClient) (*APIHandler, error) {
+func CreateAPIHandler(db database.Database) (*APIHandler, error) {
 	return &APIHandler{
-		dbClient: dbClient,
+		db: db,
 	}, nil
 }
 
@@ -63,7 +63,7 @@ func (h *APIHandler) checkAuth(req *http.Request) (*protos.User, bool) {
 	token, _, _ := req.BasicAuth()
 
 	if token != "" {
-		u, err := auth.ValidateSession(h.dbClient, token)
+		u, err := auth.ValidateSession(h.db, token)
 		if err != nil {
 			return nil, false
 		}

@@ -34,6 +34,11 @@ func DeleteSession(db database.Database, id *protos.ObjectID) error {
 	return fmt.Errorf("error deleting session: %v", err)
 }
 
+func DeleteSessionByKey(db database.Database, key string) error {
+	err := db.Delete(database.ColSession, &database.Filter{"sessionkey": key})
+	return fmt.Errorf("error deleting session by key: %v", err)
+}
+
 func FindUserByID(db database.Database, id *protos.ObjectID) (*protos.User, error) {
 	var user *protos.User
 	err := db.FindOne(database.ColUser, user, &database.Filter{"_id": id}, nil)

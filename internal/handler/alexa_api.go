@@ -71,7 +71,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// validate the token and return user
-	user, err := auth.ValidateAccessToken(h.dbClient, token)
+	user, err := auth.ValidateAccessToken(h.db, token)
 	if err != nil {
 		fmt.Println("error validating token: ", err)
 		resText = "Associated account has invalid token, please re-link account in settings."
@@ -97,7 +97,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	case PlayPodcast:
 		// search for the podcast given the name
 		var podcasts []*protos.Podcast
-		err = h.dbClient.Search(database.ColPodcast, name, &podcasts)
+		err = h.db.Search(database.ColPodcast, name, &podcasts)
 		if err != nil {
 			resText = "Error occurred searching for podcast"
 			break
@@ -119,7 +119,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				}
 				fmt.Println("episode number: ", epiNumber)
 
-				epi, err = podcast.FindEpisodeByNumber(h.dbClient, pod.Id, epiNumber)
+				epi, err = podcast.FindEpisodeBySeason(h.db, pod.Id, epiNumber)
 				if err != nil {
 					fmt.Println("couldn't find episode with that number: ", err)
 					resText = "Could not find episode with that number, please try again."
@@ -127,7 +127,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				}
 			} else {
 				fmt.Println("finding latest episode of: ", pod.Title)
-				epi, err = podcast.FindLatestEpisode(h.dbClient, pod.Id)
+				epi, err = podcast.FindLatestEpisode(h.db, pod.Id)
 				if err != nil {
 					fmt.Println("Latest episode could not be found: ", err)
 					resText = "Could not find episode, please try again."
@@ -156,7 +156,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 			podID := protos.ObjectIDFromHex(audioTokens[1])
 			epiID := protos.ObjectIDFromHex(audioTokens[2])
 			directive = DirStop
-			defer podcast.UpdateOffset(h.dbClient, user.Id, podID,
+			defer podcast.UpdateOffset(h.db, user.Id, podID,
 				epiID, aData.Context.AudioPlayer.OffsetInMilliseconds)
 		} else {
 			resText = "Please play a podcast first"
@@ -167,15 +167,15 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 		if len(splitID) > 1 {
 			podID := protos.ObjectIDFromHex(splitID[1])
 			epiID := protos.ObjectIDFromHex(splitID[2])
-			err := h.dbClient.FindByID(database.ColPodcast, podID, &pod)
+			err := h.db.FindByID(database.ColPodcast, podID, &pod)
 			if err != nil {
 				fmt.Println("couldn't find podcast from ID: ", err)
 				resText = "Please try playing new podcast"
 				break
 			}
-			epi, err = podcast.FindEpisode(h.dbClient, epiID)
+			epi, err = podcast.FindEpisode(h.db, epiID)
 		} else {
-			pod, epi, offset, err = podcast.FindUserLastPlayed(h.dbClient, user.Id)
+			pod, epi, offset, err = podcast.FindUserLastPlayed(h.db, user.Id)
 			if err != nil {
 				fmt.Println("couldn't find user last played: ", err)
 				resText = "Couldn't find any currently played podcast, please play new one"
@@ -206,7 +206,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				resText = "Playing " + pod.Title + ", " + epi.Title
 			}
 			if offset == 0 {
-				offset = podcast.FindOffset(h.dbClient, user.Id, epi.Id)
+				offset = podcast.FindOffset(h.db, user.Id, epi.Id)
 			}
 			fmt.Println("offset: ", offset)
 
@@ -243,7 +243,7 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*protos.Podcast,
 		eID := protos.ObjectIDFromHex(audioTokens[2])
 
 		// find podcast
-		pod, err = podcast.FindPodcast(h.dbClient, pID)
+		pod, err = podcast.FindPodcast(h.db, pID)
 		if err != nil {
 			fmt.Println("error finding podcast", err)
 			resText = "Error occurred, please try again"
@@ -251,7 +251,7 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*protos.Podcast,
 		}
 
 		// find episode
-		epi, err = podcast.FindEpisode(h.dbClient, eID)
+		epi, err = podcast.FindEpisode(h.db, eID)
 		if err != nil {
 			fmt.Println("error finding episode", err)
 			resText = "Error occurred, please try again"
@@ -282,7 +282,7 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*protos.Podcast,
 			if epi.DurationMillis == 0 {
 				epi.DurationMillis = podcast.FindLength(epi.MP3URL)
 				go func() {
-					err := podcast.UpdateEpisode(h.dbClient, pod, epi)
+					err := podcast.UpdateEpisode(h.db, pod, epi)
 					if err != nil {
 						fmt.Println("error updating episode: ", err)
 					}
@@ -490,7 +490,7 @@ func (h *APIHandler) AudioEvent(res http.ResponseWriter, req *http.Request, body
 	case PlaybackNearlyFinished:
 		return
 	case PlaybackFinished:
-		err := podcast.UpdateUserEpiPlayed(h.dbClient, userID, epiID, true)
+		err := podcast.UpdateUserEpiPlayed(h.db, userID, epiID, true)
 		if err != nil {
 			fmt.Println("failed to update the userEpi as played: ", err)
 		}
