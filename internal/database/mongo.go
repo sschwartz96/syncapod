@@ -306,28 +306,38 @@ func (c *mongoClient) Exists(collection string, filter interface{}) (bool, error
 }
 
 // Search takes a collection and search string then finds the object and decodes into object
-func (c *mongoClient) Search(collection, search string, object interface{}) error {
+func (c *mongoClient) Search(collection, search string, fields []string, object interface{}) error {
 	col := c.collectionMap[collection]
-	// TODO: maybe dont drop if the index exists?
+
+	// drop any previous indexes
 	col.Indexes().DropAll(context.Background())
 
-	// create index
-	indexModel := mongo.IndexModel{Keys: bson.D{
-		{Key: "title", Value: "text"},
-		{Key: "keywords", Value: "text"},
-		{Key: "subtitle", Value: "text"},
-	}}
+	// create index model
+	var indexes bson.M
+	for _, field := range fields {
+		indexes[field] = "text"
+	}
+	indexModel := mongo.IndexModel{Keys: indexes}
+
 	index, err := col.Indexes().CreateOne(context.Background(), indexModel)
 	if err != nil {
-		fmt.Println("couldn't create index model: ", err)
+		return fmt.Errorf("error creating index model (mongoClient Search): %v", err)
 	}
-	fmt.Println("our index name: ", index)
+	fmt.Println("created index named: ", index)
 
 	// create search filter
-	filter := bson.M{"$text": bson.M{"$search": search}}
+	filter := bson.M{
+		"$text": bson.M{
+			"$search": search,
+		},
+		"score": bson.M{"$meta": "textScore"},
+	}
+
+	// sort by score
+	opts := options.Find().SetSort(bson.M{"score": bson.M{"$meta": "textScore"}})
 
 	// run search
-	cur, err := col.Find(context.Background(), filter)
+	cur, err := col.Find(context.Background(), filter, opts)
 	if err != nil {
 		return err
 	}

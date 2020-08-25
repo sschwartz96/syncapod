@@ -15,7 +15,7 @@ type Database interface {
 	Update(collection string, object interface{}, filter *Filter) error
 	Upsert(collection string, object interface{}, filter *Filter) error
 	Delete(collection string, filter *Filter) error
-	Search(collection string)
+	Search(collection, search string, fields []string, object interface{}) error
 }
 
 type Filter map[string]interface{}

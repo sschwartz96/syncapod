@@ -77,6 +77,17 @@ func FindUserEpisode(db database.Database, userID, epiID *protos.ObjectID) (*pro
 	return &userEpi, nil
 }
 
+// SearchPodcasts searches for a podcast given db and text string
+func SearchPodcasts(db database.Database, search string) ([]*protos.Podcast, error) {
+	var results []*protos.Podcast
+	fields := []string{"title", "keywords", "subtitle"}
+	err := db.Search(database.ColPodcast, search, fields, &results)
+	if err != nil {
+		return nil, fmt.Errorf("error SearchPodcasts: %v", err)
+	}
+	return results, nil
+}
+
 // MatchTitle is a helper function to match search with a list of podcasts titles
 func MatchTitle(search string, podcasts []protos.Podcast) {
 	var titles []string
