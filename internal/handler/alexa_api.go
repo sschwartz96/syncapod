@@ -96,8 +96,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 	switch aData.Request.Intent.Name {
 	case PlayPodcast:
 		// search for the podcast given the name
-		var podcasts []*protos.Podcast
-		err = h.db.Search(database.ColPodcast, name, &podcasts)
+		podcasts, err := podcast.SearchPodcasts(h.db, name)
 		if err != nil {
 			resText = "Error occurred searching for podcast"
 			break
@@ -119,7 +118,7 @@ func (h *APIHandler) Alexa(res http.ResponseWriter, req *http.Request) {
 				}
 				fmt.Println("episode number: ", epiNumber)
 
-				epi, err = podcast.FindEpisodeBySeason(h.db, pod.Id, epiNumber)
+				epi, err = podcast.FindEpisodeBySeason(h.db, pod.Id, 0, epiNumber)
 				if err != nil {
 					fmt.Println("couldn't find episode with that number: ", err)
 					resText = "Could not find episode with that number, please try again."
