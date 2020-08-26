@@ -59,7 +59,7 @@ func ValidateAuthCode(db database.Database, code string) (*models.AuthCode, erro
 
 // ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
 func ValidateAccessToken(db database.Database, token string) (*protos.User, error) {
-	tokenObj, err := findAccessToken(db, token)
+	tokenObj, err := FindOauthAccessToken(db, token)
 	if err != nil {
 		return nil, err
 	}
@@ -100,11 +100,19 @@ func insertAccessToken(db database.Database, token *models.AccessToken) error {
 	return nil
 }
 
-func findAccessToken(db database.Database, token string) (*models.AccessToken, error) {
+func FindOauthAccessToken(db database.Database, token string) (*models.AccessToken, error) {
 	var accessToken *models.AccessToken
 	err := db.FindOne(database.ColAccessToken, accessToken, &database.Filter{"token": token}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding access token: %v", err)
 	}
 	return accessToken, nil
+}
+
+func DeleteOauthAccessToken(db database.Database, token string) error {
+	err := db.Delete(database.ColAccessToken, &database.Filter{"token": token})
+	if err != nil {
+		return fmt.Errorf("error deleting oauth access token: %v", err)
+	}
+	return nil
 }

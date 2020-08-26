@@ -8,6 +8,7 @@ import (
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/podcast"
 	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/syncapod/internal/user"
 )
 
 const (
@@ -48,7 +49,7 @@ func (p *PodcastService) GetUserEpisode(ctx context.Context, req *protos.Request
 		fmt.Println("error: empty userID from context")
 	}
 
-	userEpi, err := podcast.FindUserEpisode(p.dbClient, userID, req.EpisodeID)
+	userEpi, err := podcast.FindUserEpisode(p.db, userID, req.EpisodeID)
 	if err != nil {
 		fmt.Println("error finding userEpi:", err)
 	}
@@ -66,7 +67,7 @@ func (p *PodcastService) UpdateUserEpisode(ctx context.Context, req *protos.User
 		Played:    req.Played,
 		Offset:    req.Offset,
 	}
-	err := podcast.UpdateUserEpi(p.dbClient, userEpi)
+	err := user.UpsertUserEpisode(p.db, userEpi)
 	if err != nil {
 		fmt.Println("error updating user episode", err)
 		return &protos.Response{Success: false, Message: err.Error()}, nil
@@ -81,7 +82,7 @@ func (p *PodcastService) GetSubscriptions(ctx context.Context, req *protos.Reque
 		fmt.Println("error: empty userID from context")
 	}
 
-	subs, err := podcast.GetSubscriptions(p.dbClient, userID)
+	subs, err := user.FindSubscriptions(p.db, userID)
 	if err != nil {
 		fmt.Println("error getting subs:", err)
 		return &protos.Subscriptions{}, nil
@@ -97,7 +98,7 @@ func (p *PodcastService) GetUserLastPlayed(ctx context.Context, req *protos.Requ
 		fmt.Println("error: empty userID from context")
 	}
 
-	pod, epi, millis, err := podcast.FindUserLastPlayed(p.dbClient, userID)
+	pod, epi, userEpi, err := user.FindUserLastPlayed(p.db, userID)
 	if err != nil {
 		fmt.Println("error getting last play:", err)
 		return nil, err
@@ -106,6 +107,6 @@ func (p *PodcastService) GetUserLastPlayed(ctx context.Context, req *protos.Requ
 	return &protos.LastPlayedRes{
 		Podcast: pod,
 		Episode: epi,
-		Millis:  millis,
+		Millis:  userEpi.Offset,
 	}, nil
 }

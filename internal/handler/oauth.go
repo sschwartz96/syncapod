@@ -10,12 +10,12 @@ import (
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
-	"github.com/sschwartz96/syncapod/internal/models"
+	"github.com/sschwartz96/syncapod/internal/user"
 )
 
 // OauthHandler handles authorization and authentication to oauth clients
 type OauthHandler struct {
-	dbClient      *database.MongoClient
+	db            database.Database
 	loginTemplate *template.Template
 	authTemplate  *template.Template
 	// only used for alexa, need these in database if suppport more than one client
@@ -24,7 +24,7 @@ type OauthHandler struct {
 }
 
 // CreateOauthHandler just intantiates an OauthHandler
-func CreateOauthHandler(dbClient *database.MongoClient, clientID, clientSecret string) (*OauthHandler, error) {
+func CreateOauthHandler(db database.Database, clientID, clientSecret string) (*OauthHandler, error) {
 	loginT, err := template.ParseFiles("templates/oauth/login.gohtml")
 	authT, err := template.ParseFiles("templates/oauth/auth.gohtml")
 	if err != nil {
@@ -32,7 +32,7 @@ func CreateOauthHandler(dbClient *database.MongoClient, clientID, clientSecret s
 	}
 
 	return &OauthHandler{
-		dbClient:      dbClient,
+		db:            db,
 		loginTemplate: loginT,
 		authTemplate:  authT,
 		clientID:      clientID,
@@ -62,7 +62,7 @@ func (h *OauthHandler) Get(res http.ResponseWriter, req *http.Request) {
 		err = h.loginTemplate.Execute(res, nil)
 	case "authorize":
 		key := strings.TrimSpace(req.URL.Query().Get("sesh_key"))
-		_, err := auth.ValidateSession(h.dbClient, key)
+		_, err := auth.ValidateSession(h.db, key)
 		if err != nil {
 			fmt.Println("couldn't not validate, redirecting to login page: ", err)
 			http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
@@ -105,14 +105,14 @@ func (h *OauthHandler) Login(res http.ResponseWriter, req *http.Request) {
 	username := req.FormValue("uname")
 	password := req.FormValue("pass")
 
-	user, err := h.dbClient.FindUser(username)
+	userObj, err := user.FindUser(h.db, username)
 	if err != nil {
 		h.loginTemplate.Execute(res, true)
 		return
 	}
 
-	if auth.Compare(user.Password, password) {
-		key, err := auth.CreateSession(h.dbClient, user.Id, req.UserAgent(), false)
+	if auth.Compare(userObj.Password, password) {
+		key, err := auth.CreateSession(h.db, userObj.Id, req.UserAgent(), false)
 		if err != nil {
 			h.loginTemplate.Execute(res, true)
 			return
@@ -137,7 +137,7 @@ func (h *OauthHandler) Login(res http.ResponseWriter, req *http.Request) {
 func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	// get session key, validate and get user info
 	seshKey := strings.TrimSpace(req.URL.Query().Get("sesh_key"))
-	user, err := auth.ValidateSession(h.dbClient, seshKey)
+	userObj, err := auth.ValidateSession(h.db, seshKey)
 	if err != nil {
 		fmt.Println("couldn't not validate, redirecting to login page: ", err)
 		http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
@@ -146,7 +146,11 @@ func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 
 	// create auth code
 	clientID := strings.TrimSpace(req.URL.Query().Get("client_id"))
-	authCode := auth.CreateAuthorizationCode(h.dbClient, user.Id, clientID)
+	authCode, err := auth.CreateAuthorizationCode(h.db, userObj.Id, clientID)
+	if err != nil {
+		//TODO: handle this error properly
+		fmt.Printf("error creating oauth authorization code: %v\n", err)
+	}
 
 	// setup redirect url
 	redirectURI := strings.TrimSpace(req.URL.Query().Get("redirect_uri"))
@@ -182,9 +186,8 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 	grantType := req.FormValue("grant_type")
 
 	if strings.ToLower(grantType) == "refresh_token" {
-		var accessToken models.AccessToken
 		refreshToken := req.FormValue("refresh_token")
-		err := h.dbClient.Find(database.ColAccessToken, "refresh_token", refreshToken, &accessToken)
+		accessToken, err := auth.FindOauthAccessToken(h.db, refreshToken)
 		if err != nil {
 			fmt.Println("couldn't find token based on refresh: ", err)
 			http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
@@ -194,13 +197,18 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 		queryCode = accessToken.AuthCode
 
 		// delete the token
-		defer h.dbClient.Delete(database.ColAccessToken, "token", accessToken.Token)
+		go func() {
+			err := auth.DeleteOauthAccessToken(h.db, accessToken.Token)
+			if err != nil {
+				fmt.Println("error oauth handler(Token): %v", err)
+			}
+		}()
 	} else {
 		queryCode = req.FormValue("code")
 	}
 
 	// validate auth code
-	authCode, err := auth.ValidateAuthCode(h.dbClient, queryCode)
+	authCode, err := auth.ValidateAuthCode(h.db, queryCode)
 	if err != nil {
 		fmt.Println("couldn't find auth code: ", err)
 		http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
@@ -209,7 +217,13 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// create access token
-	token := auth.CreateAccessToken(h.dbClient, authCode)
+	token, err := auth.CreateAccessToken(h.db, authCode)
+	if err != nil {
+		fmt.Println("error oauth handler(Token), could not create access token: %v", err)
+		// TODO: send error message back
+		http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
+		return
+	}
 
 	// setup json
 	type tokenResponse struct {
