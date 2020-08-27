@@ -194,3 +194,15 @@ func UpdateOffset(db database.Database, uID, pID, eID *protos.ObjectID, offset i
 	}
 	return UpsertUserEpisode(db, userEpi)
 }
+
+func UpdateUserEpiPlayed(db database.Database, uID, pID, eID *protos.ObjectID, played bool) error {
+	userEpi := &protos.UserEpisode{
+		UserID:    uID,
+		PodcastID: pID,
+		EpisodeID: eID,
+		Offset:    0,
+		Played:    played,
+		LastSeen:  ptypes.TimestampNow(),
+	}
+	return UpsertUserEpisode(db, userEpi)
+}
