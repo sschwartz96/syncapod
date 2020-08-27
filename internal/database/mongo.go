@@ -47,6 +47,37 @@ type mongoClient struct {
 	collectionMap map[string]*mongo.Collection
 }
 
+// CreateMongoClient makes a connection with the mongo client
+func CreateMongoClient(user, pass, URI string) (*mongoClient, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// set up client options
+	opts := options.Client().ApplyURI(URI)
+	if user != "" {
+		opts.Auth.Username = user
+		opts.Auth.Password = pass
+	}
+	opts = opts.SetRegistry(createRegistry())
+
+	// connect to client
+	client, err := mongo.Connect(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	// confirm the connection with a ping
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return &mongoClient{
+		Client:        client,
+		collectionMap: createCollectionMap(client.Database(DBsyncapod)),
+	}, nil
+}
+
 func (m *mongoClient) Open(ctx context.Context) error {
 	// already opened when using CreateMongoClient
 	return nil
@@ -126,44 +157,19 @@ func (c *mongoClient) Delete(collection string, filter *Filter) error {
 	return nil
 }
 
-// CreateMongoClient makes a connection with the mongo client
-func CreateMongoClient(user, pass, URI string) (*mongoClient, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	// set up client options
-	opts := options.Client().ApplyURI(URI)
-	if user != "" {
-		opts.Auth.Username = user
-		opts.Auth.Password = pass
-	}
-	opts.SetRegistry(createRegistry())
-
-	// connect to client
-	client, err := mongo.Connect(ctx, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	// confirm the connection with a ping
-	err = client.Ping(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return &mongoClient{
-		Client:        client,
-		collectionMap: createCollectionMap(client.Database(DBsyncapod)),
-	}, nil
-}
-
 // convertToMongoFilter converts database.Filter to a bson.M document
 func convertToMongoFilter(filter *Filter) interface{} {
+	if filter == nil {
+		return bson.M{"": ""}
+	}
 	return bson.M(*filter)
 }
 
 // convertToFindOptions converts database.Options to options.FindOptions
 func convertToFindOptions(opts *Options) *options.FindOptions {
+	if opts == nil {
+		return options.Find()
+	}
 	o := options.Find()
 	if opts.limit > 0 {
 		o.SetLimit(opts.limit)
@@ -179,6 +185,9 @@ func convertToFindOptions(opts *Options) *options.FindOptions {
 
 // convertToMongoOne converts database.Options to options.FindOneOptions
 func convertToFindOneOptions(opts *Options) *options.FindOneOptions {
+	if opts == nil {
+		return options.FindOne()
+	}
 	o := options.FindOne()
 	if opts.skip > 0 {
 		o.SetSkip(opts.skip)
@@ -194,7 +203,7 @@ func convertToFindOneOptions(opts *Options) *options.FindOneOptions {
 func createCollectionMap(db *mongo.Database) map[string]*mongo.Collection {
 	collectionMap := make(map[string]*mongo.Collection, len(collections))
 	for _, collection := range collections {
-		collectionMap[collection] = collectionMap[collection]
+		collectionMap[collection] = db.Collection(collection)
 	}
 	return collectionMap
 }

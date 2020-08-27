@@ -28,7 +28,9 @@ func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*p
 	// find user from database
 	user, err := user.FindUser(a.db, req.Username)
 	if err != nil {
+		res.Message = fmt.Sprint("failed on error: ", err)
 		res.Success = false
+		return res, nil
 	}
 
 	// authenticate
@@ -57,11 +59,12 @@ func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*prot
 
 	user, err := auth.ValidateSession(a.db, req.SessionKey)
 	if err != nil {
-		fmt.Println("error validating user session:", err)
+		res.Message = fmt.Sprint("error validating user session:", err)
 		res.Success = false
 	} else {
 		res.Success = true
 		res.SessionKey = req.SessionKey
+		user.Password = ""
 		res.User = user
 	}
 

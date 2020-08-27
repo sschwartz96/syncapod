@@ -1,6 +1,6 @@
 module github.com/sschwartz96/syncapod
 
-go 1.14
+go 1.15
 
 require (
 	github.com/golang/protobuf v1.4.2
@@ -9,6 +9,8 @@ require (
 	go.mongodb.org/mongo-driver v1.4.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
-	google.golang.org/grpc v1.31.0
+	golang.org/x/sys v0.0.0-20200826173525-f9321e4c35a6 // indirect
+	google.golang.org/genproto v0.0.0-20200825200019-8632dd797987 // indirect
+	google.golang.org/grpc v1.33.0-dev
 	google.golang.org/protobuf v1.25.0
 )

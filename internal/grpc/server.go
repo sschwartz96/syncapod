@@ -3,10 +3,9 @@ package grpc
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"net"
-	"strconv"
+	"strings"
 
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/config"
@@ -18,36 +17,43 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+// Server is truly needed for its Intercept method which authenticates users before
+// accessing services
 type Server struct {
-	config *config.Config
+	server *grpc.Server
 	db     database.Database
 }
 
 func NewServer(config *config.Config, db database.Database) *Server {
-	return &Server{config: config, db: db}
-}
-
-func (s *Server) Start() error {
 	var grpcServer *grpc.Server
+	s := &Server{db: db}
 
 	// setup server
-	gOptCreds := getTransportCreds(s.config)
+	gOptCreds := getTransportCreds(config)
 	gOptInter := grpc.UnaryInterceptor(s.Intercept())
 	grpcServer = grpc.NewServer(gOptCreds, gOptInter)
-
-	// setup listener
-	grpcListener, err := net.Listen("tcp", ":"+strconv.Itoa(s.config.GRPCPort))
-	if err != nil {
-		return errors.New(fmt.Sprintf("could not listen on port %d, err: %v", s.config.GRPCPort, err))
-	}
+	s.server = grpcServer
 
 	// register services
 	reflection.Register(grpcServer)
-	protos.RegisterAuthServer(grpcServer, services.NewAuthService(s.db))
-	protos.RegisterPodcastServiceServer(grpcServer, services.NewPodcastService(s.db))
 
-	// serve
-	return grpcServer.Serve(grpcListener)
+	as := services.NewAuthService(db)
+	protos.RegisterAuthService(
+		grpcServer,
+		protos.NewAuthService(as),
+	)
+
+	pd := services.NewPodcastService(db)
+	protos.RegisterPodService(
+		grpcServer,
+		protos.NewPodService(pd),
+	)
+
+	return s
+}
+
+func (s *Server) Start(list net.Listener) error {
+	return s.server.Serve(list)
 }
 
 func getTransportCreds(config *config.Config) grpc.ServerOption {
@@ -66,6 +72,11 @@ func getTransportCreds(config *config.Config) grpc.ServerOption {
 
 func (s *Server) Intercept() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+		// if this is going to the Auth service allow through
+		if strings.Contains(info.FullMethod, "protos.Auth") {
+			return handler(ctx, req)
+		}
+
 		token, ok := ctx.Value("token").(string)
 		if !ok {
 			return nil, errors.New("invalid access token, not string format")

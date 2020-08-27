@@ -12,7 +12,7 @@ import (
 
 // * Auth *
 func FindSession(db database.Database, key string) (*protos.Session, error) {
-	var session *protos.Session
+	session := &protos.Session{}
 	err := db.FindOne(database.ColSession, session, &database.Filter{"sessionkey": &key}, nil)
 
 	if err != nil {
@@ -39,7 +39,7 @@ func DeleteSessionByKey(db database.Database, key string) error {
 }
 
 func FindUserByID(db database.Database, id *protos.ObjectID) (*protos.User, error) {
-	var user *protos.User
+	user := &protos.User{}
 	err := db.FindOne(database.ColUser, user, &database.Filter{"_id": id}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding user by id: %v", err)
@@ -57,9 +57,12 @@ func FindUser(db database.Database, username string) (*protos.User, error) {
 		key = "username"
 	}
 
-	var user *protos.User
+	user := &protos.User{}
 	err := db.FindOne(database.ColUser, user, &database.Filter{key: username}, nil)
 	if err != nil {
+		if strings.Contains(err.Error(), "no documents") {
+			return nil, fmt.Errorf("error finding user by %s: user does not exist", key)
+		}
 		return nil, fmt.Errorf("error finding user by %s: %v", key, err)
 	}
 
@@ -76,20 +79,20 @@ func DeleteUser(db database.Database, id *protos.ObjectID) error {
 // UserEpisode
 
 func FindUserEpisode(db database.Database, userID *protos.ObjectID, episodeID *protos.ObjectID) (*protos.UserEpisode, error) {
-	var userEpisode protos.UserEpisode
+	userEpisode := &protos.UserEpisode{}
 	filter := &database.Filter{
 		"userid":    userID,
 		"episodeid": episodeID,
 	}
-	err := db.FindOne(database.ColUserEpisode, &userEpisode, filter, nil)
+	err := db.FindOne(database.ColUserEpisode, userEpisode, filter, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding user episode details: %v", err)
 	}
-	return &userEpisode, nil
+	return userEpisode, nil
 }
 
 func FindLatestUserEpisode(db database.Database, userID *protos.ObjectID) (*protos.UserEpisode, error) {
-	var userEpi *protos.UserEpisode
+	userEpi := &protos.UserEpisode{}
 	filter := &database.Filter{"userid": userID}
 	opts := database.CreateOptions().SetSort("lastseen", -1)
 	err := db.FindOne(database.ColUserEpisode, userEpi, filter, opts)
@@ -130,8 +133,8 @@ func UpsertSubscription(db database.Database, subscription *protos.Subscription)
 
 // FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
 func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.Podcast, *protos.Episode, *protos.UserEpisode, error) {
-	var pod *protos.Podcast
-	var epi *protos.Episode
+	pod := &protos.Podcast{}
+	epi := &protos.Episode{}
 
 	// find the latest played user_episode
 	userEpi, err := FindLatestUserEpisode(db, userID)

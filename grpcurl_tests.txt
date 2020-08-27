@@ -1,3 +1,6 @@
+# Reflection
+grpcurl -plaintext localhost:50051 list
+
 # GetEpisodes
 grpcurl -plaintext  -d '{"podcastID":{"hex":"5e9db23dc2b5219713703afb"}}' localhost:50051 protos.PodcastService/GetEpisodes
 

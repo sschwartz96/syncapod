@@ -106,7 +106,7 @@ func ValidateSession(db database.Database, key string) (*protos.User, error) {
 
 	sesh.LastSeenTime = ptypes.TimestampNow()
 	util.AddToTimestamp(sesh.Expires, timeToAdd)
-	var upsertErr chan error
+	upsertErr := make(chan error)
 	go func() {
 		upsertErr <- user.UpsertSession(db, sesh)
 	}()

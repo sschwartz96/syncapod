@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -32,7 +33,13 @@ func main() {
 	// setup & start gRPC server
 	grpcServer := sGRPC.NewServer(cfg, dbClient)
 	go func() {
-		err = grpcServer.Start()
+		// setup listener
+		grpcListener, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.GRPCPort))
+		if err != nil {
+			log.Fatalf("could not listen on port %d, err: %v", cfg.GRPCPort, err)
+		}
+		// start server
+		err = grpcServer.Start(grpcListener)
 		if err != nil {
 			log.Fatal(err)
 		}
