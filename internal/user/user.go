@@ -143,7 +143,8 @@ func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.
 	}
 
 	// concurrently
-	var poderr, epierr chan error
+	poderr := make(chan error)
+	epierr := make(chan error)
 
 	// find podcast
 	go func() {

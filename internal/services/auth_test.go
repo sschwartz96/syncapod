@@ -12,6 +12,7 @@ var lis *bufconn.Listener
 
 func init() {
 	lis = bufconn.Listen(bufSize)
+	// should we load in config??? or just mock everything?
 	config := &config.Config{GRPCPort: 123}
 	s := grpc.NewServer()
 }
