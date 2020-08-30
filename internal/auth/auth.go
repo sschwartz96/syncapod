@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/user"
 	"github.com/sschwartz96/syncapod/internal/util"
@@ -36,7 +36,7 @@ func Compare(hash, password string) bool {
 }
 
 // CreateSession creates a session and stores it into database
-func CreateSession(db database.Database, userID *protos.ObjectID, userAgent string, stayLoggedIn bool) (string, error) {
+func CreateSession(dbClient db.Database, userID *protos.ObjectID, userAgent string, stayLoggedIn bool) (string, error) {
 	// determine expires
 	var expires time.Duration
 	if stayLoggedIn {
@@ -64,7 +64,7 @@ func CreateSession(db database.Database, userID *protos.ObjectID, userAgent stri
 	}
 
 	// Store session in database
-	err := user.UpsertSession(db, session)
+	err := user.UpsertSession(dbClient, session)
 	if err != nil {
 		return "", err
 	}
@@ -84,16 +84,16 @@ func CreateKey(l int) string {
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user
 // returns error if the key doesn't exist, or has expired
-func ValidateSession(db database.Database, key string) (*protos.User, error) {
+func ValidateSession(dbClient db.Database, key string) (*protos.User, error) {
 	// Find the key
-	sesh, err := user.FindSession(db, key)
+	sesh, err := user.FindSession(dbClient, key)
 	if err != nil {
 		return nil, fmt.Errorf("error validating session: %v", err)
 	}
 
 	// Check if expired
 	if sesh.Expires.AsTime().Before(time.Now()) {
-		err := user.DeleteSession(db, sesh.Id)
+		err := user.DeleteSession(dbClient, sesh.Id)
 		if err != nil {
 			return nil, fmt.Errorf("error (ValidateSession) deleting session: %v", err)
 		}
@@ -108,11 +108,11 @@ func ValidateSession(db database.Database, key string) (*protos.User, error) {
 	util.AddToTimestamp(sesh.Expires, timeToAdd)
 	upsertErr := make(chan error)
 	go func() {
-		upsertErr <- user.UpsertSession(db, sesh)
+		upsertErr <- user.UpsertSession(dbClient, sesh)
 	}()
 
 	// Find the user
-	u, err := user.FindUserByID(db, sesh.UserID)
+	u, err := user.FindUserByID(dbClient, sesh.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("error (ValidateSession) finding user: %v", err)
 	}

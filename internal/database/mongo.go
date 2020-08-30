@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -87,19 +88,19 @@ func (m *mongoClient) Close(ctx context.Context) error {
 	return m.Client.Disconnect(ctx)
 }
 
-func (m *mongoClient) FindOne(collection string, object interface{}, filter *Filter, opts *Options) error {
+func (m *mongoClient) FindOne(collection string, object interface{}, filter *db.Filter, opts *db.Options) error {
 	col := m.collectionMap[collection]
-	f := convertToMongoFilter(filter)
-	o := convertToFindOneOptions(opts)
+	f := db.ConvertToMongoFilter(filter)
+	o := db.ConvertToFindOneOptions(opts)
 	res := col.FindOne(context.Background(), f, o)
 	return res.Decode(object)
 }
 
 // FindAll finds all within the collection, using filter and options if applicable
-func (m *mongoClient) FindAll(collection string, object interface{}, filter *Filter, opts *Options) error {
+func (m *mongoClient) FindAll(collection string, object interface{}, filter *db.Filter, opts *db.Options) error {
 	col := m.collectionMap[collection]
-	f := convertToMongoFilter(filter)
-	o := convertToFindOptions(opts)
+	f := db.ConvertToMongoFilter(filter)
+	o := db.ConvertToFindOptions(opts)
 	cur, err := col.Find(context.Background(), f, o)
 	if err != nil {
 		return err
@@ -108,9 +109,9 @@ func (m *mongoClient) FindAll(collection string, object interface{}, filter *Fil
 	return err
 }
 
-func (m *mongoClient) Update(collection string, object interface{}, filter *Filter) error {
+func (m *mongoClient) Update(collection string, object interface{}, filter *db.Filter) error {
 	col := m.collectionMap[collection]
-	f := convertToMongoFilter(filter)
+	f := db.ConvertToMongoFilter(filter)
 	u := bson.M{"$set": object}
 	res, err := col.UpdateOne(context.Background(), f, u)
 	if err != nil {
@@ -127,10 +128,10 @@ func (m *mongoClient) Update(collection string, object interface{}, filter *Filt
 }
 
 // Upsert updates or inserts object within collection with premade filter
-func (c *mongoClient) Upsert(collection string, object interface{}, filter *Filter) error {
+func (c *mongoClient) Upsert(collection string, object interface{}, filter *db.Filter) error {
 	col := c.collectionMap[collection]
 	update := bson.M{"$set": object}
-	f := convertToMongoFilter(filter)
+	f := db.ConvertToMongoFilter(filter)
 
 	upsert := true
 	opts := &options.UpdateOptions{Upsert: &upsert}
@@ -144,9 +145,9 @@ func (c *mongoClient) Upsert(collection string, object interface{}, filter *Filt
 }
 
 // Delete deletes the certain document based on param and value
-func (c *mongoClient) Delete(collection string, filter *Filter) error {
+func (c *mongoClient) Delete(collection string, filter *db.Filter) error {
 	col := c.collectionMap[collection]
-	f := convertToMongoFilter(filter)
+	f := db.ConvertToMongoFilter(filter)
 	res, err := col.DeleteOne(context.Background(), f)
 	if err != nil {
 		return err
@@ -155,47 +156,6 @@ func (c *mongoClient) Delete(collection string, filter *Filter) error {
 		return errors.New("error mongo delete: deleted count == 0")
 	}
 	return nil
-}
-
-// convertToMongoFilter converts database.Filter to a bson.M document
-func convertToMongoFilter(filter *Filter) interface{} {
-	if filter == nil {
-		return bson.M{"": ""}
-	}
-	return bson.M(*filter)
-}
-
-// convertToFindOptions converts database.Options to options.FindOptions
-func convertToFindOptions(opts *Options) *options.FindOptions {
-	if opts == nil {
-		return options.Find()
-	}
-	o := options.Find()
-	if opts.limit > 0 {
-		o.SetLimit(opts.limit)
-	}
-	if opts.skip > 0 {
-		o.SetSkip(opts.skip)
-	}
-	if opts.sort != nil {
-		o.SetSort(bson.M{opts.sort.key: opts.sort.value})
-	}
-	return o
-}
-
-// convertToMongoOne converts database.Options to options.FindOneOptions
-func convertToFindOneOptions(opts *Options) *options.FindOneOptions {
-	if opts == nil {
-		return options.FindOne()
-	}
-	o := options.FindOne()
-	if opts.skip > 0 {
-		o.SetSkip(opts.skip)
-	}
-	if opts.sort != nil {
-		o.SetSort(bson.M{opts.sort.key: opts.sort.value})
-	}
-	return o
 }
 
 // createCollectionMap creates a map of mongo collections so the program doesn't

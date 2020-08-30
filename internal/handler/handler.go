@@ -6,28 +6,28 @@ import (
 	"path"
 	"strings"
 
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/config"
-	"github.com/sschwartz96/syncapod/internal/database"
 )
 
 // Handler is the main handler for syncapod, all routes go through it
 type Handler struct {
-	db           *database.Database
+	db           *db.Database
 	oauthHandler *OauthHandler
 	apiHandler   *APIHandler
 }
 
 // CreateHandler sets up the main handler
-func CreateHandler(db database.Database, config *config.Config) (*Handler, error) {
+func CreateHandler(dbClient db.Database, config *config.Config) (*Handler, error) {
 	handler := &Handler{}
 	var err error
 
-	handler.oauthHandler, err = CreateOauthHandler(db, config.AlexaClientID, config.AlexaSecret)
+	handler.oauthHandler, err = CreateOauthHandler(dbClient, config.AlexaClientID, config.AlexaSecret)
 	if err != nil {
 		return nil, err
 	}
 
-	handler.apiHandler, err = CreateAPIHandler(db)
+	handler.apiHandler, err = CreateAPIHandler(dbClient)
 	if err != nil {
 		return nil, err
 	}

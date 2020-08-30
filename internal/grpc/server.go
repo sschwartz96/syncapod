@@ -7,9 +7,9 @@ import (
 	"net"
 	"strings"
 
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/config"
-	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/services"
 	"google.golang.org/grpc"
@@ -21,12 +21,12 @@ import (
 // accessing services
 type Server struct {
 	server *grpc.Server
-	db     database.Database
+	db     db.Database
 }
 
-func NewServer(config *config.Config, db database.Database) *Server {
+func NewServer(config *config.Config, dbClient db.Database) *Server {
 	var grpcServer *grpc.Server
-	s := &Server{db: db}
+	s := &Server{db: dbClient}
 
 	// setup server
 	gOptCreds := getTransportCreds(config)
@@ -37,13 +37,13 @@ func NewServer(config *config.Config, db database.Database) *Server {
 	// register services
 	reflection.Register(grpcServer)
 
-	as := services.NewAuthService(db)
+	as := services.NewAuthService(dbClient)
 	protos.RegisterAuthService(
 		grpcServer,
 		protos.NewAuthService(as),
 	)
 
-	pd := services.NewPodcastService(db)
+	pd := services.NewPodcastService(dbClient)
 	protos.RegisterPodService(
 		grpcServer,
 		protos.NewPodService(pd),

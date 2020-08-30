@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/protos"
@@ -12,7 +13,7 @@ import (
 )
 
 // CreateAuthorizationCode creates and saves an authorization code with the client & user id
-func CreateAuthorizationCode(db database.Database, userID *protos.ObjectID, clientID string) (string, error) {
+func CreateAuthorizationCode(dbClient db.Database, userID *protos.ObjectID, clientID string) (string, error) {
 	code := models.AuthCode{
 		Code:     CreateKey(64),
 		ClientID: clientID,
@@ -20,7 +21,7 @@ func CreateAuthorizationCode(db database.Database, userID *protos.ObjectID, clie
 		Scope:    models.SubScope,
 	}
 
-	err := insertAuthCode(db, &code)
+	err := insertAuthCode(dbClient, &code)
 	if err != nil {
 		return "", fmt.Errorf("error creating auth code: %v", err)
 	}
@@ -29,7 +30,7 @@ func CreateAuthorizationCode(db database.Database, userID *protos.ObjectID, clie
 }
 
 // CreateAccessToken creates and saves an access token with a year of validity
-func CreateAccessToken(db database.Database, authCode *models.AuthCode) (*models.AccessToken, error) {
+func CreateAccessToken(dbClient db.Database, authCode *models.AuthCode) (*models.AccessToken, error) {
 	token := models.AccessToken{
 		AuthCode:     authCode.Code,
 		Token:        CreateKey(32),
@@ -39,7 +40,7 @@ func CreateAccessToken(db database.Database, authCode *models.AuthCode) (*models
 		Expires:      3600,
 	}
 
-	err := insertAccessToken(db, &token)
+	err := insertAccessToken(dbClient, &token)
 	if err != nil {
 		return nil, fmt.Errorf("error creating access token: %v", err)
 	}
@@ -48,8 +49,8 @@ func CreateAccessToken(db database.Database, authCode *models.AuthCode) (*models
 }
 
 // ValidateAuthCode takes pointer to db client and code string, finds the code and returns it
-func ValidateAuthCode(db database.Database, code string) (*models.AuthCode, error) {
-	authCode, err := findAuthCode(db, code)
+func ValidateAuthCode(dbClient db.Database, code string) (*models.AuthCode, error) {
+	authCode, err := findAuthCode(dbClient, code)
 	if err != nil {
 		return nil, fmt.Errorf("error validating auth code: %v", err)
 	}
@@ -58,8 +59,8 @@ func ValidateAuthCode(db database.Database, code string) (*models.AuthCode, erro
 }
 
 // ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
-func ValidateAccessToken(db database.Database, token string) (*protos.User, error) {
-	tokenObj, err := FindOauthAccessToken(db, token)
+func ValidateAccessToken(dbClient db.Database, token string) (*protos.User, error) {
+	tokenObj, err := FindOauthAccessToken(dbClient, token)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +70,7 @@ func ValidateAccessToken(db database.Database, token string) (*protos.User, erro
 		return nil, errors.New("expired access token")
 	}
 
-	u, err := user.FindUserByID(db, tokenObj.UserID)
+	u, err := user.FindUserByID(dbClient, tokenObj.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -77,40 +78,40 @@ func ValidateAccessToken(db database.Database, token string) (*protos.User, erro
 	return u, nil
 }
 
-func insertAuthCode(db database.Database, code *models.AuthCode) error {
-	if err := db.Insert(database.ColAuthCode, code); err != nil {
+func insertAuthCode(dbClient db.Database, code *models.AuthCode) error {
+	if err := dbClient.Insert(database.ColAuthCode, code); err != nil {
 		return fmt.Errorf("error inserting auth code: %v", err)
 	}
 	return nil
 }
 
-func findAuthCode(db database.Database, code string) (*models.AuthCode, error) {
+func findAuthCode(dbClient db.Database, code string) (*models.AuthCode, error) {
 	var authCode *models.AuthCode
-	err := db.FindOne(database.ColAuthCode, authCode, &database.Filter{"auth_code": code}, nil)
+	err := dbClient.FindOne(database.ColAuthCode, authCode, &db.Filter{"auth_code": code}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding auth code: %v", err)
 	}
 	return authCode, nil
 }
 
-func insertAccessToken(db database.Database, token *models.AccessToken) error {
-	if err := db.Insert(database.ColAccessToken, token); err != nil {
+func insertAccessToken(dbClient db.Database, token *models.AccessToken) error {
+	if err := dbClient.Insert(database.ColAccessToken, token); err != nil {
 		return fmt.Errorf("error inserting access token: %v", err)
 	}
 	return nil
 }
 
-func FindOauthAccessToken(db database.Database, token string) (*models.AccessToken, error) {
+func FindOauthAccessToken(dbClient db.Database, token string) (*models.AccessToken, error) {
 	var accessToken *models.AccessToken
-	err := db.FindOne(database.ColAccessToken, accessToken, &database.Filter{"token": token}, nil)
+	err := dbClient.FindOne(database.ColAccessToken, accessToken, &db.Filter{"token": token}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding access token: %v", err)
 	}
 	return accessToken, nil
 }
 
-func DeleteOauthAccessToken(db database.Database, token string) error {
-	err := db.Delete(database.ColAccessToken, &database.Filter{"token": token})
+func DeleteOauthAccessToken(dbClient db.Database, token string) error {
+	err := dbClient.Delete(database.ColAccessToken, &db.Filter{"token": token})
 	if err != nil {
 		return fmt.Errorf("error deleting oauth access token: %v", err)
 	}

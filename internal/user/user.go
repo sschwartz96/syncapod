@@ -5,15 +5,16 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/ptypes"
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/podcast"
 	"github.com/sschwartz96/syncapod/internal/protos"
 )
 
 // * Auth *
-func FindSession(db database.Database, key string) (*protos.Session, error) {
+func FindSession(dbClient db.Database, key string) (*protos.Session, error) {
 	session := &protos.Session{}
-	err := db.FindOne(database.ColSession, session, &database.Filter{"sessionkey": &key}, nil)
+	err := dbClient.FindOne(database.ColSession, session, &db.Filter{"sessionkey": &key}, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("error finding session: %v", err)
@@ -21,26 +22,26 @@ func FindSession(db database.Database, key string) (*protos.Session, error) {
 	return session, nil
 }
 
-func UpsertSession(db database.Database, session *protos.Session) error {
-	if err := db.Upsert(database.ColSession, session, &database.Filter{"_id": session.Id}); err != nil {
+func UpsertSession(dbClient db.Database, session *protos.Session) error {
+	if err := dbClient.Upsert(database.ColSession, session, &db.Filter{"_id": session.Id}); err != nil {
 		return fmt.Errorf("error upserting session: %v", err)
 	}
 	return nil
 }
 
-func DeleteSession(db database.Database, id *protos.ObjectID) error {
-	err := db.Delete(database.ColSession, &database.Filter{"_id": id})
+func DeleteSession(dbClient db.Database, id *protos.ObjectID) error {
+	err := dbClient.Delete(database.ColSession, &db.Filter{"_id": id})
 	return fmt.Errorf("error deleting session: %v", err)
 }
 
-func DeleteSessionByKey(db database.Database, key string) error {
-	err := db.Delete(database.ColSession, &database.Filter{"sessionkey": key})
+func DeleteSessionByKey(dbClient db.Database, key string) error {
+	err := dbClient.Delete(database.ColSession, &db.Filter{"sessionkey": key})
 	return fmt.Errorf("error deleting session by key: %v", err)
 }
 
-func FindUserByID(db database.Database, id *protos.ObjectID) (*protos.User, error) {
+func FindUserByID(dbClient db.Database, id *protos.ObjectID) (*protos.User, error) {
 	user := &protos.User{}
-	err := db.FindOne(database.ColUser, user, &database.Filter{"_id": id}, nil)
+	err := dbClient.FindOne(database.ColUser, user, &db.Filter{"_id": id}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding user by id: %v", err)
 	}
@@ -48,7 +49,7 @@ func FindUserByID(db database.Database, id *protos.ObjectID) (*protos.User, erro
 }
 
 // FindUser attempts to find user by username/email returns pointer to user or error if not found
-func FindUser(db database.Database, username string) (*protos.User, error) {
+func FindUser(dbClient db.Database, username string) (*protos.User, error) {
 	var key string
 	if strings.Contains(username, "@") {
 		key = "email"
@@ -58,7 +59,7 @@ func FindUser(db database.Database, username string) (*protos.User, error) {
 	}
 
 	user := &protos.User{}
-	err := db.FindOne(database.ColUser, user, &database.Filter{key: username}, nil)
+	err := dbClient.FindOne(database.ColUser, user, &db.Filter{key: username}, nil)
 	if err != nil {
 		if strings.Contains(err.Error(), "no documents") {
 			return nil, fmt.Errorf("error finding user by %s: user does not exist", key)
@@ -69,8 +70,8 @@ func FindUser(db database.Database, username string) (*protos.User, error) {
 	return user, nil
 }
 
-func DeleteUser(db database.Database, id *protos.ObjectID) error {
-	if err := db.Delete(database.ColUser, &database.Filter{"_id": id}); err != nil {
+func DeleteUser(dbClient db.Database, id *protos.ObjectID) error {
+	if err := dbClient.Delete(database.ColUser, &db.Filter{"_id": id}); err != nil {
 		return fmt.Errorf("error deleting user: %v", err)
 	}
 	return nil
@@ -78,32 +79,32 @@ func DeleteUser(db database.Database, id *protos.ObjectID) error {
 
 // UserEpisode
 
-func FindUserEpisode(db database.Database, userID *protos.ObjectID, episodeID *protos.ObjectID) (*protos.UserEpisode, error) {
+func FindUserEpisode(dbClient db.Database, userID *protos.ObjectID, episodeID *protos.ObjectID) (*protos.UserEpisode, error) {
 	userEpisode := &protos.UserEpisode{}
-	filter := &database.Filter{
+	filter := &db.Filter{
 		"userid":    userID,
 		"episodeid": episodeID,
 	}
-	err := db.FindOne(database.ColUserEpisode, userEpisode, filter, nil)
+	err := dbClient.FindOne(database.ColUserEpisode, userEpisode, filter, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding user episode details: %v", err)
 	}
 	return userEpisode, nil
 }
 
-func FindLatestUserEpisode(db database.Database, userID *protos.ObjectID) (*protos.UserEpisode, error) {
+func FindLatestUserEpisode(dbClient db.Database, userID *protos.ObjectID) (*protos.UserEpisode, error) {
 	userEpi := &protos.UserEpisode{}
-	filter := &database.Filter{"userid": userID}
-	opts := database.CreateOptions().SetSort("lastseen", -1)
-	err := db.FindOne(database.ColUserEpisode, userEpi, filter, opts)
+	filter := &db.Filter{"userid": userID}
+	opts := db.CreateOptions().SetSort("lastseen", -1)
+	err := dbClient.FindOne(database.ColUserEpisode, userEpi, filter, opts)
 	if err != nil {
 		return nil, fmt.Errorf("error finding latest user episode: %v", err)
 	}
 	return userEpi, nil
 }
 
-func UpsertUserEpisode(db database.Database, userEpisode *protos.UserEpisode) error {
-	err := db.Upsert(database.ColUserEpisode, userEpisode, &database.Filter{"_id": userEpisode.Id})
+func UpsertUserEpisode(dbClient db.Database, userEpisode *protos.UserEpisode) error {
+	err := dbClient.Upsert(database.ColUserEpisode, userEpisode, &db.Filter{"_id": userEpisode.Id})
 	if err != nil {
 		return fmt.Errorf("error upserting user episode: %v", err)
 	}
@@ -112,17 +113,17 @@ func UpsertUserEpisode(db database.Database, userEpisode *protos.UserEpisode) er
 
 // Subscriptions
 
-func FindSubscriptions(db database.Database, userID *protos.ObjectID) ([]*protos.Subscription, error) {
+func FindSubscriptions(dbClient db.Database, userID *protos.ObjectID) ([]*protos.Subscription, error) {
 	var subs []*protos.Subscription
-	err := db.FindAll(database.ColSubscription, &subs, &database.Filter{"userid": userID}, nil)
+	err := dbClient.FindAll(database.ColSubscription, &subs, &db.Filter{"userid": userID}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding subscriptions: %v", err)
 	}
 	return subs, nil
 }
 
-func UpsertSubscription(db database.Database, subscription *protos.Subscription) error {
-	err := db.Upsert(database.ColSubscription, subscription, &database.Filter{"_id": subscription.Id})
+func UpsertSubscription(dbClient db.Database, subscription *protos.Subscription) error {
+	err := dbClient.Upsert(database.ColSubscription, subscription, &db.Filter{"_id": subscription.Id})
 	if err != nil {
 		return fmt.Errorf("error upserting subscription: %v", err)
 	}
@@ -132,12 +133,12 @@ func UpsertSubscription(db database.Database, subscription *protos.Subscription)
 // helpers
 
 // FindUserLastPlayed takes dbClient, userID, returns the latest played episode and offset
-func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.Podcast, *protos.Episode, *protos.UserEpisode, error) {
+func FindUserLastPlayed(dbClient db.Database, userID *protos.ObjectID) (*protos.Podcast, *protos.Episode, *protos.UserEpisode, error) {
 	pod := &protos.Podcast{}
 	epi := &protos.Episode{}
 
 	// find the latest played user_episode
-	userEpi, err := FindLatestUserEpisode(db, userID)
+	userEpi, err := FindLatestUserEpisode(dbClient, userID)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("error finding last user played: %v", err)
 	}
@@ -148,7 +149,7 @@ func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.
 
 	// find podcast
 	go func() {
-		pod, err = podcast.FindPodcastByID(db, userEpi.PodcastID)
+		pod, err = podcast.FindPodcastByID(dbClient, userEpi.PodcastID)
 		if err != nil {
 			poderr <- err
 		}
@@ -157,7 +158,7 @@ func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.
 
 	// find episode
 	go func() {
-		epi, err = podcast.FindEpisodeByID(db, userEpi.EpisodeID)
+		epi, err = podcast.FindEpisodeByID(dbClient, userEpi.EpisodeID)
 		if err != nil {
 			epierr <- err
 		}
@@ -177,8 +178,8 @@ func FindUserLastPlayed(db database.Database, userID *protos.ObjectID) (*protos.
 }
 
 // FindOffset takes database client and pointers to user and episode to lookup episode details and offset
-func FindOffset(db database.Database, userID, epiID *protos.ObjectID) int64 {
-	userEpi, err := FindUserEpisode(db, userID, epiID)
+func FindOffset(dbClient db.Database, userID, epiID *protos.ObjectID) int64 {
+	userEpi, err := FindUserEpisode(dbClient, userID, epiID)
 	if err != nil {
 		fmt.Println("error finding offset: ", err)
 		return 0
@@ -187,7 +188,7 @@ func FindOffset(db database.Database, userID, epiID *protos.ObjectID) int64 {
 }
 
 // UpdateOffset takes userID epiID and offset and performs upsert to the UserEpisode collection
-func UpdateOffset(db database.Database, uID, pID, eID *protos.ObjectID, offset int64) error {
+func UpdateOffset(dbClient db.Database, uID, pID, eID *protos.ObjectID, offset int64) error {
 	userEpi := &protos.UserEpisode{
 		UserID:    uID,
 		PodcastID: pID,
@@ -196,10 +197,10 @@ func UpdateOffset(db database.Database, uID, pID, eID *protos.ObjectID, offset i
 		Played:    false,
 		LastSeen:  ptypes.TimestampNow(),
 	}
-	return UpsertUserEpisode(db, userEpi)
+	return UpsertUserEpisode(dbClient, userEpi)
 }
 
-func UpdateUserEpiPlayed(db database.Database, uID, pID, eID *protos.ObjectID, played bool) error {
+func UpdateUserEpiPlayed(dbClient db.Database, uID, pID, eID *protos.ObjectID, played bool) error {
 	userEpi := &protos.UserEpisode{
 		UserID:    uID,
 		PodcastID: pID,
@@ -208,5 +209,5 @@ func UpdateUserEpiPlayed(db database.Database, uID, pID, eID *protos.ObjectID, p
 		Played:    played,
 		LastSeen:  ptypes.TimestampNow(),
 	}
-	return UpsertUserEpisode(db, userEpi)
+	return UpsertUserEpisode(dbClient, userEpi)
 }

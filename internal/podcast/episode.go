@@ -4,48 +4,49 @@ import (
 	"fmt"
 
 	"github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 )
 
 // FindEpisodes returns a list of episodes based on podcast id
 // returns in chronological order, sectioned by start & end
-func FindEpisodesByRange(db database.Database, podcastID *protos.ObjectID, start int64, end int64) ([]*protos.Episode, error) {
+func FindEpisodesByRange(dbClient db.Database, podcastID *protos.ObjectID, start int64, end int64) ([]*protos.Episode, error) {
 	var episodes []*protos.Episode
-	filter := &database.Filter{"podcastid": podcastID}
-	opts := database.CreateOptions().SetLimit(end-start).SetSkip(start).SetSort("pubdate", -1)
-	err := db.FindAll(database.ColEpisode, &episodes, filter, opts)
+	filter := &db.Filter{"podcastid": podcastID}
+	opts := db.CreateOptions().SetLimit(end-start).SetSkip(start).SetSort("pubdate", -1)
+	err := dbClient.FindAll(database.ColEpisode, &episodes, filter, opts)
 	if err != nil {
 		return nil, fmt.Errorf("error finding episodes by range %d - %d: %v", start, end, err)
 	}
 	return episodes, nil
 }
 
-func FindAllEpisodes(db database.Database, podcastID *protos.ObjectID) ([]*protos.Episode, error) {
+func FindAllEpisodes(dbClient db.Database, podcastID *protos.ObjectID) ([]*protos.Episode, error) {
 	var episodes []*protos.Episode
-	filter := &database.Filter{"podcastid": podcastID}
-	opts := database.CreateOptions().SetSort("pubdate", -1)
-	err := db.FindAll(database.ColEpisode, &episodes, filter, opts)
+	filter := &db.Filter{"podcastid": podcastID}
+	opts := db.CreateOptions().SetSort("pubdate", -1)
+	err := dbClient.FindAll(database.ColEpisode, &episodes, filter, opts)
 	if err != nil {
 		return nil, fmt.Errorf("error finding all episodes: %v", err)
 	}
 	return episodes, nil
 }
 
-func FindLatestEpisode(db database.Database, podcastID *protos.ObjectID) (*protos.Episode, error) {
+func FindLatestEpisode(dbClient db.Database, podcastID *protos.ObjectID) (*protos.Episode, error) {
 	var episode *protos.Episode
-	filter := &database.Filter{"podcastid": podcastID}
-	opts := database.CreateOptions().SetSort("pubdate", -1)
-	err := db.FindOne(database.ColEpisode, &episode, filter, opts)
+	filter := &db.Filter{"podcastid": podcastID}
+	opts := db.CreateOptions().SetSort("pubdate", -1)
+	err := dbClient.FindOne(database.ColEpisode, &episode, filter, opts)
 	if err != nil {
 		return nil, fmt.Errorf("error finding latest episode: %v", err)
 	}
 	return episode, nil
 }
 
-func FindEpisodeByID(db database.Database, id *protos.ObjectID) (*protos.Episode, error) {
+func FindEpisodeByID(dbClient db.Database, id *protos.ObjectID) (*protos.Episode, error) {
 	var episode *protos.Episode
-	err := db.FindOne(database.ColEpisode, &episode, &database.Filter{"_id": id}, nil)
+	err := dbClient.FindOne(database.ColEpisode, &episode, &db.Filter{"_id": id}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding episode by id: %v", err)
 	}
@@ -53,15 +54,15 @@ func FindEpisodeByID(db database.Database, id *protos.ObjectID) (*protos.Episode
 }
 
 // FindEpisodeBySeason takes a season episode number returns error if not found
-func FindEpisodeBySeason(db database.Database, id *protos.ObjectID, seasonNum int, episodeNum int) (*protos.Episode, error) {
+func FindEpisodeBySeason(dbClient db.Database, id *protos.ObjectID, seasonNum int, episodeNum int) (*protos.Episode, error) {
 	var episode protos.Episode
 
-	filter := &database.Filter{
+	filter := &db.Filter{
 		"podcast_id": id,
 		"season":     seasonNum,
 		"episode":    episodeNum,
 	}
-	err := db.FindOne(database.ColEpisode, &episode, filter, nil)
+	err := dbClient.FindOne(database.ColEpisode, &episode, filter, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding episode by season/episode #: %v", err)
 	}
@@ -69,8 +70,8 @@ func FindEpisodeBySeason(db database.Database, id *protos.ObjectID, seasonNum in
 	return &episode, nil
 }
 
-func UpsertEpisode(db database.Database, episode *protos.Episode) error {
-	err := db.Upsert(database.ColEpisode, &episode, &database.Filter{"_id": episode.Id})
+func UpsertEpisode(dbClient db.Database, episode *protos.Episode) error {
+	err := dbClient.Upsert(database.ColEpisode, &episode, &db.Filter{"_id": episode.Id})
 	if err != nil {
 		return fmt.Errorf("error upserting episode: %v", err)
 	}
@@ -78,13 +79,13 @@ func UpsertEpisode(db database.Database, episode *protos.Episode) error {
 }
 
 // helpers
-func DoesEpisodeExist(db database.Database, title string, pubDate *timestamp.Timestamp) (bool, error) {
-	filter := &database.Filter{
+func DoesEpisodeExist(dbClient db.Database, title string, pubDate *timestamp.Timestamp) (bool, error) {
+	filter := &db.Filter{
 		"title":   title,
 		"pubdate": pubDate,
 	}
 	var episode *protos.Episode
-	err := db.FindOne(database.ColUserEpisode, &episode, filter, nil)
+	err := dbClient.FindOne(database.ColUserEpisode, &episode, filter, nil)
 	if err != nil {
 		return false, fmt.Errorf("error does episode exist: %v", err)
 	}

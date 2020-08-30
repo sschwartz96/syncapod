@@ -7,33 +7,34 @@ import (
 	"net/http"
 
 	"github.com/schollz/closestmatch"
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/tcolgate/mp3"
 )
 
-func InsertPodcast(db database.Database, podcast *protos.Podcast) error {
-	err := db.Insert(database.ColPodcast, podcast)
+func InsertPodcast(dbClient db.Database, podcast *protos.Podcast) error {
+	err := dbClient.Insert(database.ColPodcast, podcast)
 	if err != nil {
 		return fmt.Errorf("error inserting podcast: %v", err)
 	}
 	return nil
 }
 
-func FindAllPodcasts(db database.Database) ([]*protos.Podcast, error) {
+func FindAllPodcasts(dbClient db.Database) ([]*protos.Podcast, error) {
 	// TODO: get rid of?
 	var podcasts []*protos.Podcast
-	err := db.FindAll(database.ColPodcast, &podcasts, nil, nil)
+	err := dbClient.FindAll(database.ColPodcast, &podcasts, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding all podcasts: %v", err)
 	}
 	return podcasts, nil
 }
 
-func DoesPodcastExist(db database.Database, rssURL string) (bool, error) {
+func DoesPodcastExist(dbClient db.Database, rssURL string) (bool, error) {
 	var podcast *protos.Podcast
-	filter := &database.Filter{"rss": rssURL}
-	err := db.FindOne(database.ColPodcast, podcast, filter, nil)
+	filter := &db.Filter{"rss": rssURL}
+	err := dbClient.FindOne(database.ColPodcast, podcast, filter, nil)
 	if err != nil {
 		return false, fmt.Errorf("error does podcast exist: %v", err)
 	}
@@ -43,20 +44,20 @@ func DoesPodcastExist(db database.Database, rssURL string) (bool, error) {
 	return true, nil
 }
 
-func FindPodcastsByRange(db database.Database, start, end int) ([]*protos.Podcast, error) {
+func FindPodcastsByRange(dbClient db.Database, start, end int) ([]*protos.Podcast, error) {
 	var podcasts []*protos.Podcast
-	opts := database.CreateOptions().SetLimit(int64(end-start)).SetSkip(int64(start)).SetSort("pubdate", -1)
+	opts := db.CreateOptions().SetLimit(int64(end-start)).SetSkip(int64(start)).SetSort("pubdate", -1)
 
-	err := db.FindAll(database.ColEpisode, &podcasts, nil, opts)
+	err := dbClient.FindAll(database.ColEpisode, &podcasts, nil, opts)
 	if err != nil {
 		return podcasts, fmt.Errorf("error finding podcasts within range %d - %d: %v", start, end, err)
 	}
 	return podcasts, nil
 }
 
-func FindPodcastByID(db database.Database, id *protos.ObjectID) (*protos.Podcast, error) {
+func FindPodcastByID(dbClient db.Database, id *protos.ObjectID) (*protos.Podcast, error) {
 	var podcast *protos.Podcast
-	if err := db.FindOne(database.ColPodcast, podcast, &database.Filter{"_id": id}, nil); err != nil {
+	if err := dbClient.FindOne(database.ColPodcast, podcast, &db.Filter{"_id": id}, nil); err != nil {
 		return nil, fmt.Errorf("error finding podcast by id: %v", err)
 	}
 	return podcast, nil
@@ -64,13 +65,13 @@ func FindPodcastByID(db database.Database, id *protos.ObjectID) (*protos.Podcast
 
 // FindUserEpisode takes pointer to database client, userID, epiID
 // returns *protos.UserEpisode
-func FindUserEpisode(db database.Database, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
+func FindUserEpisode(dbClient db.Database, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
 	var userEpi protos.UserEpisode
-	filter := &database.Filter{
+	filter := &db.Filter{
 		"userid":    userID,
 		"episodeid": epiID,
 	}
-	err := db.FindOne(database.ColUserEpisode, &userEpi, filter, nil)
+	err := dbClient.FindOne(database.ColUserEpisode, &userEpi, filter, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding user episodes details, %v", err)
 	}
@@ -78,10 +79,10 @@ func FindUserEpisode(db database.Database, userID, epiID *protos.ObjectID) (*pro
 }
 
 // SearchPodcasts searches for a podcast given db and text string
-func SearchPodcasts(db database.Database, search string) ([]*protos.Podcast, error) {
+func SearchPodcasts(dbClient db.Database, search string) ([]*protos.Podcast, error) {
 	var results []*protos.Podcast
 	fields := []string{"title", "keywords", "subtitle"}
-	err := db.Search(database.ColPodcast, search, fields, &results)
+	err := dbClient.Search(database.ColPodcast, search, fields, &results)
 	if err != nil {
 		return nil, fmt.Errorf("error SearchPodcasts: %v", err)
 	}

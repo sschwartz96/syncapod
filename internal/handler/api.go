@@ -4,20 +4,18 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/sschwartz96/syncapod/internal/auth"
-	"github.com/sschwartz96/syncapod/internal/database"
-	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/minimongo/db"
 )
 
 // APIHandler handles calls to the syncapod api
 type APIHandler struct {
-	db database.Database
+	dbClient db.Database
 }
 
 // CreateAPIHandler instatiates an APIHandler
-func CreateAPIHandler(db database.Database) (*APIHandler, error) {
+func CreateAPIHandler(dbClient db.Database) (*APIHandler, error) {
 	return &APIHandler{
-		db: db,
+		dbClient: dbClient,
 	}, nil
 }
 
@@ -59,16 +57,16 @@ func (h *APIHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	// }
 }
 
-func (h *APIHandler) checkAuth(req *http.Request) (*protos.User, bool) {
-	token, _, _ := req.BasicAuth()
+// func (h *APIHandler) checkAuth(req *http.Request) (*protos.User, bool) {
+// 	token, _, _ := req.BasicAuth()
 
-	if token != "" {
-		u, err := auth.ValidateSession(h.db, token)
-		if err != nil {
-			return nil, false
-		}
-		return u, true
-	}
+// 	if token != "" {
+// 		u, err := auth.ValidateSession(h.db, token)
+// 		if err != nil {
+// 			return nil, false
+// 		}
+// 		return u, true
+// 	}
 
-	return nil, false
-}
+// 	return nil, false
+// }
