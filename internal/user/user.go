@@ -14,7 +14,7 @@ import (
 // * Auth *
 func FindSession(dbClient db.Database, key string) (*protos.Session, error) {
 	session := &protos.Session{}
-	err := dbClient.FindOne(database.ColSession, session, &db.Filter{"sessionkey": &key}, nil)
+	err := dbClient.FindOne(database.ColSession, session, &db.Filter{"sessionkey": key}, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("error finding session: %v", err)
@@ -31,7 +31,10 @@ func UpsertSession(dbClient db.Database, session *protos.Session) error {
 
 func DeleteSession(dbClient db.Database, id *protos.ObjectID) error {
 	err := dbClient.Delete(database.ColSession, &db.Filter{"_id": id})
-	return fmt.Errorf("error deleting session: %v", err)
+	if err != nil {
+		return fmt.Errorf("error deleting session: %v", err)
+	}
+	return nil
 }
 
 func DeleteSessionByKey(dbClient db.Database, key string) error {
