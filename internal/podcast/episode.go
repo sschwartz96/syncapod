@@ -45,12 +45,12 @@ func FindLatestEpisode(dbClient db.Database, podcastID *protos.ObjectID) (*proto
 }
 
 func FindEpisodeByID(dbClient db.Database, id *protos.ObjectID) (*protos.Episode, error) {
-	var episode *protos.Episode
+	var episode protos.Episode
 	err := dbClient.FindOne(database.ColEpisode, &episode, &db.Filter{"_id": id}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error finding episode by id: %v", err)
 	}
-	return episode, nil
+	return &episode, nil
 }
 
 // FindEpisodeBySeason takes a season episode number returns error if not found

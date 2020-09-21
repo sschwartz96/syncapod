@@ -4,11 +4,13 @@ import (
 	"log"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/minimongo/mock"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func createMockDBSession(t *testing.T) (*protos.Session, *mock.DB) {
@@ -18,15 +20,21 @@ func createMockDBSession(t *testing.T) (*protos.Session, *mock.DB) {
 		Id:         protos.ObjectIDFromHex("id_1"),
 		SessionKey: "key_1",
 	}
-	err := mockDB.Insert(
-		database.ColSession,
-		initial,
-	)
+	insertOrFail(t, mockDB, database.ColSession, initial)
 
-	if err != nil {
-		t.Fatalf("could not create mock db: %v", err)
-	}
+	insertOrFail(t, mockDB, database.ColSession, &protos.Session{
+		Id:         protos.ObjectIDFromHex("id_2"),
+		SessionKey: "key_2",
+	})
+
 	return initial, mockDB
+}
+
+func insertOrFail(t *testing.T, db *mock.DB, col string, obj interface{}) {
+	err := db.Insert(col, obj)
+	if err != nil {
+		t.Fatalf("could not insert object into mockDB: %v", err)
+	}
 }
 
 func TestFindSession(t *testing.T) {
@@ -156,7 +164,6 @@ func TestDeleteSession(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			log.Println("dbClient:", tt.args.dbClient)
 			if err := DeleteSession(tt.args.dbClient, tt.args.id); (err != nil) != tt.wantErr {
 				t.Errorf("DeleteSession() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -165,6 +172,8 @@ func TestDeleteSession(t *testing.T) {
 }
 
 func TestDeleteSessionByKey(t *testing.T) {
+	initial, mockDB := createMockDBSession(t)
+
 	type args struct {
 		dbClient db.Database
 		key      string
@@ -174,7 +183,22 @@ func TestDeleteSessionByKey(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "not_found",
+			args: args{
+				dbClient: mockDB,
+				key:      "not_valid_key",
+			},
+			wantErr: true,
+		},
+		{
+			name: "delete",
+			args: args{
+				dbClient: mockDB,
+				key:      initial.SessionKey,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -185,7 +209,30 @@ func TestDeleteSessionByKey(t *testing.T) {
 	}
 }
 
+func createMockDBUser(t *testing.T) (*protos.User, *mock.DB) {
+	mockDB := mock.CreateDB()
+
+	initial := &protos.User{
+		Id:       protos.ObjectIDFromHex("id_1"),
+		DOB:      timestamppb.Now(),
+		Email:    "test@test.org",
+		Password: "@somehashedpass",
+		Username: "tester",
+	}
+	insertOrFail(t, mockDB, database.ColUser, initial)
+
+	insertOrFail(t, mockDB, database.ColUser, &protos.User{
+		Id:       protos.ObjectIDFromHex("id_2"),
+		DOB:      timestamppb.Now(),
+		Email:    "test2@test.org",
+		Password: "@somehashedpass2",
+		Username: "tester2",
+	})
+
+	return initial, mockDB
+}
 func TestFindUserByID(t *testing.T) {
+	initial, mockDB := createMockDBUser(t)
 	type args struct {
 		dbClient db.Database
 		id       *protos.ObjectID
@@ -196,7 +243,25 @@ func TestFindUserByID(t *testing.T) {
 		want    *protos.User
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "not found",
+			args: args{
+				dbClient: mockDB,
+				id:       protos.ObjectIDFromHex("not_found"),
+			},
+			want:    nil,
+			wantErr: true,
+		},
+
+		{
+			name: "find",
+			args: args{
+				dbClient: mockDB,
+				id:       initial.Id,
+			},
+			want:    initial,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -213,6 +278,7 @@ func TestFindUserByID(t *testing.T) {
 }
 
 func TestFindUser(t *testing.T) {
+	initial, mockDB := createMockDBUser(t)
 	type args struct {
 		dbClient db.Database
 		username string
@@ -223,7 +289,33 @@ func TestFindUser(t *testing.T) {
 		want    *protos.User
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "not found",
+			args: args{
+				dbClient: mockDB,
+				username: "",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "find user by username(email)",
+			args: args{
+				dbClient: mockDB,
+				username: initial.Email,
+			},
+			want:    initial,
+			wantErr: false,
+		},
+		{
+			name: "find user by username",
+			args: args{
+				dbClient: mockDB,
+				username: initial.Username,
+			},
+			want:    initial,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -240,6 +332,7 @@ func TestFindUser(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
+	initial, mockDB := createMockDBUser(t)
 	type args struct {
 		dbClient db.Database
 		id       *protos.ObjectID
@@ -249,7 +342,22 @@ func TestDeleteUser(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "not found",
+			args: args{
+				dbClient: mockDB,
+				id:       protos.ObjectIDFromHex(""),
+			},
+			wantErr: true,
+		},
+		{
+			name: "find user by username(email)",
+			args: args{
+				dbClient: mockDB,
+				id:       initial.Id,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -260,7 +368,36 @@ func TestDeleteUser(t *testing.T) {
 	}
 }
 
+func createMockDBUserEpi(t *testing.T) (*protos.UserEpisode, *mock.DB) {
+	mockDB := mock.CreateDB()
+
+	initial := &protos.UserEpisode{
+		Id:        protos.ObjectIDFromHex("id1"),
+		EpisodeID: protos.ObjectIDFromHex("epi_id1"),
+		PodcastID: protos.ObjectIDFromHex("pod_id1"),
+		UserID:    protos.ObjectIDFromHex("user_id1"),
+		LastSeen:  timestamppb.Now(),
+		Offset:    123456,
+		Played:    false,
+	}
+	insertOrFail(t, mockDB, database.ColUserEpisode, initial)
+
+	insertOrFail(t, mockDB, database.ColUserEpisode, &protos.UserEpisode{
+
+		Id:        protos.ObjectIDFromHex("id2"),
+		EpisodeID: protos.ObjectIDFromHex("epi_id2"),
+		PodcastID: protos.ObjectIDFromHex("pod_id2"),
+		UserID:    protos.ObjectIDFromHex("user_id2"),
+		LastSeen:  timestamppb.New(time.Now().Add(-time.Minute)),
+		Offset:    0,
+		Played:    true,
+	})
+
+	return initial, mockDB
+}
+
 func TestFindUserEpisode(t *testing.T) {
+	initial, mockDB := createMockDBUserEpi(t)
 	type args struct {
 		dbClient  db.Database
 		userID    *protos.ObjectID
@@ -272,7 +409,26 @@ func TestFindUserEpisode(t *testing.T) {
 		want    *protos.UserEpisode
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "not_found",
+			args: args{
+				dbClient:  mockDB,
+				episodeID: protos.ObjectIDFromHex(""),
+				userID:    protos.ObjectIDFromHex(""),
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "find",
+			args: args{
+				dbClient:  mockDB,
+				episodeID: initial.EpisodeID,
+				userID:    initial.UserID,
+			},
+			want:    initial,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -289,6 +445,7 @@ func TestFindUserEpisode(t *testing.T) {
 }
 
 func TestFindLatestUserEpisode(t *testing.T) {
+	initial, mockDB := createMockDBUserEpi(t)
 	type args struct {
 		dbClient db.Database
 		userID   *protos.ObjectID
@@ -299,7 +456,23 @@ func TestFindLatestUserEpisode(t *testing.T) {
 		want    *protos.UserEpisode
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			args: args{
+				dbClient: mockDB,
+				userID:   protos.ObjectIDFromHex("not_found"),
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "found",
+			args: args{
+				dbClient: mockDB,
+				userID:   initial.UserID,
+			},
+			want:    initial,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -316,27 +489,78 @@ func TestFindLatestUserEpisode(t *testing.T) {
 }
 
 func TestUpsertUserEpisode(t *testing.T) {
+	initial, mockDB := createMockDBUserEpi(t)
 	type args struct {
 		dbClient    db.Database
 		userEpisode *protos.UserEpisode
 	}
+	want1 := &protos.UserEpisode{Id: initial.Id, EpisodeID: initial.EpisodeID, PodcastID: initial.PodcastID, UserID: initial.UserID, LastSeen: initial.LastSeen, Played: initial.Played, Offset: 8998}
+	want2 := &protos.UserEpisode{Id: protos.ObjectIDFromHex("new_id"), EpisodeID: protos.ObjectIDFromHex("new_episode_id"), PodcastID: initial.PodcastID, UserID: initial.UserID, LastSeen: initial.LastSeen, Played: true, Offset: 0}
+
 	tests := []struct {
 		name    string
 		args    args
 		wantErr bool
+		want    *protos.UserEpisode
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update",
+			args: args{
+				dbClient:    mockDB,
+				userEpisode: want1,
+			},
+			wantErr: false,
+			want:    want1,
+		},
+		{
+			name: "insert",
+			args: args{
+				dbClient:    mockDB,
+				userEpisode: want2,
+			},
+			wantErr: false,
+			want:    want2,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := UpsertUserEpisode(tt.args.dbClient, tt.args.userEpisode); (err != nil) != tt.wantErr {
 				t.Errorf("UpsertUserEpisode() error = %v, wantErr %v", err, tt.wantErr)
 			}
+			if !tt.wantErr {
+				var wanted protos.UserEpisode
+				err := tt.args.dbClient.FindOne(database.ColUserEpisode, &wanted, &db.Filter{"offset": tt.want.Offset}, db.CreateOptions())
+				if err != nil {
+					t.Errorf("UpsertUserEpisode() error = upserted episode not found")
+				}
+			}
 		})
 	}
 }
 
+func createMockDBSub(t *testing.T) (*protos.Subscription, *mock.DB) {
+	mockDB := mock.CreateDB()
+
+	initial := &protos.Subscription{
+		Id:        protos.ObjectIDFromHex("id_1"),
+		UserID:    protos.ObjectIDFromHex("user_id_1"),
+		PodcastID: protos.ObjectIDFromHex("pod_id_1"),
+	}
+	insertOrFail(t, mockDB, database.ColSubscription, initial)
+
+	insertOrFail(t, mockDB, database.ColSubscription, &protos.Subscription{
+		Id:        protos.ObjectIDFromHex("id_1"),
+		UserID:    protos.ObjectIDFromHex("user_id_1"),
+		PodcastID: protos.ObjectIDFromHex("pod_id_1"),
+	})
+
+	return initial, mockDB
+}
+
 func TestFindSubscriptions(t *testing.T) {
+	initial, mockDB := createMockDBSub(t)
+	var empty []*protos.Subscription
+	found := []*protos.Subscription{initial}
 	type args struct {
 		dbClient db.Database
 		userID   *protos.ObjectID
@@ -347,7 +571,24 @@ func TestFindSubscriptions(t *testing.T) {
 		want    []*protos.Subscription
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "empty_sub",
+			args: args{
+				dbClient: mockDB,
+				userID:   protos.ObjectIDFromHex("empty_sub"),
+			},
+			want:    empty,
+			wantErr: false,
+		},
+		{
+			name: "found",
+			args: args{
+				dbClient: mockDB,
+				userID:   initial.UserID,
+			},
+			want:    found,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -364,6 +605,10 @@ func TestFindSubscriptions(t *testing.T) {
 }
 
 func TestUpsertSubscription(t *testing.T) {
+	_, mockDB := createMockDBSub(t)
+	update := &protos.Subscription{Id: protos.ObjectIDFromHex("id_1"), UserID: protos.ObjectIDFromHex("user_id_1"), PodcastID: protos.ObjectIDFromHex("pod_id_1"), CompletedIDs: []*protos.ObjectID{protos.NewObjectID()}}
+	insert := &protos.Subscription{Id: protos.ObjectIDFromHex("id_5"), UserID: protos.ObjectIDFromHex("user_id_1"), PodcastID: protos.ObjectIDFromHex("pod_id_9"), CompletedIDs: []*protos.ObjectID{protos.NewObjectID()}}
+
 	type args struct {
 		dbClient     db.Database
 		subscription *protos.Subscription
@@ -373,18 +618,57 @@ func TestUpsertSubscription(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update",
+			args: args{
+				dbClient:     mockDB,
+				subscription: update,
+			},
+			wantErr: false,
+		},
+		{
+			name: "insert",
+			args: args{
+				dbClient:     mockDB,
+				subscription: insert,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := UpsertSubscription(tt.args.dbClient, tt.args.subscription); (err != nil) != tt.wantErr {
 				t.Errorf("UpsertSubscription() error = %v, wantErr %v", err, tt.wantErr)
 			}
+			var upserted protos.Subscription
+			err := mockDB.FindOne(database.ColSubscription, &upserted, &db.Filter{"_id": tt.args.subscription.Id}, db.CreateOptions())
+			if err != nil {
+				t.Errorf("UpsertSubscription() error = %v", err)
+			}
+			if !reflect.DeepEqual(tt.args.subscription, &upserted) {
+				t.Error("UpsertSubscription() upserted subscription is not equal error")
+			}
 		})
 	}
 }
 
+func createLastPlayedDB(t *testing.T) (*protos.User, *protos.Podcast, *protos.Episode, *protos.UserEpisode, *mock.DB) {
+	mockDB := mock.CreateDB()
+
+	user := &protos.User{Id: protos.NewObjectID(), Username: "testUser"}
+	pod := &protos.Podcast{Id: protos.NewObjectID(), Author: "Podcast Author"}
+	epi := &protos.Episode{Id: protos.NewObjectID(), Author: "Podcast Author"}
+	userEpi := &protos.UserEpisode{Id: protos.NewObjectID(), UserID: user.Id, EpisodeID: epi.Id, PodcastID: pod.Id, Offset: 123456, Played: false}
+
+	insertOrFail(t, mockDB, database.ColUser, user)
+	insertOrFail(t, mockDB, database.ColPodcast, pod)
+	insertOrFail(t, mockDB, database.ColEpisode, epi)
+	insertOrFail(t, mockDB, database.ColUserEpisode, userEpi)
+	return user, pod, epi, userEpi, mockDB
+}
+
 func TestFindUserLastPlayed(t *testing.T) {
+	user, pod, epi, userEpi, mockDB := createLastPlayedDB(t)
 	type args struct {
 		dbClient db.Database
 		userID   *protos.ObjectID
@@ -397,7 +681,17 @@ func TestFindUserLastPlayed(t *testing.T) {
 		want2   *protos.UserEpisode
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "test1",
+			args: args{
+				dbClient: mockDB,
+				userID:   user.Id,
+			},
+			want:    pod,
+			want1:   epi,
+			want2:   userEpi,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -420,6 +714,7 @@ func TestFindUserLastPlayed(t *testing.T) {
 }
 
 func TestFindOffset(t *testing.T) {
+	user, _, epi, userEpi, mockDB := createLastPlayedDB(t)
 	type args struct {
 		dbClient db.Database
 		userID   *protos.ObjectID
@@ -430,7 +725,15 @@ func TestFindOffset(t *testing.T) {
 		args args
 		want int64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "one",
+			args: args{
+				dbClient: mockDB,
+				epiID:    epi.Id,
+				userID:   user.Id,
+			},
+			want: userEpi.Offset,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -442,6 +745,7 @@ func TestFindOffset(t *testing.T) {
 }
 
 func TestUpdateOffset(t *testing.T) {
+	user, pod, epi, _, mockDB := createLastPlayedDB(t)
 	type args struct {
 		dbClient db.Database
 		uID      *protos.ObjectID
@@ -454,18 +758,48 @@ func TestUpdateOffset(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update",
+			args: args{
+				dbClient: mockDB,
+				eID:      epi.Id,
+				offset:   654321,
+				pID:      pod.Id,
+				uID:      user.Id,
+			},
+			wantErr: false,
+		},
+		{
+			name: "insert",
+			args: args{
+				dbClient: mockDB,
+				eID:      epi.Id,
+				offset:   789123,
+				pID:      pod.Id,
+				uID:      protos.ObjectIDFromHex("differentUserID"),
+			},
+			wantErr: false,
+		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := UpdateOffset(tt.args.dbClient, tt.args.uID, tt.args.pID, tt.args.eID, tt.args.offset); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateOffset() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if !tt.wantErr {
+				found := &protos.UserEpisode{}
+				err := mockDB.FindOne(database.ColUserEpisode, found, &db.Filter{"offset": tt.args.offset}, db.CreateOptions())
+				if err != nil {
+					t.Error("UpdateOffset() error = could not updated user episode")
+				}
 			}
 		})
 	}
 }
 
 func TestUpdateUserEpiPlayed(t *testing.T) {
+	user, pod, epi, _, mockDB := createLastPlayedDB(t)
 	type args struct {
 		dbClient db.Database
 		uID      *protos.ObjectID
@@ -478,12 +812,40 @@ func TestUpdateUserEpiPlayed(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update",
+			args: args{
+				dbClient: mockDB,
+				eID:      epi.Id,
+				pID:      pod.Id,
+				played:   true,
+				uID:      user.Id,
+			},
+			wantErr: false,
+		},
+		{
+			name: "insert",
+			args: args{
+				dbClient: mockDB,
+				eID:      epi.Id,
+				pID:      pod.Id,
+				played:   false,
+				uID:      protos.ObjectIDFromHex("objID2"),
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := UpdateUserEpiPlayed(tt.args.dbClient, tt.args.uID, tt.args.pID, tt.args.eID, tt.args.played); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateUserEpiPlayed() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if !tt.wantErr {
+				found := &protos.UserEpisode{}
+				err := mockDB.FindOne(database.ColUserEpisode, found, &db.Filter{"played": tt.args.played}, db.CreateOptions())
+				if err != nil {
+					t.Error("UpdateUserEpiPlayed() error = could not find updated user episode")
+				}
 			}
 		})
 	}

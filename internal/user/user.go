@@ -39,7 +39,10 @@ func DeleteSession(dbClient db.Database, id *protos.ObjectID) error {
 
 func DeleteSessionByKey(dbClient db.Database, key string) error {
 	err := dbClient.Delete(database.ColSession, &db.Filter{"sessionkey": key})
-	return fmt.Errorf("error deleting session by key: %v", err)
+	if err != nil {
+		return fmt.Errorf("error deleting session by key: %v", err)
+	}
+	return nil
 }
 
 func FindUserByID(dbClient db.Database, id *protos.ObjectID) (*protos.User, error) {
@@ -146,7 +149,7 @@ func FindUserLastPlayed(dbClient db.Database, userID *protos.ObjectID) (*protos.
 		return nil, nil, nil, fmt.Errorf("error finding last user played: %v", err)
 	}
 
-	// concurrently
+	// concurrently to optimize network requests
 	poderr := make(chan error)
 	epierr := make(chan error)
 

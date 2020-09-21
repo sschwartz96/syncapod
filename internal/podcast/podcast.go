@@ -56,11 +56,11 @@ func FindPodcastsByRange(dbClient db.Database, start, end int) ([]*protos.Podcas
 }
 
 func FindPodcastByID(dbClient db.Database, id *protos.ObjectID) (*protos.Podcast, error) {
-	var podcast *protos.Podcast
-	if err := dbClient.FindOne(database.ColPodcast, podcast, &db.Filter{"_id": id}, nil); err != nil {
+	var podcast protos.Podcast
+	if err := dbClient.FindOne(database.ColPodcast, &podcast, &db.Filter{"_id": id}, nil); err != nil {
 		return nil, fmt.Errorf("error finding podcast by id: %v", err)
 	}
-	return podcast, nil
+	return &podcast, nil
 }
 
 // FindUserEpisode takes pointer to database client, userID, epiID
