@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/minimongo/mock"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -146,20 +147,38 @@ func TestCreateKey(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "test1",
+			args: args{
+				l: 64,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CreateKey(tt.args.l); got != tt.want {
-				t.Errorf("CreateKey() = %v, want %v", got, tt.want)
+			if got := CreateKey(tt.args.l); len(got) != tt.args.l {
+				t.Errorf("CreateKey() error = didn't get correct length")
 			}
 		})
 	}
 }
 
+func insertOrFail(t *testing.T, db db.Database, col string, object interface{}) {
+	err := db.Insert(col, object)
+	if err != nil {
+		t.Fatalf("error inserting object into: %s, %v", col, err)
+	}
+}
+
 func TestValidateSession(t *testing.T) {
+	mockDB := mock.CreateDB()
+	user := &protos.User{Id: protos.NewObjectID(), Email: "test@test.org"}
+	insertOrFail(t, mockDB, database.ColUser, user)
+	testSesh1, _ := CreateSession(mockDB, user.Id, "testAgent", true)
+	testSesh2 := &protos.Session{Id: protos.NewObjectID(), SessionKey: "oldKey", Expires: ptypes.TimestampNow(), UserID: user.Id}
+	insertOrFail(t, mockDB, database.ColSession, testSesh2)
+
 	type args struct {
 		dbClient db.Database
 		key      string
@@ -170,7 +189,24 @@ func TestValidateSession(t *testing.T) {
 		want    *protos.User
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			args: args{
+				dbClient: mockDB,
+				key:      testSesh1,
+			},
+			want:    user,
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			args: args{
+				dbClient: mockDB,
+				key:      testSesh2.SessionKey,
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

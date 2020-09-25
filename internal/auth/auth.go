@@ -46,7 +46,7 @@ func CreateSession(dbClient db.Database, userID *protos.ObjectID, userAgent stri
 	}
 
 	// Create key
-	key := CreateKey(32)
+	key := CreateKey(64)
 
 	if userAgent == "" {
 		userAgent = "unknown"
