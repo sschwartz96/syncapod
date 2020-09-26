@@ -29,5 +29,5 @@ type AccessToken struct {
 	Expires      int              `json:"expires" bson:"expires"`
 }
 
-// Scope is just a wrapper to the string
+// Scope contains identifiers to oAuth permissions
 type Scope struct{ string }

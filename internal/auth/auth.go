@@ -27,12 +27,7 @@ func Hash(password string) (string, error) {
 
 // Compare takes a password and hash compares and returns true for match
 func Compare(hash, password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	if err != nil {
-		fmt.Printf("Comparing passwords failed: %v", err)
-		return false
-	}
-	return true
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }
 
 // CreateSession creates a session and stores it into database
@@ -46,7 +41,10 @@ func CreateSession(dbClient db.Database, userID *protos.ObjectID, userAgent stri
 	}
 
 	// Create key
-	key := CreateKey(64)
+	key, err := CreateKey(64)
+	if err != nil {
+		return "", err
+	}
 
 	if userAgent == "" {
 		userAgent = "unknown"
@@ -64,7 +62,7 @@ func CreateSession(dbClient db.Database, userID *protos.ObjectID, userAgent stri
 	}
 
 	// Store session in database
-	err := user.UpsertSession(dbClient, session)
+	err = user.UpsertSession(dbClient, session)
 	if err != nil {
 		return "", err
 	}
@@ -73,13 +71,13 @@ func CreateSession(dbClient db.Database, userID *protos.ObjectID, userAgent stri
 }
 
 // CreateKey takes in a key length and returns base64 encoding
-func CreateKey(l int) string {
+func CreateKey(l int) (string, error) {
 	key := make([]byte, l)
 	_, err := rand.Read(key)
 	if err != nil {
-		fmt.Printf("Could not make key with err: %v\n", err)
+		return "", fmt.Errorf("Error creating pseudo-random key: %v", err)
 	}
-	return base64.URLEncoding.EncodeToString(key)[:l]
+	return base64.URLEncoding.EncodeToString(key)[:l], nil
 }
 
 // ValidateSession looks up session key, check if its valid and returns a pointer to the user
@@ -102,7 +100,7 @@ func ValidateSession(dbClient db.Database, key string) (*protos.User, error) {
 
 	// calculate time to add to expiration
 	lastSeen, _ := ptypes.Timestamp(sesh.LastSeenTime)
-	timeToAdd := time.Now().Sub(lastSeen)
+	timeToAdd := time.Since(lastSeen)
 
 	sesh.LastSeenTime = ptypes.TimestampNow()
 	util.AddToTimestamp(sesh.Expires, timeToAdd)

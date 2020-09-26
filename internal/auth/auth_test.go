@@ -4,12 +4,14 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/minimongo/mock"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/syncapod/internal/util"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -66,7 +68,7 @@ func TestCompare(t *testing.T) {
 	}
 
 	// generate hashes
-	for i, _ := range tests {
+	for i := range tests {
 		var err error
 		tests[i].args.hash, err = Hash(tests[i].args.password)
 		if !tests[i].want {
@@ -157,7 +159,11 @@ func TestCreateKey(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CreateKey(tt.args.l); len(got) != tt.args.l {
+			got, err := CreateKey(tt.args.l)
+			if err != nil {
+				t.Errorf("CreateKey() error = %v", err)
+			}
+			if len(got) != tt.args.l {
 				t.Errorf("CreateKey() error = didn't get correct length")
 			}
 		})
@@ -176,7 +182,7 @@ func TestValidateSession(t *testing.T) {
 	user := &protos.User{Id: protos.NewObjectID(), Email: "test@test.org"}
 	insertOrFail(t, mockDB, database.ColUser, user)
 	testSesh1, _ := CreateSession(mockDB, user.Id, "testAgent", true)
-	testSesh2 := &protos.Session{Id: protos.NewObjectID(), SessionKey: "oldKey", Expires: ptypes.TimestampNow(), UserID: user.Id}
+	testSesh2 := &protos.Session{Id: protos.NewObjectID(), SessionKey: "key", Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Minute*-1), UserID: user.Id}
 	insertOrFail(t, mockDB, database.ColSession, testSesh2)
 
 	type args struct {

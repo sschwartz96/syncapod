@@ -14,16 +14,20 @@ import (
 
 // CreateAuthorizationCode creates and saves an authorization code with the client & user id
 func CreateAuthorizationCode(dbClient db.Database, userID *protos.ObjectID, clientID string) (string, error) {
+	key, err := CreateKey(64)
+	if err != nil {
+		return "", fmt.Errorf("CreateAuthorizationCode() error creating key: %v", err)
+	}
 	code := models.AuthCode{
-		Code:     CreateKey(64),
+		Code:     key,
 		ClientID: clientID,
 		UserID:   userID,
 		Scope:    models.SubScope,
 	}
 
-	err := insertAuthCode(dbClient, &code)
+	err = insertAuthCode(dbClient, &code)
 	if err != nil {
-		return "", fmt.Errorf("error creating auth code: %v", err)
+		return "", fmt.Errorf("CreateAuthorizationCode() error inserting auth code: %v", err)
 	}
 
 	return code.Code, nil
@@ -31,16 +35,24 @@ func CreateAuthorizationCode(dbClient db.Database, userID *protos.ObjectID, clie
 
 // CreateAccessToken creates and saves an access token with a year of validity
 func CreateAccessToken(dbClient db.Database, authCode *models.AuthCode) (*models.AccessToken, error) {
+	tokenString, err := CreateKey(64)
+	if err != nil {
+		return nil, fmt.Errorf("error creating access token: %v", err)
+	}
+	refreshTokenString, err := CreateKey(64)
+	if err != nil {
+		return nil, fmt.Errorf("error creating access token: %v", err)
+	}
 	token := models.AccessToken{
 		AuthCode:     authCode.Code,
-		Token:        CreateKey(32),
-		RefreshToken: CreateKey(32),
+		Token:        tokenString,
+		RefreshToken: refreshTokenString,
 		UserID:       authCode.UserID,
 		Created:      time.Now(),
 		Expires:      3600,
 	}
 
-	err := insertAccessToken(dbClient, &token)
+	err = insertAccessToken(dbClient, &token)
 	if err != nil {
 		return nil, fmt.Errorf("error creating access token: %v", err)
 	}
