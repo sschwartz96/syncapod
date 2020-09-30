@@ -10,6 +10,8 @@ import (
 
 	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/auth"
+	"github.com/sschwartz96/syncapod/internal/database"
+	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/user"
 )
 
@@ -187,7 +189,8 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 
 	if strings.ToLower(grantType) == "refresh_token" {
 		refreshToken := req.FormValue("refresh_token")
-		accessToken, err := auth.FindOauthAccessToken(h.dbClient, refreshToken)
+		var accessToken models.AccessToken
+		err := h.dbClient.FindOne(database.ColAccessToken, &accessToken, &db.Filter{"refresh_token": refreshToken}, nil)
 		if err != nil {
 			fmt.Println("couldn't find token based on refresh: ", err)
 			http.Redirect(res, req, "/oauth/login", http.StatusSeeOther)
@@ -198,7 +201,7 @@ func (h *OauthHandler) Token(res http.ResponseWriter, req *http.Request) {
 
 		// delete the token
 		go func() {
-			err := auth.DeleteOauthAccessToken(h.dbClient, accessToken.Token)
+			err := h.dbClient.Delete(database.ColAccessToken, &db.Filter{"token": accessToken.Token})
 			if err != nil {
 				fmt.Println("error oauth handler(Token):", err)
 			}

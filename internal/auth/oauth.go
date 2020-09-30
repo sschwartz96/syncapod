@@ -13,10 +13,10 @@ import (
 )
 
 // CreateAuthorizationCode creates and saves an authorization code with the client & user id
-func CreateAuthorizationCode(dbClient db.Database, userID *protos.ObjectID, clientID string) (string, error) {
+func CreateAuthorizationCode(dbClient db.Database, userID *protos.ObjectID, clientID string) (*models.AuthCode, error) {
 	key, err := CreateKey(64)
 	if err != nil {
-		return "", fmt.Errorf("CreateAuthorizationCode() error creating key: %v", err)
+		return nil, fmt.Errorf("CreateAuthorizationCode() error creating key: %v", err)
 	}
 	code := models.AuthCode{
 		Code:     key,
@@ -25,12 +25,12 @@ func CreateAuthorizationCode(dbClient db.Database, userID *protos.ObjectID, clie
 		Scope:    models.SubScope,
 	}
 
-	err = insertAuthCode(dbClient, &code)
+	err = dbClient.Insert(database.ColAuthCode, &code)
 	if err != nil {
-		return "", fmt.Errorf("CreateAuthorizationCode() error inserting auth code: %v", err)
+		return nil, fmt.Errorf("CreateAuthorizationCode() error inserting auth code: %v", err)
 	}
 
-	return code.Code, nil
+	return &code, nil
 }
 
 // CreateAccessToken creates and saves an access token with a year of validity
@@ -52,8 +52,7 @@ func CreateAccessToken(dbClient db.Database, authCode *models.AuthCode) (*models
 		Expires:      3600,
 	}
 
-	err = insertAccessToken(dbClient, &token)
-	if err != nil {
+	if err := dbClient.Insert(database.ColAccessToken, token); err != nil {
 		return nil, fmt.Errorf("error creating access token: %v", err)
 	}
 
@@ -62,17 +61,21 @@ func CreateAccessToken(dbClient db.Database, authCode *models.AuthCode) (*models
 
 // ValidateAuthCode takes pointer to db client and code string, finds the code and returns it
 func ValidateAuthCode(dbClient db.Database, code string) (*models.AuthCode, error) {
-	authCode, err := findAuthCode(dbClient, code)
+	var authCode models.AuthCode
+	err := dbClient.FindOne(database.ColAuthCode, &authCode, &db.Filter{"code": code}, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error validating auth code: %v", err)
+		return nil, fmt.Errorf("ValidateAuthCode() error finding auth code: %v", err)
 	}
-
-	return authCode, nil
+	if authCode.Code == "" {
+		return nil, errors.New("not found")
+	}
+	return &authCode, nil
 }
 
-// ValidateAccessToken takes pointer to dbclient and access_token and checks its validity
+// ValidateAccessToken takes pointer to dbclient and token string to lookup and validate AccessToken
 func ValidateAccessToken(dbClient db.Database, token string) (*protos.User, error) {
-	tokenObj, err := FindOauthAccessToken(dbClient, token)
+	var tokenObj models.AccessToken
+	err := dbClient.FindOne(database.ColAccessToken, &tokenObj, &db.Filter{"token": token}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -88,38 +91,6 @@ func ValidateAccessToken(dbClient db.Database, token string) (*protos.User, erro
 	}
 
 	return u, nil
-}
-
-func insertAuthCode(dbClient db.Database, code *models.AuthCode) error {
-	if err := dbClient.Insert(database.ColAuthCode, code); err != nil {
-		return fmt.Errorf("error inserting auth code: %v", err)
-	}
-	return nil
-}
-
-func findAuthCode(dbClient db.Database, code string) (*models.AuthCode, error) {
-	var authCode *models.AuthCode
-	err := dbClient.FindOne(database.ColAuthCode, authCode, &db.Filter{"auth_code": code}, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error finding auth code: %v", err)
-	}
-	return authCode, nil
-}
-
-func insertAccessToken(dbClient db.Database, token *models.AccessToken) error {
-	if err := dbClient.Insert(database.ColAccessToken, token); err != nil {
-		return fmt.Errorf("error inserting access token: %v", err)
-	}
-	return nil
-}
-
-func FindOauthAccessToken(dbClient db.Database, token string) (*models.AccessToken, error) {
-	var accessToken *models.AccessToken
-	err := dbClient.FindOne(database.ColAccessToken, accessToken, &db.Filter{"token": token}, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error finding access token: %v", err)
-	}
-	return accessToken, nil
 }
 
 func DeleteOauthAccessToken(dbClient db.Database, token string) error {

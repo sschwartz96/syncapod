@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/minimongo/mock"
 	"github.com/sschwartz96/syncapod/internal/database"
@@ -43,7 +44,7 @@ func TestCreateAuthorizationCode(t *testing.T) {
 			}
 			if !tt.wantErr {
 				var found models.AuthCode
-				err = tt.args.dbClient.FindOne(database.ColAuthCode, &found, &db.Filter{"code": got}, db.CreateOptions())
+				err = tt.args.dbClient.FindOne(database.ColAuthCode, &found, &db.Filter{"code": got.Code}, db.CreateOptions())
 				if err != nil {
 					t.Errorf("CreateAuthorizationCode() error looking for auth code = %v", err)
 				}
@@ -53,6 +54,13 @@ func TestCreateAuthorizationCode(t *testing.T) {
 }
 
 func TestCreateAccessToken(t *testing.T) {
+	mockDB := mock.CreateDB()
+	authCode := &models.AuthCode{
+		Code:     "secret_code",
+		ClientID: "testClient",
+		UserID:   protos.NewObjectID(),
+		Scope:    models.SubScope,
+	}
 	type args struct {
 		dbClient db.Database
 		authCode *models.AuthCode
@@ -60,9 +68,17 @@ func TestCreateAccessToken(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *models.AccessToken
 		wantErr bool
-	}{}
+	}{
+		{
+			name: "valid",
+			args: args{
+				dbClient: mockDB,
+				authCode: authCode,
+			},
+			wantErr: false,
+		},
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := CreateAccessToken(tt.args.dbClient, tt.args.authCode)
@@ -70,12 +86,23 @@ func TestCreateAccessToken(t *testing.T) {
 				t.Errorf("CreateAccessToken() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-
+			var found models.AccessToken
+			err = tt.args.dbClient.FindOne(database.ColAccessToken, &found,
+				&db.Filter{"token": got.Token}, db.CreateOptions())
+			if err != nil {
+				t.Errorf("CreateAccessToken() could not find access token: %v", err)
+			}
 		})
 	}
 }
 
 func TestValidateAuthCode(t *testing.T) {
+	mockDB := mock.CreateDB()
+	mockAuthCode, err := CreateAuthorizationCode(mockDB, protos.NewObjectID(), "mockClientID")
+	if err != nil {
+		t.Fatalf("TestValidateAuthCode() failed to set up: %v", err)
+	}
+
 	type args struct {
 		dbClient db.Database
 		code     string
@@ -83,26 +110,53 @@ func TestValidateAuthCode(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *models.AuthCode
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			args: args{
+				dbClient: mockDB,
+				code:     mockAuthCode.Code,
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			args: args{
+				dbClient: mockDB,
+				code:     "invalidCode",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ValidateAuthCode(tt.args.dbClient, tt.args.code)
+			_, err := ValidateAuthCode(tt.args.dbClient, tt.args.code)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ValidateAuthCode() error = %v, wantErr %v", err, tt.wantErr)
 				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ValidateAuthCode() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 func TestValidateAccessToken(t *testing.T) {
+	mockDB := mock.CreateDB()
+	mockUser := &protos.User{
+		Id:       protos.NewObjectID(),
+		DOB:      ptypes.TimestampNow(),
+		Username: "mockUserID",
+	}
+	insertOrFail(t, mockDB, database.ColUser, mockUser)
+	mockAuthCode, err := CreateAuthorizationCode(mockDB, mockUser.Id, "mockClientID")
+	if err != nil {
+		t.Fatalf("TestValidateAccessToken() error creating mockAuthCode: %v", err)
+	}
+	mockAccessToken, err := CreateAccessToken(mockDB, mockAuthCode)
+	if err != nil {
+		t.Fatalf("TestValidateAccessToken() error creating mockAccessToken: %v", err)
+	}
+
 	type args struct {
 		dbClient db.Database
 		token    string
@@ -113,7 +167,24 @@ func TestValidateAccessToken(t *testing.T) {
 		want    *protos.User
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			args: args{
+				dbClient: mockDB,
+				token:    mockAccessToken.Token,
+			},
+			want:    mockUser,
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			args: args{
+				dbClient: mockDB,
+				token:    "invalidToken",
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -124,123 +195,6 @@ func TestValidateAccessToken(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ValidateAccessToken() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_insertAuthCode(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-		code     *models.AuthCode
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := insertAuthCode(tt.args.dbClient, tt.args.code); (err != nil) != tt.wantErr {
-				t.Errorf("insertAuthCode() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func Test_findAuthCode(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-		code     string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *models.AuthCode
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := findAuthCode(tt.args.dbClient, tt.args.code)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("findAuthCode() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("findAuthCode() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_insertAccessToken(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-		token    *models.AccessToken
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := insertAccessToken(tt.args.dbClient, tt.args.token); (err != nil) != tt.wantErr {
-				t.Errorf("insertAccessToken() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestFindOauthAccessToken(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-		token    string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *models.AccessToken
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := FindOauthAccessToken(tt.args.dbClient, tt.args.token)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("FindOauthAccessToken() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FindOauthAccessToken() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestDeleteOauthAccessToken(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-		token    string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := DeleteOauthAccessToken(tt.args.dbClient, tt.args.token); (err != nil) != tt.wantErr {
-				t.Errorf("DeleteOauthAccessToken() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
