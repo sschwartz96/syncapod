@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -17,10 +18,11 @@ import (
 
 func main() {
 	// read config
-	cfg, err := config.ReadConfig("config.json")
+	cfg, err := readConfig("config.json")
 	if err != nil {
-		log.Fatal("error reading config: ", err)
+		log.Fatal("Main() error, could not read config: ", err)
 	}
+
 	fmt.Println("Running syncapod version: ", cfg.Version)
 
 	// connect to db
@@ -79,4 +81,12 @@ func main() {
 
 func redirect(res http.ResponseWriter, req *http.Request) {
 	http.Redirect(res, req, "https://syncapod.com"+req.RequestURI, http.StatusMovedPermanently)
+}
+
+func readConfig(path string) (*config.Config, error) {
+	cfgFile, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("readConfig() error opening file: %v", err)
+	}
+	return config.ReadConfig(cfgFile)
 }

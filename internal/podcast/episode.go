@@ -17,7 +17,7 @@ func FindEpisodesByRange(dbClient db.Database, podcastID *protos.ObjectID, start
 	opts := db.CreateOptions().SetLimit(end-start).SetSkip(start).SetSort("pubdate", -1)
 	err := dbClient.FindAll(database.ColEpisode, &episodes, filter, opts)
 	if err != nil {
-		return nil, fmt.Errorf("error finding episodes by range %d - %d: %v", start, end, err)
+		return nil, fmt.Errorf("FindEpisodesByRange() error finding episodes by range %d - %d: %v", start, end, err)
 	}
 	return episodes, nil
 }

@@ -160,7 +160,7 @@ func (h *OauthHandler) Authorize(res http.ResponseWriter, req *http.Request) {
 	// add query params
 	values := url.Values{}
 	values.Add("state", req.URL.Query().Get("state"))
-	values.Add("code", authCode)
+	values.Add("code", authCode.Code)
 
 	// redirect
 	fmt.Println("auth: redirecting to: ", redirectURI+"?"+values.Encode())
