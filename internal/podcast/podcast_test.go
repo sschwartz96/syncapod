@@ -61,6 +61,16 @@ func TestDoesPodcastExist(t *testing.T) {
 }
 
 func TestFindPodcastsByRange(t *testing.T) {
+	mockDB := mock.CreateDB()
+	pod1 := &protos.Podcast{Id: protos.NewObjectID(), Author: "Sam Schwartz", Rss: "https://valid.com/rss"}
+	pod2 := &protos.Podcast{Id: protos.NewObjectID(), Author: "Simon Schwartz", Rss: "https://cool.com/rss"}
+	pod3 := &protos.Podcast{Id: protos.NewObjectID(), Author: "Joe Rogan", Rss: "https://joerogan.com/rss"}
+	pod4 := &protos.Podcast{Id: protos.NewObjectID(), Author: "Conan O'Brien", Rss: "https://conan.com/rss"}
+	insertOrFail(t, mockDB, database.ColPodcast, pod1)
+	insertOrFail(t, mockDB, database.ColPodcast, pod2)
+	insertOrFail(t, mockDB, database.ColPodcast, pod3)
+	insertOrFail(t, mockDB, database.ColPodcast, pod4)
+
 	type args struct {
 		dbClient db.Database
 		start    int
@@ -72,7 +82,16 @@ func TestFindPodcastsByRange(t *testing.T) {
 		want    []*protos.Podcast
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Valid",
+			args: args{
+				dbClient: mockDB,
+				start:    0,
+				end:      4,
+			},
+			want:    []*protos.Podcast{pod1, pod2, pod3, pod4},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
