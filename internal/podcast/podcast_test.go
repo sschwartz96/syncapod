@@ -5,82 +5,54 @@ import (
 	"testing"
 
 	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/minimongo/mock"
+	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 )
 
-func TestInsertPodcast(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-		podcast  *protos.Podcast
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if err := InsertPodcast(tt.args.dbClient, tt.args.podcast); (err != nil) != tt.wantErr {
-				t.Errorf("InsertPodcast() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestFindAllPodcasts(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    []*protos.Podcast
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			got, err := FindAllPodcasts(tt.args.dbClient)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("FindAllPodcasts() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FindAllPodcasts() = %v, want %v", got, tt.want)
-			}
-		})
+func insertOrFail(t *testing.T, mockDB db.Database, collection string, object interface{}) {
+	err := mockDB.Insert(collection, object)
+	if err != nil {
+		t.Fatalf("insertOrFail() error inserting: %v", err)
 	}
 }
 
 func TestDoesPodcastExist(t *testing.T) {
+	mockDB := mock.CreateDB()
+	pod := &protos.Podcast{Author: "Sam Schwartz", Rss: "https://somevalidpodcast.com/url.rss"}
+	insertOrFail(t, mockDB, database.ColPodcast, pod)
+
 	type args struct {
 		dbClient db.Database
 		rssURL   string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    bool
-		wantErr bool
+		name string
+		args args
+		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Valid",
+			args: args{
+				dbClient: mockDB,
+				rssURL:   "https://somevalidpodcast.com/url.rss",
+			},
+			want: true,
+		},
+		{
+			name: "Invalid",
+			args: args{
+				dbClient: mockDB,
+				rssURL:   "https://someINvalidpodcast.com/url.rss",
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			got, err := DoesPodcastExist(tt.args.dbClient, tt.args.rssURL)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("DoesPodcastExist() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := DoesPodcastExist(tt.args.dbClient, tt.args.rssURL)
 			if got != tt.want {
 				t.Errorf("DoesPodcastExist() = %v, want %v", got, tt.want)
 			}

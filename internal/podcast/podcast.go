@@ -13,35 +13,14 @@ import (
 	"github.com/tcolgate/mp3"
 )
 
-func InsertPodcast(dbClient db.Database, podcast *protos.Podcast) error {
-	err := dbClient.Insert(database.ColPodcast, podcast)
-	if err != nil {
-		return fmt.Errorf("error inserting podcast: %v", err)
-	}
-	return nil
-}
-
-func FindAllPodcasts(dbClient db.Database) ([]*protos.Podcast, error) {
-	// TODO: get rid of?
-	var podcasts []*protos.Podcast
-	err := dbClient.FindAll(database.ColPodcast, &podcasts, nil, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error finding all podcasts: %v", err)
-	}
-	return podcasts, nil
-}
-
-func DoesPodcastExist(dbClient db.Database, rssURL string) (bool, error) {
-	var podcast *protos.Podcast
+func DoesPodcastExist(dbClient db.Database, rssURL string) bool {
+	var podcast protos.Podcast
 	filter := &db.Filter{"rss": rssURL}
-	err := dbClient.FindOne(database.ColPodcast, podcast, filter, nil)
+	err := dbClient.FindOne(database.ColPodcast, &podcast, filter, nil)
 	if err != nil {
-		return false, fmt.Errorf("error does podcast exist: %v", err)
+		return false
 	}
-	if podcast != nil {
-		return false, nil
-	}
-	return true, nil
+	return true
 }
 
 func FindPodcastsByRange(dbClient db.Database, start, end int) ([]*protos.Podcast, error) {

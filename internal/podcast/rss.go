@@ -79,10 +79,7 @@ func UpdatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast
 // returns error if podcast already exists or connection error
 func AddNewPodcast(dbClient db.Database, url string) error {
 	// check if podcast already contains that rss url
-	exists, err := DoesPodcastExist(dbClient, url)
-	if err != nil {
-		return fmt.Errorf("error add new podcast: %v", err)
-	}
+	exists := DoesPodcastExist(dbClient, url)
 	if exists {
 		return errors.New("podcast already exists")
 	}
@@ -95,7 +92,7 @@ func AddNewPodcast(dbClient db.Database, url string) error {
 	pod := convertPodcast(url, rssPod)
 
 	// insert podcast first that way we don't add episodes without podcast
-	err = InsertPodcast(dbClient, pod)
+	err = dbClient.Insert(database.ColPodcast, pod)
 	if err != nil {
 		return fmt.Errorf("error adding new podcast: %v", err)
 	}
