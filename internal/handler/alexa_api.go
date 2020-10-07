@@ -286,7 +286,17 @@ func (h *APIHandler) moveAudio(aData *AlexaData, forward bool) (*protos.Podcast,
 		} else {
 			// check if duration does not exist
 			if epi.DurationMillis == 0 {
-				epi.DurationMillis = podcast.FindLength(epi.MP3URL)
+				r, l, err := podcast.GetPodcastResp(epi.MP3URL)
+				defer func() {
+					err := r.Close()
+					if err != nil {
+						fmt.Println("error closing response of mp3:", err)
+					}
+				}()
+				if err != nil {
+					fmt.Println("error getting duration of episode: ", err)
+				}
+				epi.DurationMillis = podcast.FindLength(r, l)
 				go func() {
 					err := podcast.UpsertEpisode(h.dbClient, epi)
 					if err != nil {

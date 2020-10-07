@@ -49,7 +49,7 @@ func (p *PodcastService) GetUserEpisode(ctx context.Context, req *protos.Request
 		fmt.Println("error: empty userID from context")
 	}
 
-	userEpi, err := podcast.FindUserEpisode(p.dbClient, userID, req.EpisodeID)
+	userEpi, err := user.FindUserEpisode(p.dbClient, userID, req.EpisodeID)
 	if err != nil {
 		fmt.Println("error finding userEpi:", err)
 	}

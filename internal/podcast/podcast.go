@@ -6,7 +6,6 @@ import (
 	"math"
 	"net/http"
 
-	"github.com/schollz/closestmatch"
 	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
@@ -17,10 +16,7 @@ func DoesPodcastExist(dbClient db.Database, rssURL string) bool {
 	var podcast protos.Podcast
 	filter := &db.Filter{"rss": rssURL}
 	err := dbClient.FindOne(database.ColPodcast, &podcast, filter, nil)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 func FindPodcastsByRange(dbClient db.Database, start, end int) ([]*protos.Podcast, error) {
@@ -42,25 +38,10 @@ func FindPodcastByID(dbClient db.Database, id *protos.ObjectID) (*protos.Podcast
 	return &podcast, nil
 }
 
-// FindUserEpisode takes pointer to database client, userID, epiID
-// returns *protos.UserEpisode
-func FindUserEpisode(dbClient db.Database, userID, epiID *protos.ObjectID) (*protos.UserEpisode, error) {
-	var userEpi protos.UserEpisode
-	filter := &db.Filter{
-		"userid":    userID,
-		"episodeid": epiID,
-	}
-	err := dbClient.FindOne(database.ColUserEpisode, &userEpi, filter, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error finding user episodes details, %v", err)
-	}
-	return &userEpi, nil
-}
-
 // SearchPodcasts searches for a podcast given db and text string
 func SearchPodcasts(dbClient db.Database, search string) ([]*protos.Podcast, error) {
 	var results []*protos.Podcast
-	fields := []string{"title", "keywords", "subtitle"}
+	fields := []string{"author", "title", "keywords", "subtitle"}
 	err := dbClient.Search(database.ColPodcast, search, fields, &results)
 	if err != nil {
 		return nil, fmt.Errorf("error SearchPodcasts: %v", err)
@@ -69,32 +50,28 @@ func SearchPodcasts(dbClient db.Database, search string) ([]*protos.Podcast, err
 }
 
 // MatchTitle is a helper function to match search with a list of podcasts titles
-func MatchTitle(search string, podcasts []protos.Podcast) {
-	var titles []string
-	for i := range podcasts {
-		titles = append(titles, podcasts[i].Title)
+// func MatchTitle(search string, podcasts []protos.Podcast) {
+// 	var titles []string
+// 	for i := range podcasts {
+// 		titles = append(titles, podcasts[i].Title)
+// 	}
+// 	bagSizes := []int{2, 3, 4}
+// 	cm := closestmatch.New(titles, bagSizes)
+// 	fmt.Println(cm)
+// 	return
+// }
+
+func GetPodcastResp(url string) (io.ReadCloser, int64, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, 0, fmt.Errorf("GetPodcastResp() error: %v", err)
 	}
-
-	bagSizes := []int{2, 3, 4}
-
-	cm := closestmatch.New(titles, bagSizes)
-	fmt.Println(cm)
-
-	return
+	return resp.Body, resp.ContentLength, nil
 }
 
 // FindLength attempts to download only the first few frames of the MP3 to figure out its length
-func FindLength(url string) int64 {
-
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println(err)
-		return 0
-	}
-	clen := resp.ContentLength
-
-	d := mp3.NewDecoder(resp.Body)
-	defer resp.Body.Close()
+func FindLength(r io.Reader, fileLength int64) int64 {
+	d := mp3.NewDecoder(r)
 
 	var f mp3.Frame
 	var skipTTL int64
@@ -132,7 +109,6 @@ func FindLength(url string) int64 {
 			}
 			dif := float32(bRateHigh-bRateLow) / float32(bRateHigh)
 			if dif < .9 && dif != 0 {
-				fmt.Println("I think we are VBR: ", dif)
 				vbrFlag = true
 				maxFrames = 0
 			}
@@ -144,19 +120,12 @@ func FindLength(url string) int64 {
 		}
 	}
 
-	fmt.Println("median: ", (bRateHigh - bRateLow))
-
-	fmt.Println("total frames counter: ", counter)
-
 	bitRate := bRateTTL / int64(counter)
-	fmt.Println("bitrate: ", bitRate)
 	// Just approximate to 128000 if close enough
 	if math.Abs(float64(bitRate)-128000) < 1920 {
 		bitRate = 128000
-		//fmt.Println("bitrate: ", bitRate)
 	}
-	//fmt.Println("clen - skip: ", clen-skipTTL)
-	guess := ((clen - skipTTL) * 8) / bitRate
+	guess := ((fileLength - skipTTL) * 8) / bitRate
 
 	if maxFrames == 0 {
 		guess += 20

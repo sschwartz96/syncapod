@@ -1,6 +1,8 @@
 package podcast
 
 import (
+	"io"
+	"os"
 	"reflect"
 	"testing"
 
@@ -110,6 +112,12 @@ func TestFindPodcastsByRange(t *testing.T) {
 }
 
 func TestFindPodcastByID(t *testing.T) {
+	mockDB := mock.CreateDB()
+	pod1 := &protos.Podcast{Id: protos.NewObjectID()}
+	pod2 := &protos.Podcast{Id: protos.NewObjectID()}
+	insertOrFail(t, mockDB, database.ColPodcast, pod1)
+	insertOrFail(t, mockDB, database.ColPodcast, pod2)
+
 	type args struct {
 		dbClient db.Database
 		id       *protos.ObjectID
@@ -120,7 +128,24 @@ func TestFindPodcastByID(t *testing.T) {
 		want    *protos.Podcast
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			args: args{
+				dbClient: mockDB,
+				id:       pod1.Id,
+			},
+			want:    pod1,
+			wantErr: false,
+		},
+		{
+			name: "invalid",
+			args: args{
+				dbClient: mockDB,
+				id:       protos.NewObjectID(),
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -138,37 +163,15 @@ func TestFindPodcastByID(t *testing.T) {
 	}
 }
 
-func TestFindUserEpisode(t *testing.T) {
-	type args struct {
-		dbClient db.Database
-		userID   *protos.ObjectID
-		epiID    *protos.ObjectID
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *protos.UserEpisode
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			got, err := FindUserEpisode(tt.args.dbClient, tt.args.userID, tt.args.epiID)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("FindUserEpisode() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FindUserEpisode() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestSearchPodcasts(t *testing.T) {
+	mockDB := mock.CreateDB()
+	pod1 := &protos.Podcast{Id: protos.NewObjectID(), Author: "Sam Schwartz"}
+	pod2 := &protos.Podcast{Id: protos.NewObjectID(), Title: "The Tech Podcast"}
+	pod3 := &protos.Podcast{Id: protos.NewObjectID(), Keywords: []string{"food", "taste"}}
+	insertOrFail(t, mockDB, database.ColPodcast, pod1)
+	insertOrFail(t, mockDB, database.ColPodcast, pod2)
+	insertOrFail(t, mockDB, database.ColPodcast, pod3)
+
 	type args struct {
 		dbClient db.Database
 		search   string
@@ -179,7 +182,24 @@ func TestSearchPodcasts(t *testing.T) {
 		want    []*protos.Podcast
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid1",
+			args: args{
+				dbClient: mockDB,
+				search:   "Sam Schwartz",
+			},
+			want:    []*protos.Podcast{pod1},
+			wantErr: false,
+		},
+		{
+			name: "valid2",
+			args: args{
+				dbClient: mockDB,
+				search:   "Tech",
+			},
+			want:    []*protos.Podcast{pod2},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -197,42 +217,37 @@ func TestSearchPodcasts(t *testing.T) {
 	}
 }
 
-func TestMatchTitle(t *testing.T) {
-	type args struct {
-		search   string
-		podcasts []protos.Podcast
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			MatchTitle(tt.args.search, tt.args.podcasts)
-		})
-	}
-}
-
 func TestFindLength(t *testing.T) {
+	mp3File, err := os.Open("./test/sample.mp3")
+	if err != nil {
+		t.Fatalf("TestFindLength() unable to open file: %v", err)
+	}
+	mp3FileInfo, err := mp3File.Stat()
+	if err != nil {
+		t.Fatalf("TestFindLength() unable to get file stat: %v", err)
+	}
+
 	type args struct {
-		url string
+		r          io.Reader
+		fileLength int64
 	}
 	tests := []struct {
 		name string
 		args args
 		want int64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "sample",
+			args: args{
+				r:          mp3File,
+				fileLength: mp3FileInfo.Size(),
+			},
+			want: 10000,
+		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := FindLength(tt.args.url); got != tt.want {
+			if got := FindLength(tt.args.r, tt.args.fileLength); got != tt.want {
 				t.Errorf("FindLength() = %v, want %v", got, tt.want)
 			}
 		})
