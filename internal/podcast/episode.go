@@ -2,6 +2,7 @@ package podcast
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/sschwartz96/minimongo/db"
@@ -75,7 +76,7 @@ func DoesEpisodeExist(dbClient db.Database, title string, pubDate *timestamp.Tim
 	}
 	var episode protos.Episode
 	err := dbClient.FindOne(database.ColEpisode, &episode, filter, nil)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "no documents") {
 		return false, fmt.Errorf("DoesEpisodeExist() error: %v", err)
 	}
 	if episode.Id == nil {
