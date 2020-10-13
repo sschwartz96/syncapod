@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	sGRPC "github.com/sschwartz96/syncapod/internal/grpc"

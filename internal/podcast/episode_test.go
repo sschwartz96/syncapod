@@ -8,8 +8,8 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/timestamp"
-	"github.com/sschwartz96/minimongo/db"
-	"github.com/sschwartz96/minimongo/mock"
+	"github.com/sschwartz96/stockpile/db"
+	"github.com/sschwartz96/stockpile/mock"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/util"
