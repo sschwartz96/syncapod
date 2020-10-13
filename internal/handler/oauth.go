@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"

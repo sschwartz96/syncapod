@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/user"
 
@@ -23,13 +23,12 @@ func NewAuthService(dbClient db.Database) *AuthService {
 
 // Authenticate handles the authentication to syncapod and returns response
 func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
-	res := &protos.AuthRes{}
+	res := &protos.AuthRes{Success: false}
 
 	// find user from database
 	user, err := user.FindUser(a.dbClient, req.Username)
 	if err != nil {
 		res.Message = fmt.Sprint("failed on error: ", err)
-		res.Success = false
 		return res, nil
 	}
 
@@ -39,15 +38,12 @@ func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*p
 		key, err := auth.CreateSession(a.dbClient, user.Id, req.UserAgent, req.StayLoggedIn)
 		if err != nil {
 			fmt.Println("error creating session:", err)
-			res.Success = false
 		} else {
 			res.Success = true
 			res.User = user
 			res.SessionKey = key
 			res.User.Password = ""
 		}
-	} else {
-		res.Success = false
 	}
 	return res, nil
 }
@@ -59,7 +55,8 @@ func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*prot
 
 	user, err := auth.ValidateSession(a.dbClient, req.SessionKey)
 	if err != nil {
-		res.Message = fmt.Sprint("error validating user session:", err)
+		//res.Message = fmt.Sprint("Authorize() error validating user session:", err)
+		fmt.Println("Authorize() error validating user session:", err)
 		res.Success = false
 	} else {
 		res.Success = true

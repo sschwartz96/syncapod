@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/podcast"
 	"github.com/sschwartz96/syncapod/internal/protos"

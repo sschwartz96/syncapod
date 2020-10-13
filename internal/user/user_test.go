@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sschwartz96/minimongo/db"
-	"github.com/sschwartz96/minimongo/mock"
+	"github.com/sschwartz96/stockpile/db"
+	"github.com/sschwartz96/stockpile/mock"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -549,9 +549,9 @@ func createMockDBSub(t *testing.T) (*protos.Subscription, *mock.DB) {
 	insertOrFail(t, mockDB, database.ColSubscription, initial)
 
 	insertOrFail(t, mockDB, database.ColSubscription, &protos.Subscription{
-		Id:        protos.ObjectIDFromHex("id_1"),
-		UserID:    protos.ObjectIDFromHex("user_id_1"),
-		PodcastID: protos.ObjectIDFromHex("pod_id_1"),
+		Id:        protos.ObjectIDFromHex("id_2"),
+		UserID:    protos.ObjectIDFromHex("user_id_2"),
+		PodcastID: protos.ObjectIDFromHex("pod_id_2"),
 	})
 
 	return initial, mockDB

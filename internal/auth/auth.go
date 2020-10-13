@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/user"
 	"github.com/sschwartz96/syncapod/internal/util"
@@ -86,14 +86,14 @@ func ValidateSession(dbClient db.Database, key string) (*protos.User, error) {
 	// Find the key
 	sesh, err := user.FindSession(dbClient, key)
 	if err != nil {
-		return nil, fmt.Errorf("error validating session: %v", err)
+		return nil, fmt.Errorf("ValidateSession(): error finding session: %v", err)
 	}
 
 	// Check if expired
 	if sesh.Expires.AsTime().Before(time.Now()) {
 		err := user.DeleteSession(dbClient, sesh.Id)
 		if err != nil {
-			return nil, fmt.Errorf("error (ValidateSession) deleting session: %v", err)
+			return nil, fmt.Errorf("ValidateSession() (session expired) error deleting session: %v", err)
 		}
 		return nil, errors.New("session expired")
 	}
