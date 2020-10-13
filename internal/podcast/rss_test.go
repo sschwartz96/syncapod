@@ -16,21 +16,22 @@ func TestUpdatePodcasts(t *testing.T) {
 		dbClient db.Database
 	}
 	tests := []struct {
-		name string
-		args args
+		name    string
+		args    args
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			UpdatePodcasts(tt.args.dbClient)
+			if err := UpdatePodcasts(tt.args.dbClient); (err != nil) != tt.wantErr {
+				t.Errorf("UpdatePodcasts() error = %v, wantErr %v", err, tt.wantErr)
+			}
 		})
 	}
 }
 
-func TestUpdatePodcast(t *testing.T) {
+func Test_updatePodcast(t *testing.T) {
 	type args struct {
 		wg       *sync.WaitGroup
 		dbClient db.Database
@@ -43,10 +44,8 @@ func TestUpdatePodcast(t *testing.T) {
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			UpdatePodcast(tt.args.wg, tt.args.dbClient, tt.args.pod)
+			updatePodcast(tt.args.wg, tt.args.dbClient, tt.args.pod)
 		})
 	}
 }
@@ -64,9 +63,7 @@ func TestAddNewPodcast(t *testing.T) {
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if err := AddNewPodcast(tt.args.dbClient, tt.args.url); (err != nil) != tt.wantErr {
 				t.Errorf("AddNewPodcast() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -87,9 +84,7 @@ func TestParseRSS(t *testing.T) {
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			got, err := ParseRSS(tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseRSS() error = %v, wantErr %v", err, tt.wantErr)
@@ -115,9 +110,7 @@ func Test_convertEpisode(t *testing.T) {
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if got := convertEpisode(tt.args.pID, tt.args.e); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertEpisode() = %v, want %v", got, tt.want)
 			}
@@ -138,9 +131,7 @@ func Test_convertPodcast(t *testing.T) {
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if got := convertPodcast(tt.args.url, tt.args.p); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertPodcast() = %v, want %v", got, tt.want)
 			}
@@ -155,22 +146,35 @@ func Test_parseRFC2822(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *time.Time
+		want    time.Time
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "1",
+			args: args{
+				s: "Thu, 08 Oct 2020 15:30:00 +0000",
+			},
+			want:    time.Unix(1602171000, 0),
+			wantErr: false,
+		},
+		{
+			name: "2",
+			args: args{
+				s: "Tue, 06 Oct 2020 20:00:00 PDT",
+			},
+			want:    time.Unix(1602039600, 0),
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			got, err := parseRFC2822(tt.args.s)
+			got, err := parseRFC2822ToUTC(tt.args.s)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parseRFC2822() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parseRFC2822() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got.UTC(), tt.want.UTC()) {
+				t.Errorf("parseRFC2822() = %v, want %v", got.UTC(), tt.want.UTC())
 			}
 		})
 	}
@@ -185,12 +189,23 @@ func Test_parseDuration(t *testing.T) {
 		args args
 		want int64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "seconds",
+			args: args{
+				d: "5400",
+			},
+			want: 5400000,
+		},
+		{
+			name: "hh:mm:ss",
+			args: args{
+				d: "01:30:30",
+			},
+			want: 5430000,
+		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if got := parseDuration(tt.args.d); got != tt.want {
 				t.Errorf("parseDuration() = %v, want %v", got, tt.want)
 			}
@@ -207,12 +222,22 @@ func Test_convertCategories(t *testing.T) {
 		args args
 		want []*protos.Category
 	}{
-		// TODO: Add test cases.
+		{
+			name: "one",
+			args: args{
+				cats: []models.Category{
+					{Text: "CatOne", Category: []models.Category{{Text: "SubCatOne", Category: []models.Category{}}}},
+					{Text: "CatTwo", Category: []models.Category{}},
+				},
+			},
+			want: []*protos.Category{
+				{Text: "CatOne", Category: []*protos.Category{{Text: "SubCatOne", Category: []*protos.Category{}}}},
+				{Text: "CatTwo", Category: []*protos.Category{}},
+			},
+		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if got := convertCategories(tt.args.cats); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertCategories() = %v, want %v", got, tt.want)
 			}
@@ -229,12 +254,16 @@ func Test_convertCategory(t *testing.T) {
 		args args
 		want *protos.Category
 	}{
-		// TODO: Add test cases.
+		{
+			name: "one",
+			args: args{
+				cat: models.Category{Text: "CatOne", Category: []models.Category{{Text: "SubCatOne", Category: []models.Category{}}}},
+			},
+			want: &protos.Category{Text: "CatOne", Category: []*protos.Category{{Text: "SubCatOne", Category: []*protos.Category{}}}},
+		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			if got := convertCategory(tt.args.cat); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertCategory() = %v, want %v", got, tt.want)
 			}

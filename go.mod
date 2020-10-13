@@ -6,10 +6,6 @@ replace github.com/sschwartz96/minimongo => /home/sam/go/src/github.com/sschwart
 
 require (
 	github.com/golang/protobuf v1.4.2
-	github.com/hashicorp/errwrap v1.1.0 // indirect
-	github.com/mattn/go-colorable v0.1.8 // indirect
-	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/sschwartz96/minimongo v0.0.0-00010101000000-000000000000
 	github.com/tcolgate/mp3 v0.0.0-20170426193717-e79c5a46d300
 	go.mongodb.org/mongo-driver v1.4.1

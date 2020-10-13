@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,35 +20,33 @@ import (
 )
 
 // UpdatePodcasts attempts to go through the list of podcasts update them via RSS feed
-func UpdatePodcasts(dbClient db.Database) {
-	for {
-		var podcasts []protos.Podcast
-		// TODO: use mongo "skip" and "limit" to access only a few podcasts say 100 at a time
-		err := dbClient.FindAll(database.ColPodcast, &podcasts, nil, nil)
-		if err != nil {
-			fmt.Println("error getting all podcasts: ", err)
-		}
-
+func UpdatePodcasts(dbClient db.Database) error {
+	var podcasts []*protos.Podcast
+	var err error
+	start, end := 0, 10
+	for podcasts, err = FindPodcastsByRange(dbClient, start, end); err != nil && len(podcasts) > 0; {
 		var wg sync.WaitGroup
-
 		for i := range podcasts {
-			pod := &podcasts[i]
+			pod := podcasts[i]
 			wg.Add(1)
-			go UpdatePodcast(&wg, dbClient, pod)
+			go updatePodcast(&wg, dbClient, pod)
 		}
-
 		wg.Wait()
-		fmt.Println("finished updating podcast: waiting...")
-		time.Sleep(time.Minute * 15)
+		start = end
+		end += 10
 	}
+	if err != nil {
+		return fmt.Errorf("UpdatePodcasts() error retrieving from db: %v", err)
+	}
+	return nil
 }
 
-// UpdatePodcast updates the given podcast via RSS feed
-func UpdatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast) {
+// updatePodcast updates the given podcast via RSS feed
+func updatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast) error {
 	defer wg.Done()
 	newPod, err := ParseRSS(pod.Rss)
 	if err != nil {
-		fmt.Println("failed to load podcast rss: ", err)
+		fmt.Println("updatePodcast() failed to load podcast rss: ", err)
 		return
 	}
 
@@ -144,7 +143,7 @@ func ParseRSS(path string) (*models.RSSPodcast, error) {
 // convertEpisode takes in id of parent podcast and RSSEpisode
 // and returns a pointer to Episode
 func convertEpisode(pID *protos.ObjectID, e *models.RSSEpisode) *protos.Episode {
-	pubDate, err := parseRFC2822(e.PubDate)
+	pubDate, err := parseRFC2822ToUTC(e.PubDate)
 	if err != nil {
 		fmt.Println("error converting episode: ", err)
 	}
@@ -181,13 +180,14 @@ func convertPodcast(url string, p *models.RSSPodcast) *protos.Podcast {
 		keywords[w] = strings.TrimSpace(keywords[w])
 	}
 
-	lBuildDate, err := parseRFC2822(p.LastBuildDate)
+	log.Println("build date:", p.LastBuildDate)
+	lBuildDate, err := parseRFC2822ToUTC(p.LastBuildDate)
 	if err != nil {
 		fmt.Println("couldn't parse podcast build date: ", err)
 	}
 	buildTimestamp, _ := ptypes.TimestampProto(*lBuildDate)
 
-	pubDate, err := parseRFC2822(p.PubDate)
+	pubDate, err := parseRFC2822ToUTC(p.PubDate)
 	if err != nil {
 		fmt.Println("couldn't parse podcast pubdate: ", err)
 	}
@@ -211,9 +211,13 @@ func convertPodcast(url string, p *models.RSSPodcast) *protos.Podcast {
 	}
 }
 
-// parseRFC2822 parses the string in RFC2822 date format
+func timeZoneAbrToOffset(abr string) string {
+	abrMap := map[string]string{"PST": ""}
+}
+
+// parseRFC2822ToUTC parses the string in RFC2822 date format
 // returns pointer to time object and error
-func parseRFC2822(s string) (*time.Time, error) {
+func parseRFC2822ToUTC(s string) (*time.Time, error) {
 	var rfc2822 string
 	if strings.Contains(s, "+") || strings.Contains(s, "-") {
 		rfc2822 = "Mon, 02 Jan 2006 15:04:05 -0700"
@@ -222,8 +226,11 @@ func parseRFC2822(s string) (*time.Time, error) {
 	}
 	t, err := time.Parse(rfc2822, s)
 	if err != nil {
-		return nil, err
+		return &t, err
 	}
+	log.Println("time location:", t.Location())
+	log.Println("time:", t.String())
+	log.Println("time(UTC):", t.UTC().String())
 	return &t, nil
 }
 

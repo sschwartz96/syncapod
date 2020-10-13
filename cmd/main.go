@@ -8,7 +8,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/sschwartz96/minimongo/db"
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/database"
 	sGRPC "github.com/sschwartz96/syncapod/internal/grpc"
@@ -48,7 +50,7 @@ func main() {
 	}()
 
 	// start updating podcasts
-	go podcast.UpdatePodcasts(dbClient)
+	go updatePodcasts(dbClient)
 
 	fmt.Println("setting up handlers")
 	// setup handler
@@ -77,6 +79,16 @@ func main() {
 		log.Fatal("couldn't not start server:", err)
 	}
 
+}
+
+func updatePodcasts(dbClient db.Database) {
+	for {
+		err := podcast.UpdatePodcasts(dbClient)
+		if err != nil {
+			log.Println("main/updatePodcasts() error:", err)
+		}
+		time.Sleep(time.Minute * 15)
+	}
 }
 
 func redirect(res http.ResponseWriter, req *http.Request) {
