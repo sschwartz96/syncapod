@@ -29,7 +29,12 @@ func UpdatePodcasts(dbClient db.Database) error {
 		for i := range podcasts {
 			pod := podcasts[i]
 			wg.Add(1)
-			go updatePodcast(&wg, dbClient, pod)
+			go func() {
+				err = updatePodcast(&wg, dbClient, pod)
+				if err != nil {
+					fmt.Println("UpdatePodcasts() error updating podcast %v, error = %v", pod, err)
+				}
+			}()
 		}
 		wg.Wait()
 		start = end
@@ -47,13 +52,11 @@ func updatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast
 	newPod, err := ParseRSS(pod.Rss)
 	if err != nil {
 		fmt.Println("updatePodcast() failed to load podcast rss: ", err)
-		return
+		return fmt.Errorf("updatePodcast() error parsing RSS: %v", err)
 	}
 
 	for e := range newPod.RSSEpisodes {
 		epi := convertEpisode(pod.Id, &newPod.RSSEpisodes[e])
-		// TODO: maybe check if the episode has the same title but different size
-		// TODO: hopefully the podcast just uses the same URL if they update it
 		// check if the latest episode is in collection
 		exists, err := DoesEpisodeExist(dbClient, epi.Title, epi.PubDate)
 		if err != nil {
@@ -66,12 +69,14 @@ func updatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast
 			err = UpsertEpisode(dbClient, epi)
 			if err != nil {
 				fmt.Println("couldn't insert episode: ", err)
+				return fmt.Errorf("updatePodcast() error upserting episode: %v", err)
 			}
 		} else {
 			// assume that if the first podcast exists so do the rest, no need to loop through all
 			break
 		}
 	}
+	return nil
 }
 
 // AddNewPodcast takes RSS url and downloads contents inserts the podcast and its episodes into the db

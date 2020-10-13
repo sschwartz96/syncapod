@@ -70,6 +70,8 @@ func UpsertEpisode(dbClient db.Database, episode *protos.Episode) error {
 
 // helpers
 func DoesEpisodeExist(dbClient db.Database, title string, pubDate *timestamp.Timestamp) (bool, error) {
+	// TODO: maybe check if the episode has the same title but different size
+	// TODO: hopefully the podcast just uses the same URL if they update it
 	filter := &db.Filter{
 		"title":   title,
 		"pubdate": pubDate,
