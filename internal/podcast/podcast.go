@@ -21,6 +21,7 @@ func DoesPodcastExist(dbClient db.Database, rssURL string) bool {
 
 func FindPodcastsByRange(dbClient db.Database, start, end int) ([]*protos.Podcast, error) {
 	var podcasts []*protos.Podcast
+	fmt.Println("skiP:", start)
 	opts := db.CreateOptions().SetLimit(int64(end-start)).SetSkip(int64(start)).SetSort("pubdate", -1)
 
 	err := dbClient.FindAll(database.ColPodcast, &podcasts, nil, opts)

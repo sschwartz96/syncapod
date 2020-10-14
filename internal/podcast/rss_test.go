@@ -4,7 +4,6 @@ import (
 	"io"
 	"os"
 	"reflect"
-	"sync"
 	"testing"
 	"time"
 
@@ -18,6 +17,10 @@ import (
 )
 
 func TestUpdatePodcasts(t *testing.T) {
+	mockDB := mock.CreateDB()
+	insertOrFail(t, mockDB, database.ColPodcast, &protos.Podcast{Id: protos.NewObjectID(), Title: "Go Time", Author: "Changelog Media", Type: "", Subtitle: "", Link: "https://changelog.com/gotime", Image: &protos.Image{Title: "", Url: ""}, Explicit: "no", Language: "en-us", Keywords: []string{"go", "golang", "open source", "software", "development", "devops", "architecture", "docker", "kubernetes"}, Rss: "https://changelog.com/gotime/feed"})
+	insertOrFail(t, mockDB, database.ColEpisode, &protos.Episode{})
+
 	type args struct {
 		dbClient db.Database
 	}
@@ -26,10 +29,17 @@ func TestUpdatePodcasts(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			args: args{
+				dbClient: mockDB,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if err := UpdatePodcasts(tt.args.dbClient); (err != nil) != tt.wantErr {
 				t.Errorf("UpdatePodcasts() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -38,8 +48,8 @@ func TestUpdatePodcasts(t *testing.T) {
 }
 
 func Test_updatePodcast(t *testing.T) {
+	mockDB := mock.CreateDB()
 	type args struct {
-		wg       *sync.WaitGroup
 		dbClient db.Database
 		pod      *protos.Podcast
 	}
@@ -48,11 +58,18 @@ func Test_updatePodcast(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "valid",
+			args: args{
+				dbClient: mockDB,
+				pod:      &protos.Podcast{Id: protos.NewObjectID(), Title: "Go Time", Author: "Changelog Media", Type: "", Subtitle: "", Link: "https://changelog.com/gotime", Image: &protos.Image{Title: "", Url: ""}, Explicit: "no", Language: "en-us", Keywords: []string{"go", "golang", "open source", "software", "development", "devops", "architecture", "docker", "kubernetes"}, Rss: "https://changelog.com/gotime/feed"},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := updatePodcast(tt.args.wg, tt.args.dbClient, tt.args.pod); (err != nil) != tt.wantErr {
+			t.Parallel()
+			if err := updatePodcast(tt.args.dbClient, tt.args.pod); (err != nil) != tt.wantErr {
 				t.Errorf("updatePodcast() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -80,8 +97,8 @@ func TestAddNewPodcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Parallel()
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if err := AddNewPodcast(tt.args.dbClient, tt.args.url); (err != nil) != tt.wantErr {
 				t.Errorf("AddNewPodcast() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -124,7 +141,7 @@ func Test_parseRSS(t *testing.T) {
 			args: args{
 				r: rssFile,
 			},
-			want:    &models.RSSPodcast{ID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, Title: "Go Time", Author: "Changelog Media", Type: "", Subtitle: "", Summary: "Your source for diverse discussions from around the Go community  Panelists include Mat Ryer, Ashley McNamara, Johnny Boursiquot, Carmen Andoh, Jaana B. Dogan (JBD), Mark Bates, and Jon Calhoun.\n\nThis show records LIVE every Tuesday at 3pm US Eastern. Join the Golang community and chat with us during the show in the #gotimefm channel of Gophers slack.\n\nWe discuss cloud infrastructure, distributed systems, microservices, Kubernetes, Docker... oh and also Go!\n\nSome people search for GoTime or GoTimeFM and can't find the show, so now the strings GoTime and GoTimeFM are in our description too.", Link: "https://changelog.com/gotime", Image: models.Image{Title: "", URL: ""}, Explicit: "no", Language: "en-us", Keywords: "go, golang, open source, software, development, devops, architecture, docker, kubernetes", Category: []models.Category{models.Category{Text: "Technology", Category: []models.Category{models.Category{Text: "Software How-To", Category: []models.Category(nil)}, models.Category{Text: "Tech News", Category: []models.Category(nil)}}}}, PubDate: "", LastBuildDate: "", RSSEpisodes: []models.RSSEpisode{models.RSSEpisode{ID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, PodcastID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, Title: "Cloud Native Go", Subtitle: "with Aaron Schlesinger", Author: "Mat Ryer, Johnny Boursiquot, and Jon Calhoun", Type: "", Image: models.EpiImage{HREF: "https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"}, Thumbnail: models.EpiThumbnail{URL: ""}, PubDate: "Thu, 08 Oct 2020 15:30:00 +0000", Description: "What is cloud native? In this episode Johnny and Aaron explain it to Mat and Jon. They then dive into questions like, “What problems does this solve?” and “Why was Go such a good fit for this space?” ", Summary: "What is cloud native? In this episode Johnny and Aaron explain it to Mat and Jon. They then dive into questions like, “What problems does this solve?” and “Why was Go such a good fit for this space?” ", Season: 0, Episode: 150, Category: []models.Category(nil), Explicit: "no", Enclosure: models.Enclosure{MP3: "https://cdn.changelog.com/uploads/gotime/150/go-time-150.mp3"}, Duration: "1:10:30"}, models.RSSEpisode{ID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, PodcastID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, Title: "There's a lot to learn about teaching Go", Subtitle: " Mat, Jon, Johnny, & Mark", Author: "Mat Ryer, Jon Calhoun, Johnny Boursiquot, and Mark Bates", Type: "", Image: models.EpiImage{HREF: "https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"}, Thumbnail: models.EpiThumbnail{URL: ""}, PubDate: "Thu, 01 Oct 2020 15:00:00 +0000", Description: "In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” ", Summary: "In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” ", Season: 0, Episode: 149, Category: []models.Category(nil), Explicit: "no", Enclosure: models.Enclosure{MP3: "https://cdn.changelog.com/uploads/gotime/149/go-time-149.mp3"}, Duration: "1:16:18"}}, NewFeedURL: "", RSS: ""},
+			want:    &models.RSSPodcast{ID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, Title: "Go Time", Author: "Changelog Media", Type: "", Subtitle: "", Summary: "Your source for diverse discussions from around the Go community  Panelists include Mat Ryer, Ashley McNamara, Johnny Boursiquot, Carmen Andoh, Jaana B. Dogan (JBD), Mark Bates, and Jon Calhoun.\n\n\t\tThis show records LIVE every Tuesday at 3pm US Eastern. Join the Golang community and chat with us during the show in the #gotimefm channel of Gophers slack.\n\n\t\tWe discuss cloud infrastructure, distributed systems, microservices, Kubernetes, Docker... oh and also Go!\n\n\t\tSome people search for GoTime or GoTimeFM and can't find the show, so now the strings GoTime and GoTimeFM are in our description too.", Link: "https://changelog.com/gotime", Image: models.Image{Title: "", URL: ""}, Explicit: "no", Language: "en-us", Keywords: "go, golang, open source, software, development, devops, architecture, docker, kubernetes", Category: []models.Category{models.Category{Text: "Technology", Category: []models.Category{models.Category{Text: "Software How-To", Category: []models.Category(nil)}, models.Category{Text: "Tech News", Category: []models.Category(nil)}}}}, PubDate: "", LastBuildDate: "", RSSEpisodes: []models.RSSEpisode{models.RSSEpisode{ID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, PodcastID: primitive.ObjectID{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, Title: "There's a lot to learn about teaching Go", Subtitle: " Mat, Jon, Johnny, & Mark", Author: "Mat Ryer, Jon Calhoun, Johnny Boursiquot, and Mark Bates", Type: "", Image: models.EpiImage{HREF: "https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"}, Thumbnail: models.EpiThumbnail{URL: ""}, PubDate: "Thu, 01 Oct 2020 15:00:00 +0000", Description: "In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” ", Summary: "In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” ", Season: 0, Episode: 149, Category: []models.Category(nil), Explicit: "no", Enclosure: models.Enclosure{MP3: "https://cdn.changelog.com/uploads/gotime/149/go-time-149.mp3"}, Duration: "1:16:18"}}, NewFeedURL: "", RSS: ""},
 			wantErr: false,
 		},
 	}
@@ -166,6 +183,7 @@ func Test_convertEpisode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			got := convertEpisode(tt.args.pID, tt.args.e)
 			got.Id = nil
 			if !reflect.DeepEqual(got.String(), tt.want.String()) {
@@ -198,6 +216,7 @@ func Test_convertPodcast(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			got := convertPodcast(tt.args.url, tt.args.p)
 			got.Id = nil
 			if !reflect.DeepEqual(got.String(), tt.want.String()) {
@@ -236,6 +255,7 @@ func Test_parseRFC2822(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			got, err := parseRFC2822ToUTC(tt.args.s)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parseRFC2822() error = %v, wantErr %v", err, tt.wantErr)
@@ -273,6 +293,7 @@ func Test_convertCategories(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := convertCategories(tt.args.cats); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertCategories() = %v, want %v", got, tt.want)
 			}
@@ -299,6 +320,7 @@ func Test_convertCategory(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := convertCategory(tt.args.cat); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertCategory() = %v, want %v", got, tt.want)
 			}
@@ -333,6 +355,7 @@ func Test_parseDuration(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			got, err := parseDuration(tt.args.d)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parseDuration() error = %v, wantErr %v", err, tt.wantErr)

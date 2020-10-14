@@ -1,194 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"
-  xmlns:atom="http://www.w3.org/2005/Atom"
-  xmlns:content="http://purl.org/rss/1.0/modules/content/"
-  xmlns:dc="http://purl.org/dc/elements/1.1/"
-  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
->
-  <channel>
-    <title>Go Time</title>
-    <copyright>All rights reserved</copyright>
-    <link>https://changelog.com/gotime</link>
-    <atom:link href="https://changelog.com/gotime/feed" rel="self" type="application/rss+xml" />
-    <atom:link href="https://changelog.com/gotime" rel="alternate" type="text/html" />
-    <language>en-us</language>
-    <description>Your source for diverse discussions from around the Go community  Panelists include Mat Ryer, Ashley McNamara, Johnny Boursiquot, Carmen Andoh, Jaana B. Dogan (JBD), Mark Bates, and Jon Calhoun.
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+	>
+<channel>
+	<title>Go Time</title>
+	<copyright>All rights reserved</copyright>
+	<link>https://changelog.com/gotime</link>
+	<atom:link href="https://changelog.com/gotime/feed" rel="self" type="application/rss+xml" />
+	<atom:link href="https://changelog.com/gotime" rel="alternate" type="text/html" />
+	<language>en-us</language>
+	<description>Your source for diverse discussions from around the Go community  Panelists include Mat Ryer, Ashley McNamara, Johnny Boursiquot, Carmen Andoh, Jaana B. Dogan (JBD), Mark Bates, and Jon Calhoun.
 
-This show records LIVE every Tuesday at 3pm US Eastern. Join the Golang community and chat with us during the show in the #gotimefm channel of Gophers slack.
+		This show records LIVE every Tuesday at 3pm US Eastern. Join the Golang community and chat with us during the show in the #gotimefm channel of Gophers slack.
 
-We discuss cloud infrastructure, distributed systems, microservices, Kubernetes, Docker... oh and also Go!
+		We discuss cloud infrastructure, distributed systems, microservices, Kubernetes, Docker... oh and also Go!
 
-Some people search for GoTime or GoTimeFM and can't find the show, so now the strings GoTime and GoTimeFM are in our description too.</description>
-    <itunes:author>Changelog Media</itunes:author>
-    <itunes:summary>Your source for diverse discussions from around the Go community  Panelists include Mat Ryer, Ashley McNamara, Johnny Boursiquot, Carmen Andoh, Jaana B. Dogan (JBD), Mark Bates, and Jon Calhoun.
+		Some people search for GoTime or GoTimeFM and can't find the show, so now the strings GoTime and GoTimeFM are in our description too.</description>
+	<itunes:author>Changelog Media</itunes:author>
+	<itunes:summary>Your source for diverse discussions from around the Go community  Panelists include Mat Ryer, Ashley McNamara, Johnny Boursiquot, Carmen Andoh, Jaana B. Dogan (JBD), Mark Bates, and Jon Calhoun.
 
-This show records LIVE every Tuesday at 3pm US Eastern. Join the Golang community and chat with us during the show in the #gotimefm channel of Gophers slack.
+		This show records LIVE every Tuesday at 3pm US Eastern. Join the Golang community and chat with us during the show in the #gotimefm channel of Gophers slack.
 
-We discuss cloud infrastructure, distributed systems, microservices, Kubernetes, Docker... oh and also Go!
+		We discuss cloud infrastructure, distributed systems, microservices, Kubernetes, Docker... oh and also Go!
 
-Some people search for GoTime or GoTimeFM and can't find the show, so now the strings GoTime and GoTimeFM are in our description too.</itunes:summary>
-    <itunes:explicit>no</itunes:explicit>
-    <itunes:image href="https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"/>
-    <itunes:keywords>go, golang, open source, software, development, devops, architecture, docker, kubernetes</itunes:keywords>
-    <itunes:owner>
-      <itunes:name>Changelog Media</itunes:name>
-      <itunes:email>editors@changelog.com</itunes:email>
-    </itunes:owner>
-    <itunes:category text="Technology">
-      <itunes:category text="Software How-To"/>
-      <itunes:category text="Tech News"/>
-    </itunes:category>
-    
-      <item>
-        <title>Cloud Native Go</title>
-        <link>https://changelog.com/gotime/150</link>
-        <guid isPermaLink="false">changelog.com/2/1058</guid>
-        <pubDate>Thu, 08 Oct 2020 15:30:00 +0000</pubDate>
-        <enclosure url="https://cdn.changelog.com/uploads/gotime/150/go-time-150.mp3" length="67969285" type="audio/mpeg" />
-        <description>What is cloud native? In this episode Johnny and Aaron explain it to Mat and Jon. They then dive into questions like, “What problems does this solve?” and “Why was Go such a good fit for this space?” </description>
-        <content:encoded><![CDATA[<p>What is cloud native? In this episode Johnny and Aaron explain it to Mat and Jon. They then dive into questions like, “What problems does this solve?” and “Why was Go such a good fit for this space?”</p>
+		Some people search for GoTime or GoTimeFM and can't find the show, so now the strings GoTime and GoTimeFM are in our description too.</itunes:summary>
+	<itunes:explicit>no</itunes:explicit>
+	<itunes:image href="https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"/>
+	<itunes:keywords>go, golang, open source, software, development, devops, architecture, docker, kubernetes</itunes:keywords>
+	<itunes:owner>
+		<itunes:name>Changelog Media</itunes:name>
+		<itunes:email>editors@changelog.com</itunes:email>
+	</itunes:owner>
+	<itunes:category text="Technology">
+		<itunes:category text="Software How-To"/>
+		<itunes:category text="Tech News"/>
+	</itunes:category>
+	<item>
+		<title>There&#39;s a lot to learn about teaching Go</title>
+		<link>https://changelog.com/gotime/149</link>
+		<guid isPermaLink="false">changelog.com/2/1057</guid>
+		<pubDate>Thu, 01 Oct 2020 15:00:00 +0000</pubDate>
+		<enclosure url="https://cdn.changelog.com/uploads/gotime/149/go-time-149.mp3" length="73524584" type="audio/mpeg" />
+		<description>In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” </description>
+		<content:encoded><![CDATA[<p>In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?”</p>
 
-<p><a href="https://changelog.com/gotime/150/discuss">Discuss on Changelog News</a></p>
+			<p><a href="https://changelog.com/gotime/149/discuss">Discuss on Changelog News</a></p>
 
-<p><a href="https://changelog.com/++" rel="payment">Join Changelog++</a> to support our work, get closer to the metal, and make the ads disappear!</p>
+			<p><a href="https://changelog.com/++" rel="payment">Join Changelog++</a> to support our work, get closer to the metal, and make the ads disappear!</p>
 
-<p>Sponsors</p>
-<p>
-  <ul>
-  
-    <li>
-      <a href="https://do.co/changelog">DigitalOcean</a> – DigitalOcean’s developer cloud makes it simple to launch in the cloud and scale up as you grow. They have an intuitive control panel, predictable pricing, team accounts, worldwide availability with a 99.99% uptime SLA, and 24/7/365 world-class support to back that up. Get your $100 credit at <a href="https://do.co/changelog">do.co/changelog</a>.
+			<p>Sponsors</p>
+			<p>
+				<ul>
 
-    </li>
-  
-    <li>
-      <a href="https://github.com/pixie-labs/pixie">Pixie</a> – Pixie gives you a magical API to get instant debug data. The best part is this doesn’t involve changing code, there are no manual UIs, and this all lives inside Kubernetes. Pixie lives inside of your platform, harvests all the data that you need, and exposes a bunch of interfaces that you can ping to get the data you need. It’s a programmable edge intelligence platform which captures metrics, traces, logs and events, without any code changes.
+					<li>
+						<a href="https://linode.com/changelog">Linode</a> – <strong>Our cloud of choice and the home of Changelog.com.</strong> Get started on Linode today with a $100 in free credit. You can find all the details at <a href="https://linode.com/changelog">linode.com/changelog</a>
 
-    </li>
-  
-    <li>
-      <a href="http://datadog.com/gotime">Datadog</a> – Do you have an app in production that is slower than you like? Of course you do…is the performance all over the place…sometimes fast, sometimes slow? Do you know why? Well, with Datadog you will. Troubleshoot your app’s performance with end-to-end tracing and in one click correlate those Go traces with related logs and metrics. Use detailed flame graphs to identify bottlenecks and latency in your apps. Start your free trial, install the agent, create a dashboard, and get a free t-shirt! Head to <a href="http://datadog.com/gotime">datadog.com/gotime</a> to get started.
+					</li>
 
-    </li>
-  
-  </ul>
-</p>
+					<li>
+						<a href="https://github.com/pixie-labs/pixie">Pixie</a> – Pixie gives you a magical API to get instant debug data. The best part is this doesn’t involve changing code, there are no manual UIs, and this all lives inside Kubernetes. Pixie lives inside of your platform, harvests all the data that you need, and exposes a bunch of interfaces that you can ping to get the data you need. It’s a programmable edge intelligence platform which captures metrics, traces, logs and events, without any code changes.
 
+					</li>
 
+					<li>
+						<a href="http://datadog.com/gotime">Datadog</a> – Do you have an app in production that is slower than you like? Of course you do…is the performance all over the place…sometimes fast, sometimes slow? Do you know why? Well, with Datadog you will. Troubleshoot your app’s performance with end-to-end tracing and in one click correlate those Go traces with related logs and metrics. Use detailed flame graphs to identify bottlenecks and latency in your apps. Start your free trial, install the agent, create a dashboard, and get a free t-shirt! Head to <a href="http://datadog.com/gotime">datadog.com/gotime</a> to get started.
 
+					</li>
 
-<p>Featuring</p>
-<p>
-  <ul>
-  
-    <li>Aaron Schlesinger &ndash; <a href="https://twitter.com/arschles">Twitter</a>, <a href="https://github.com/arschles">GitHub</a>, <a href="http://arschles.com/">Website</a></li>
-  
-    <li>Mat Ryer &ndash; <a href="https://twitter.com/matryer">Twitter</a>, <a href="https://github.com/matryer">GitHub</a>, <a href="https://www.linkedin.com/in/matryer">LinkedIn</a>, <a href="http://matryer.com/">Website</a></li>
-  
-    <li>Johnny Boursiquot &ndash; <a href="https://twitter.com/jboursiquot">Twitter</a>, <a href="https://github.com/jboursiquot">GitHub</a>, <a href="http://jboursiquot.com/">Website</a></li>
-  
-    <li>Jon Calhoun &ndash; <a href="https://twitter.com/joncalhoun">Twitter</a>, <a href="https://github.com/joncalhoun">GitHub</a>, <a href="https://www.calhoun.io">Website</a></li>
-  
-  </ul>
-</p>
-
-<p>Notes and Links</p>
-<ul>
-<li><a href="https://github.com/cncf/toc/blob/master/DEFINITION.md#cncf-cloud-native-definition-v10">Cloud Native Definition</a></li>
-<li><a href="https://landscape.cncf.io/">Landscape of Cloud Native (graphic)</a></li>
-</ul>
-]]>
-</content:encoded>
-
-        <itunes:episodeType>full</itunes:episodeType>
-      
-        <itunes:episode>150</itunes:episode>
-      
-        <itunes:image href="https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"/>
-        <itunes:duration>1:10:30</itunes:duration>
-        <itunes:explicit>no</itunes:explicit>
-        <itunes:keywords>go, golang, open source, software, development, devops, architecture, docker, kubernetes</itunes:keywords>
-        <itunes:subtitle>with Aaron Schlesinger</itunes:subtitle>
-        <itunes:summary>What is cloud native? In this episode Johnny and Aaron explain it to Mat and Jon. They then dive into questions like, “What problems does this solve?” and “Why was Go such a good fit for this space?” </itunes:summary>
-
-      
-        <dc:creator>Mat Ryer, Johnny Boursiquot, and Jon Calhoun</dc:creator>
-        <itunes:author>Mat Ryer, Johnny Boursiquot, and Jon Calhoun</itunes:author>
-      
-      </item>
-    
-      <item>
-        <title>There&#39;s a lot to learn about teaching Go</title>
-        <link>https://changelog.com/gotime/149</link>
-        <guid isPermaLink="false">changelog.com/2/1057</guid>
-        <pubDate>Thu, 01 Oct 2020 15:00:00 +0000</pubDate>
-        <enclosure url="https://cdn.changelog.com/uploads/gotime/149/go-time-149.mp3" length="73524584" type="audio/mpeg" />
-        <description>In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” </description>
-        <content:encoded><![CDATA[<p>In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?”</p>
-
-<p><a href="https://changelog.com/gotime/149/discuss">Discuss on Changelog News</a></p>
-
-<p><a href="https://changelog.com/++" rel="payment">Join Changelog++</a> to support our work, get closer to the metal, and make the ads disappear!</p>
-
-<p>Sponsors</p>
-<p>
-  <ul>
-  
-    <li>
-      <a href="https://linode.com/changelog">Linode</a> – <strong>Our cloud of choice and the home of Changelog.com.</strong> Get started on Linode today with a $100 in free credit. You can find all the details at <a href="https://linode.com/changelog">linode.com/changelog</a>
-
-    </li>
-  
-    <li>
-      <a href="https://github.com/pixie-labs/pixie">Pixie</a> – Pixie gives you a magical API to get instant debug data. The best part is this doesn’t involve changing code, there are no manual UIs, and this all lives inside Kubernetes. Pixie lives inside of your platform, harvests all the data that you need, and exposes a bunch of interfaces that you can ping to get the data you need. It’s a programmable edge intelligence platform which captures metrics, traces, logs and events, without any code changes.
-
-    </li>
-  
-    <li>
-      <a href="http://datadog.com/gotime">Datadog</a> – Do you have an app in production that is slower than you like? Of course you do…is the performance all over the place…sometimes fast, sometimes slow? Do you know why? Well, with Datadog you will. Troubleshoot your app’s performance with end-to-end tracing and in one click correlate those Go traces with related logs and metrics. Use detailed flame graphs to identify bottlenecks and latency in your apps. Start your free trial, install the agent, create a dashboard, and get a free t-shirt! Head to <a href="http://datadog.com/gotime">datadog.com/gotime</a> to get started.
-
-    </li>
-  
-  </ul>
-</p>
+				</ul>
+			</p>
 
 
 
 
-<p>Featuring</p>
-<p>
-  <ul>
-  
-    <li>Mat Ryer &ndash; <a href="https://twitter.com/matryer">Twitter</a>, <a href="https://github.com/matryer">GitHub</a>, <a href="https://www.linkedin.com/in/matryer">LinkedIn</a>, <a href="http://matryer.com/">Website</a></li>
-  
-    <li>Jon Calhoun &ndash; <a href="https://twitter.com/joncalhoun">Twitter</a>, <a href="https://github.com/joncalhoun">GitHub</a>, <a href="https://www.calhoun.io">Website</a></li>
-  
-    <li>Johnny Boursiquot &ndash; <a href="https://twitter.com/jboursiquot">Twitter</a>, <a href="https://github.com/jboursiquot">GitHub</a>, <a href="http://jboursiquot.com/">Website</a></li>
-  
-    <li>Mark Bates &ndash; <a href="https://twitter.com/markbates">Twitter</a>, <a href="https://github.com/markbates">GitHub</a>, <a href="http://www.metabates.com/">Website</a></li>
-  
-  </ul>
-</p>
+			<p>Featuring</p>
+			<p>
+				<ul>
 
-<p>Notes and Links</p>
-]]>
-</content:encoded>
+					<li>Mat Ryer &ndash; <a href="https://twitter.com/matryer">Twitter</a>, <a href="https://github.com/matryer">GitHub</a>, <a href="https://www.linkedin.com/in/matryer">LinkedIn</a>, <a href="http://matryer.com/">Website</a></li>
 
-        <itunes:episodeType>full</itunes:episodeType>
-      
-        <itunes:episode>149</itunes:episode>
-      
-        <itunes:image href="https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"/>
-        <itunes:duration>1:16:18</itunes:duration>
-        <itunes:explicit>no</itunes:explicit>
-        <itunes:keywords>go, golang, open source, software, development, devops, architecture, docker, kubernetes</itunes:keywords>
-        <itunes:subtitle> Mat, Jon, Johnny, &amp; Mark</itunes:subtitle>
-        <itunes:summary>In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” </itunes:summary>
+					<li>Jon Calhoun &ndash; <a href="https://twitter.com/joncalhoun">Twitter</a>, <a href="https://github.com/joncalhoun">GitHub</a>, <a href="https://www.calhoun.io">Website</a></li>
 
-      
-        <dc:creator>Mat Ryer, Jon Calhoun, Johnny Boursiquot, and Mark Bates</dc:creator>
-        <itunes:author>Mat Ryer, Jon Calhoun, Johnny Boursiquot, and Mark Bates</itunes:author>
-      
-      </item>
-  </channel>
+					<li>Johnny Boursiquot &ndash; <a href="https://twitter.com/jboursiquot">Twitter</a>, <a href="https://github.com/jboursiquot">GitHub</a>, <a href="http://jboursiquot.com/">Website</a></li>
+
+					<li>Mark Bates &ndash; <a href="https://twitter.com/markbates">Twitter</a>, <a href="https://github.com/markbates">GitHub</a>, <a href="http://www.metabates.com/">Website</a></li>
+
+				</ul>
+			</p>
+
+			<p>Notes and Links</p>
+				]]>
+		</content:encoded>
+
+		<itunes:episodeType>full</itunes:episodeType>
+
+		<itunes:episode>149</itunes:episode>
+
+		<itunes:image href="https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357"/>
+		<itunes:duration>1:16:18</itunes:duration>
+		<itunes:explicit>no</itunes:explicit>
+		<itunes:keywords>go, golang, open source, software, development, devops, architecture, docker, kubernetes</itunes:keywords>
+		<itunes:subtitle> Mat, Jon, Johnny, &amp; Mark</itunes:subtitle>
+		<itunes:summary>In this episode we dive into teaching Go, asking questions like, “What techniques work well for teaching programming?”, “What role does community play in education?”, and “What are the best ways to improve at Go as a beginner/intermediate/senior dev?” </itunes:summary>
+
+
+		<dc:creator>Mat Ryer, Jon Calhoun, Johnny Boursiquot, and Mark Bates</dc:creator>
+		<itunes:author>Mat Ryer, Jon Calhoun, Johnny Boursiquot, and Mark Bates</itunes:author>
+
+	</item>
+</channel>
 </rss>

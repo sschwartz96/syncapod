@@ -31,22 +31,27 @@ var tzMap = map[string]string{
 func UpdatePodcasts(dbClient db.Database) error {
 	var podcasts []*protos.Podcast
 	var err error
-	start, end := 0, 10
-	for podcasts, err = FindPodcastsByRange(dbClient, start, end); err == nil && len(podcasts) > 0; {
+	// just increments start and end indices
+	for start, end := 0, 10; ; start, end = end, end+10 {
+		podcasts, err = FindPodcastsByRange(dbClient, start, end)
+		if err != nil || len(podcasts) == 0 {
+			break // will eventually break
+		}
 		var wg sync.WaitGroup
 		for i := range podcasts {
 			pod := podcasts[i]
 			wg.Add(1)
 			go func() {
-				err = updatePodcast(&wg, dbClient, pod)
+				log.Println("starting updatePodcast():", pod.Title)
+				err = updatePodcast(dbClient, pod)
 				if err != nil {
 					fmt.Printf("UpdatePodcasts() error updating podcast %v, error = %v\n", pod, err)
 				}
+				log.Println("finished updatePodcast():", pod.Title)
+				wg.Done()
 			}()
 		}
 		wg.Wait()
-		start = end
-		end += 10
 	}
 	if err != nil {
 		return fmt.Errorf("UpdatePodcasts() error retrieving from db: %v", err)
@@ -55,8 +60,7 @@ func UpdatePodcasts(dbClient db.Database) error {
 }
 
 // updatePodcast updates the given podcast via RSS feed
-func updatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast) error {
-	defer wg.Done()
+func updatePodcast(dbClient db.Database, pod *protos.Podcast) error {
 	// get rss from url
 	rssResp, err := downloadRSS(pod.Rss)
 	if err != nil {
@@ -84,7 +88,6 @@ func updatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast
 			fmt.Println("couldn't tell if object exists: ", err)
 			continue
 		}
-
 		// episode does not exist
 		if !exists {
 			err = UpsertEpisode(dbClient, epi)

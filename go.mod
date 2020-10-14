@@ -2,9 +2,9 @@ module github.com/sschwartz96/syncapod
 
 go 1.15
 
-//replace github.com/sschwartz96/stockpile => /home/sam/go/src/github.com/sschwartz96/stockpile
+replace github.com/sschwartz96/stockpile => /home/sam/go/src/github.com/sschwartz96/stockpile
 
-replace github.com/sschwartz96/stockpile => C:/users/sam/go/src/github.com/sschwartz96/stockpile
+//replace github.com/sschwartz96/stockpile => C:/users/sam/go/src/github.com/sschwartz96/stockpile
 
 require (
 	github.com/golang/protobuf v1.4.2
