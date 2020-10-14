@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/models"
 	"github.com/sschwartz96/syncapod/internal/protos"

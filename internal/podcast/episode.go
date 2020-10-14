@@ -2,15 +2,16 @@ package podcast
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/golang/protobuf/ptypes/timestamp"
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/database"
 	"github.com/sschwartz96/syncapod/internal/protos"
 )
 
 // FindEpisodes returns a list of episodes based on podcast id
-// returns in chronological order, sectioned by start & end
+// returns in chronological order, sectioned by start & end(exclusive)
 func FindEpisodesByRange(dbClient db.Database, podcastID *protos.ObjectID, start int64, end int64) ([]*protos.Episode, error) {
 	var episodes []*protos.Episode
 	filter := &db.Filter{"podcastid": podcastID}
@@ -22,26 +23,15 @@ func FindEpisodesByRange(dbClient db.Database, podcastID *protos.ObjectID, start
 	return episodes, nil
 }
 
-func FindAllEpisodes(dbClient db.Database, podcastID *protos.ObjectID) ([]*protos.Episode, error) {
-	var episodes []*protos.Episode
-	filter := &db.Filter{"podcastid": podcastID}
-	opts := db.CreateOptions().SetSort("pubdate", -1)
-	err := dbClient.FindAll(database.ColEpisode, &episodes, filter, opts)
-	if err != nil {
-		return nil, fmt.Errorf("error finding all episodes: %v", err)
-	}
-	return episodes, nil
-}
-
 func FindLatestEpisode(dbClient db.Database, podcastID *protos.ObjectID) (*protos.Episode, error) {
-	var episode *protos.Episode
+	var episode protos.Episode
 	filter := &db.Filter{"podcastid": podcastID}
 	opts := db.CreateOptions().SetSort("pubdate", -1)
 	err := dbClient.FindOne(database.ColEpisode, &episode, filter, opts)
 	if err != nil {
 		return nil, fmt.Errorf("error finding latest episode: %v", err)
 	}
-	return episode, nil
+	return &episode, nil
 }
 
 func FindEpisodeByID(dbClient db.Database, id *protos.ObjectID) (*protos.Episode, error) {
@@ -54,11 +44,11 @@ func FindEpisodeByID(dbClient db.Database, id *protos.ObjectID) (*protos.Episode
 }
 
 // FindEpisodeBySeason takes a season episode number returns error if not found
-func FindEpisodeBySeason(dbClient db.Database, id *protos.ObjectID, seasonNum int, episodeNum int) (*protos.Episode, error) {
+func FindEpisodeBySeason(dbClient db.Database, podID *protos.ObjectID, seasonNum int, episodeNum int) (*protos.Episode, error) {
 	var episode protos.Episode
 
 	filter := &db.Filter{
-		"podcast_id": id,
+		"podcast_id": podID,
 		"season":     seasonNum,
 		"episode":    episodeNum,
 	}
@@ -71,7 +61,7 @@ func FindEpisodeBySeason(dbClient db.Database, id *protos.ObjectID, seasonNum in
 }
 
 func UpsertEpisode(dbClient db.Database, episode *protos.Episode) error {
-	err := dbClient.Upsert(database.ColEpisode, &episode, &db.Filter{"_id": episode.Id})
+	err := dbClient.Upsert(database.ColEpisode, episode, &db.Filter{"_id": episode.Id})
 	if err != nil {
 		return fmt.Errorf("error upserting episode: %v", err)
 	}
@@ -80,95 +70,19 @@ func UpsertEpisode(dbClient db.Database, episode *protos.Episode) error {
 
 // helpers
 func DoesEpisodeExist(dbClient db.Database, title string, pubDate *timestamp.Timestamp) (bool, error) {
+	// TODO: maybe check if the episode has the same title but different size
+	// TODO: hopefully the podcast just uses the same URL if they update it
 	filter := &db.Filter{
 		"title":   title,
 		"pubdate": pubDate,
 	}
-	var episode *protos.Episode
-	err := dbClient.FindOne(database.ColUserEpisode, &episode, filter, nil)
-	if err != nil {
-		return false, fmt.Errorf("error does episode exist: %v", err)
+	var episode protos.Episode
+	err := dbClient.FindOne(database.ColEpisode, &episode, filter, nil)
+	if err != nil && !strings.Contains(err.Error(), "no documents") {
+		return false, fmt.Errorf("DoesEpisodeExist() error: %v", err)
 	}
-	if episode == nil {
+	if episode.Id == nil {
 		return false, nil
 	}
 	return true, nil
 }
-
-//// UpdateEpisode takes a pointer to db, podcast, and episode.
-//// Attempts to update the episode in the db returning error if not
-//func UpdateEpisode(dbClient *database.MongoClient, pod *protos.Podcast, epi *protos.Episode) error {
-//	col := dbClient.Database(database.DBsyncapod).Collection(database.ColPodcast)
-//
-//	filter := bson.D{
-//		{Key: "_id", Value: pod.Id},
-//		{Key: "episodes._id", Value: epi.Id},
-//	}
-//
-//	update := bson.D{
-//		{Key: "$set", Value: bson.M{"episodes.$": epi}},
-//	}
-//
-//	res, err := col.UpdateOne(context.Background(), filter, update)
-//	if err != nil {
-//		return err
-//	}
-//	fmt.Println("update result: ", res.ModifiedCount)
-//	return nil
-//}
-//
-//// FindEpisode takes a *database.Client and episode ID
-//func FindEpisode(dbClient *database.MongoClient, epiID *protos.ObjectID) (*protos.Episode, error) {
-//	var epi protos.Episode
-//	err := dbClient.FindByID(database.ColEpisode, epiID, &epi)
-//	return &epi, err
-//}
-//
-//// FindEpisodeByNumber takes a pointer to database.Client, podcast id, episode #
-//func FindEpisodeByNumber(dbClient *database.MongoClient, podID *protos.ObjectID, num int) (*protos.Episode, error) {
-//	var epi protos.Episode
-//	filter := bson.D{
-//		{Key: "podcast_id", Value: podID},
-//		{Key: "episode", Value: num},
-//	}
-//	err := dbClient.FindWithBSON(database.ColEpisode, filter, nil, &epi)
-//
-//	return &epi, err
-//}
-//
-//// FindLatestEpisode takes a pointer to database.Client and podcast id
-//func FindLatestEpisode(dbClient *database.MongoClient, podID *protos.ObjectID) (*protos.Episode, error) {
-//	var epi protos.Episode
-//	opts := options.FindOne().SetSort(bson.M{"pub_date": -1})
-//
-//	filter := bson.M{"podcast_id": podID}
-//	err := dbClient.FindWithBSON(database.ColEpisode, filter, opts, &epi)
-//	return &epi, err
-//}
-//
-//// FindAllEpisodesRange finds the lastest episodes within range(epi # 20-30)
-//// s = start, e = end
-//func FindAllEpisodesRange(dbClient *database.MongoClient, podID *protos.ObjectID, s, e int) []*protos.Episode {
-//	var epis []*protos.Episode
-//	filter := bson.M{"podcastid": podID}
-//	opts := options.Find().SetLimit(int64(e - s)).SetSkip(int64(s)).SetSort(
-//		bson.M{"pubdate": -1},
-//	)
-//	err := dbClient.FindAllWithBSON(database.ColEpisode, filter, opts, &epis)
-//	if err != nil {
-//		fmt.Println("error finding all episodes: ", err)
-//	}
-//	return epis
-//}
-//
-//// FindAllEpisodes takesa pointer to database.Client and a podcast id
-//func FindAllEpisodes(dbClient *database.MongoClient, podID *protos.ObjectID) []*protos.Episode {
-//	var epis []*protos.Episode
-//	filter := bson.M{"podcastid": podID}
-//	opts := options.Find().SetSort(bson.M{"pubdate": -1})
-//	err := dbClient.FindAllWithBSON(database.ColEpisode, filter, opts, &epis)
-//	if err != nil {
-//		fmt.Println("error finding all episodes: ", err)
-//	}
-//	return epis
-//}

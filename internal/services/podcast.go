@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/sschwartz96/minimongo/db"
+	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/podcast"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/user"
@@ -49,7 +49,7 @@ func (p *PodcastService) GetUserEpisode(ctx context.Context, req *protos.Request
 		fmt.Println("error: empty userID from context")
 	}
 
-	userEpi, err := podcast.FindUserEpisode(p.dbClient, userID, req.EpisodeID)
+	userEpi, err := user.FindUserEpisode(p.dbClient, userID, req.EpisodeID)
 	if err != nil {
 		fmt.Println("error finding userEpi:", err)
 	}
