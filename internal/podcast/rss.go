@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,12 +20,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+var tzMap = map[string]string{
+	"PST": "-0800", "PDT": "-0700",
+	"MST": "-0700", "MDT": "-0600",
+	"CST": "-0600", "CDT": "-0500",
+	"EST": "-0500", "EDT": "-0400",
+}
+
 // UpdatePodcasts attempts to go through the list of podcasts update them via RSS feed
 func UpdatePodcasts(dbClient db.Database) error {
 	var podcasts []*protos.Podcast
 	var err error
 	start, end := 0, 10
-	for podcasts, err = FindPodcastsByRange(dbClient, start, end); err != nil && len(podcasts) > 0; {
+	for podcasts, err = FindPodcastsByRange(dbClient, start, end); err == nil && len(podcasts) > 0; {
 		var wg sync.WaitGroup
 		for i := range podcasts {
 			pod := podcasts[i]
@@ -32,7 +40,7 @@ func UpdatePodcasts(dbClient db.Database) error {
 			go func() {
 				err = updatePodcast(&wg, dbClient, pod)
 				if err != nil {
-					fmt.Println("UpdatePodcasts() error updating podcast %v, error = %v", pod, err)
+					fmt.Printf("UpdatePodcasts() error updating podcast %v, error = %v\n", pod, err)
 				}
 			}()
 		}
@@ -49,7 +57,20 @@ func UpdatePodcasts(dbClient db.Database) error {
 // updatePodcast updates the given podcast via RSS feed
 func updatePodcast(wg *sync.WaitGroup, dbClient db.Database, pod *protos.Podcast) error {
 	defer wg.Done()
-	newPod, err := ParseRSS(pod.Rss)
+	// get rss from url
+	rssResp, err := downloadRSS(pod.Rss)
+	if err != nil {
+		return fmt.Errorf("AddNewPodcast() error downloading rss: %v", err)
+	}
+	// defer closing
+	defer func() {
+		err := rssResp.Close()
+		if err != nil {
+			log.Println("parseRSS() error closing r:", err)
+		}
+	}()
+	// parse rss from respone.Body
+	newPod, err := parseRSS(rssResp)
 	if err != nil {
 		fmt.Println("updatePodcast() failed to load podcast rss: ", err)
 		return fmt.Errorf("updatePodcast() error parsing RSS: %v", err)
@@ -89,7 +110,19 @@ func AddNewPodcast(dbClient db.Database, url string) error {
 	}
 
 	// attempt to download & parse the podcast rss
-	rssPod, err := ParseRSS(url)
+	rssResp, err := downloadRSS(url)
+	if err != nil {
+		return fmt.Errorf("AddNewPodcast() error downloading rss: %v", err)
+	}
+	// defer closing
+	defer func() {
+		err := rssResp.Close()
+		if err != nil {
+			log.Println("parseRSS() error closing r:", err)
+		}
+	}()
+
+	rssPod, err := parseRSS(rssResp)
 	if err != nil {
 		return err
 	}
@@ -123,21 +156,23 @@ func AddNewPodcast(dbClient db.Database, url string) error {
 	return nil
 }
 
-// ParseRSS takes in URL path and unmarshals the data
-func ParseRSS(path string) (*models.RSSPodcast, error) {
-	// make the connection
-	response, err := http.Get(path)
+func downloadRSS(url string) (io.ReadCloser, error) {
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
+	return resp.Body, nil
+}
 
+// parseRSS takes in reader path and unmarshals the data
+func parseRSS(r io.Reader) (*models.RSSPodcast, error) {
 	// set up rss feed object and decoder
 	var rss models.RSSFeed
-	decoder := xml.NewDecoder(response.Body)
+	decoder := xml.NewDecoder(r)
 	decoder.DefaultSpace = "Default"
 
 	// decode
-	err = decoder.Decode(&rss)
+	err := decoder.Decode(&rss)
 	if err != nil {
 		return nil, err
 	}
@@ -150,12 +185,17 @@ func ParseRSS(path string) (*models.RSSPodcast, error) {
 func convertEpisode(pID *protos.ObjectID, e *models.RSSEpisode) *protos.Episode {
 	pubDate, err := parseRFC2822ToUTC(e.PubDate)
 	if err != nil {
-		fmt.Println("error converting episode: ", err)
+		fmt.Println("convertEpisode() error converting episode:", err)
 	}
 	// no error since we are checking for one above
 	pubTimestamp, _ := ptypes.TimestampProto(*pubDate)
 
 	image := &protos.Image{Title: "", Url: e.Image.HREF}
+
+	dur, err := parseDuration(e.Duration)
+	if err != nil {
+		fmt.Println("convertEpisode() error parsing duration:", err)
+	}
 
 	return &protos.Episode{
 		Id:             protos.NewObjectID(),
@@ -173,7 +213,7 @@ func convertEpisode(pID *protos.ObjectID, e *models.RSSEpisode) *protos.Episode 
 		Category:       convertCategories(e.Category),
 		Explicit:       e.Explicit,
 		MP3URL:         e.Enclosure.MP3,
-		DurationMillis: parseDuration(e.Duration),
+		DurationMillis: dur,
 	}
 }
 
@@ -185,16 +225,15 @@ func convertPodcast(url string, p *models.RSSPodcast) *protos.Podcast {
 		keywords[w] = strings.TrimSpace(keywords[w])
 	}
 
-	log.Println("build date:", p.LastBuildDate)
 	lBuildDate, err := parseRFC2822ToUTC(p.LastBuildDate)
 	if err != nil {
-		fmt.Println("couldn't parse podcast build date: ", err)
+		fmt.Println("convertPodcast() couldn't parse podcast build date:", err)
 	}
 	buildTimestamp, _ := ptypes.TimestampProto(*lBuildDate)
 
 	pubDate, err := parseRFC2822ToUTC(p.PubDate)
 	if err != nil {
-		fmt.Println("couldn't parse podcast pubdate: ", err)
+		fmt.Println("convertPodcast() couldn't parse podcast pubdate:", err)
 	}
 	pubTimestamp, _ := ptypes.TimestampProto(*pubDate)
 
@@ -216,39 +255,51 @@ func convertPodcast(url string, p *models.RSSPodcast) *protos.Podcast {
 	}
 }
 
-func timeZoneAbrToOffset(abr string) string {
-	abrMap := map[string]string{"PST": ""}
+func findTimezoneOffset(tz string) (string, error) {
+	offset, ok := tzMap[tz]
+	if !ok {
+		return "", errors.New("timezone not found")
+	}
+	return offset, nil
 }
 
 // parseRFC2822ToUTC parses the string in RFC2822 date format
 // returns pointer to time object and error
+// returns time.Now() even if error occurs
 func parseRFC2822ToUTC(s string) (*time.Time, error) {
-	var rfc2822 string
-	if strings.Contains(s, "+") || strings.Contains(s, "-") {
-		rfc2822 = "Mon, 02 Jan 2006 15:04:05 -0700"
-	} else {
-		rfc2822 = "Mon, 02 Jan 2006 15:04:05 MST"
+	if s == "" {
+		t := time.Now()
+		return &t, fmt.Errorf("parseRFC2822ToUTC() no time provided")
 	}
-	t, err := time.Parse(rfc2822, s)
+	if !strings.Contains(s, "+") && !strings.Contains(s, "-") {
+		fields := strings.Fields(s)
+		tz := fields[len(fields)-1]
+		offset, err := findTimezoneOffset(tz)
+		if err != nil {
+			t := time.Now()
+			return &t, err
+		}
+		s = strings.ReplaceAll(s, tz, offset)
+	}
+	t, err := time.Parse("Mon, 02 Jan 2006 15:04:05 -0700", s)
 	if err != nil {
 		return &t, err
 	}
-	log.Println("time location:", t.Location())
-	log.Println("time:", t.String())
-	log.Println("time(UTC):", t.UTC().String())
 	return &t, nil
 }
 
 //parseDuration takes in the string duration and returns the duration in millis
-func parseDuration(d string) int64 {
+func parseDuration(d string) (int64, error) {
+	if d == "" {
+		return 0, fmt.Errorf("parseDuration() error empty duration string")
+	}
 	// check if they just applied the seconds
 	if !strings.Contains(d, ":") {
 		sec, err := strconv.Atoi(d)
 		if err != nil {
-			fmt.Println("error converting duration of episode: ", err)
-			return 0
+			return 0, fmt.Errorf("parseDuration() error converting duration of episode: %v", err)
 		}
-		return int64(sec) * int64(1000)
+		return int64(sec) * int64(1000), nil
 	}
 	var millis int64
 	multiplier := int64(1000)
@@ -262,7 +313,7 @@ func parseDuration(d string) int64 {
 		multiplier *= int64(60)
 	}
 
-	return millis
+	return millis, nil
 }
 
 func convertCategories(cats []models.Category) []*protos.Category {
