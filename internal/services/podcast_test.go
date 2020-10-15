@@ -34,7 +34,7 @@ func createPodcastServiceMockDB(t *testing.T) db.Database {
 		t.Fatalf("createAuthSerivceMockDB() error inserting mock episode: %v", err)
 	}
 	user := &protos.User{
-		Id:       protos.NewObjectID(),
+		Id:       protos.ObjectIDFromHex("user_id"),
 		Username: "user",
 		Password: "$2a$04$Rxbh4f5cUjABPp2RE8o8PuvOafWNeYRsvYI/2t1lSL/DD/IYmWsfe",
 		DOB:      ptypes.TimestampNow(),
@@ -47,6 +47,21 @@ func createPodcastServiceMockDB(t *testing.T) db.Database {
 	err = dbClient.Insert(database.ColSession, &protos.Session{Id: protos.NewObjectID(), Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Hour), SessionKey: "secret", UserID: user.Id})
 	if err != nil {
 		t.Fatalf("createAuthSerivceMockDB() error inserting mock session: %v", err)
+	}
+	err = dbClient.Insert(database.ColUserEpisode, &protos.UserEpisode{
+		Id: protos.ObjectIDFromHex("userepi_id"), EpisodeID: protos.ObjectIDFromHex("epi_id"),
+		UserID: protos.ObjectIDFromHex("user_id"), PodcastID: protos.ObjectIDFromHex("pod_id")})
+	if err != nil {
+		t.Fatalf("createAuthSerivceMockDB() error inserting mock user episode: %v", err)
+	}
+	err = dbClient.Insert(database.ColSubscription, &protos.Subscription{
+		Id:            protos.ObjectIDFromHex("sub_id"),
+		UserID:        protos.ObjectIDFromHex("user_id"),
+		PodcastID:     protos.ObjectIDFromHex("pod_id"),
+		InProgressIDs: []*protos.ObjectID{protos.ObjectIDFromHex("epi_id")},
+	})
+	if err != nil {
+		t.Fatalf("createAuthSerivceMockDB() error inserting mock subscription: %v", err)
 	}
 	return dbClient
 }
@@ -88,6 +103,10 @@ func TestPodcastService(t *testing.T) {
 
 	// go through tests
 	testPodcastService_GetEpisodes(t, podcastClient)
+	testPodcastService_GetUserEpisode(t, podcastClient)
+	testPodcastService_UpdateUserEpisode(t, podcastClient)
+	testPodcastService_GetSubscriptions(t, podcastClient)
+	testPodcastService_GetUserLastPlayed(t, podcastClient)
 }
 
 func testPodcastService_GetEpisodes(t *testing.T, podClient protos.PodClient) {
@@ -134,133 +153,154 @@ func testPodcastService_GetEpisodes(t *testing.T, podClient protos.PodClient) {
 	}
 }
 
-func testPodcastService_GetUserEpisode(t *testing.T) {
-	type fields struct {
-		dbClient db.Database
-	}
+func testPodcastService_GetUserEpisode(t *testing.T, podClient protos.PodClient) {
 	type args struct {
 		ctx context.Context
 		req *protos.Request
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *protos.UserEpisode
 		wantErr bool
 	}{
 		{
-			name: "",
+			name: "GetUserEpisode_valid",
+			args: args{
+				ctx: metadata.AppendToOutgoingContext(context.Background(), "token", "secret"),
+				req: &protos.Request{
+					EpisodeID: protos.ObjectIDFromHex("epi_id"),
+					PodcastID: protos.ObjectIDFromHex("pod_id"),
+				},
+			},
+			want: &protos.UserEpisode{
+				Id: protos.ObjectIDFromHex("userepi_id"), EpisodeID: protos.ObjectIDFromHex("epi_id"),
+				UserID: protos.ObjectIDFromHex("user_id"), PodcastID: protos.ObjectIDFromHex("pod_id"),
+			},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PodcastService{
-				dbClient: tt.fields.dbClient,
-			}
-			got, err := p.GetUserEpisode(tt.args.ctx, tt.args.req)
+			got, err := podClient.GetUserEpisode(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PodcastService.GetUserEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("PodcastService.GetUserEpisode() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got.String(), tt.want.String()) {
+				t.Errorf("PodcastService.GetUserEpisode() = %v, want %v", got.String(), tt.want.String())
 			}
 		})
 	}
 }
 
-func testPodcastService_UpdateUserEpisode(t *testing.T) {
-	type fields struct {
-		dbClient db.Database
-	}
+func testPodcastService_UpdateUserEpisode(t *testing.T, podClient protos.PodClient) {
 	type args struct {
 		ctx context.Context
 		req *protos.UserEpisodeReq
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *protos.Response
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "UpdateUserEpisode_valid",
+			args: args{
+				ctx: metadata.AppendToOutgoingContext(context.Background(), "token", "secret"),
+				req: &protos.UserEpisodeReq{
+					EpisodeID: protos.ObjectIDFromHex("epi_id"),
+					Offset:    11111,
+					Played:    true,
+				},
+			},
+			want:    &protos.Response{Success: true},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PodcastService{
-				dbClient: tt.fields.dbClient,
-			}
-			got, err := p.UpdateUserEpisode(tt.args.ctx, tt.args.req)
+			got, err := podClient.UpdateUserEpisode(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PodcastService.UpdateUserEpisode() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("PodcastService.UpdateUserEpisode() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got.String(), tt.want.String()) {
+				t.Errorf("PodcastService.UpdateUserEpisode() = %v, want %v", got.String(), tt.want.String())
 			}
 		})
 	}
 }
 
-func testPodcastService_GetSubscriptions(t *testing.T) {
-	type fields struct {
-		dbClient db.Database
-	}
+func testPodcastService_GetSubscriptions(t *testing.T, podClient protos.PodClient) {
 	type args struct {
 		ctx context.Context
 		req *protos.Request
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *protos.Subscriptions
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "GetSubscriptions_valid",
+			args: args{
+				ctx: metadata.AppendToOutgoingContext(context.Background(), "token", "secret"),
+				req: &protos.Request{
+					PodcastID: protos.ObjectIDFromHex("pod_id"),
+				},
+			},
+			want: &protos.Subscriptions{
+				Subscriptions: []*protos.Subscription{{
+					Id:            protos.ObjectIDFromHex("sub_id"),
+					UserID:        protos.ObjectIDFromHex("user_id"),
+					PodcastID:     protos.ObjectIDFromHex("pod_id"),
+					InProgressIDs: []*protos.ObjectID{protos.ObjectIDFromHex("epi_id")},
+				}},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PodcastService{
-				dbClient: tt.fields.dbClient,
-			}
-			got, err := p.GetSubscriptions(tt.args.ctx, tt.args.req)
+			got, err := podClient.GetSubscriptions(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PodcastService.GetSubscriptions() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("PodcastService.GetSubscriptions() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got.String(), tt.want.String()) {
+				t.Errorf("PodcastService.GetSubscriptions() = %v, want %v", got.String(), tt.want.String())
 			}
 		})
 	}
 }
 
-func testPodcastService_GetUserLastPlayed(t *testing.T) {
-	type fields struct {
-		dbClient db.Database
-	}
+func testPodcastService_GetUserLastPlayed(t *testing.T, podClient protos.PodClient) {
 	type args struct {
 		ctx context.Context
 		req *protos.Request
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *protos.LastPlayedRes
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "GetUserLastPlayed_valid",
+			args: args{
+				ctx: metadata.AppendToOutgoingContext(context.Background(), "token", "secret"),
+				req: &protos.Request{},
+			},
+			want:    &protos.LastPlayedRes{},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PodcastService{
-				dbClient: tt.fields.dbClient,
-			}
-			got, err := p.GetUserLastPlayed(tt.args.ctx, tt.args.req)
+			got, err := podClient.GetUserLastPlayed(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PodcastService.GetUserLastPlayed() error = %v, wantErr %v", err, tt.wantErr)
 				return

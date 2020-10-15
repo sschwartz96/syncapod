@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/golang/protobuf/ptypes"
@@ -104,7 +105,7 @@ func FindLatestUserEpisode(dbClient db.Database, userID *protos.ObjectID) (*prot
 	opts := db.CreateOptions().SetSort("lastseen", -1)
 	err := dbClient.FindOne(database.ColUserEpisode, userEpi, filter, opts)
 	if err != nil {
-		return nil, fmt.Errorf("error finding latest user episode: %v", err)
+		return nil, fmt.Errorf("FindLatestUserEpisode() error: %v", err)
 	}
 	return userEpi, nil
 }
@@ -146,8 +147,9 @@ func FindUserLastPlayed(dbClient db.Database, userID *protos.ObjectID) (*protos.
 	// find the latest played user_episode
 	userEpi, err := FindLatestUserEpisode(dbClient, userID)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("error finding last user played: %v", err)
+		return nil, nil, nil, fmt.Errorf("FindUserLastPlayed() error finding last user played: %v", err)
 	}
+	log.Println("FindUserLastPlayed() userEpi:", userEpi)
 
 	// concurrently to optimize network requests
 	poderr := make(chan error)
@@ -173,11 +175,11 @@ func FindUserLastPlayed(dbClient db.Database, userID *protos.ObjectID) (*protos.
 
 	err = <-poderr
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("error finding laster user episode: %v", err)
+		return nil, nil, nil, fmt.Errorf("error finding last user episode: %v", err)
 	}
 	err = <-epierr
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("error finding laster user episode: %v", err)
+		return nil, nil, nil, fmt.Errorf("error finding last user episode: %v", err)
 	}
 
 	return pod, epi, userEpi, nil

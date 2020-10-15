@@ -86,7 +86,7 @@ func ValidateSession(dbClient db.Database, key string) (*protos.User, error) {
 	// Find the key
 	sesh, err := user.FindSession(dbClient, key)
 	if err != nil {
-		return nil, fmt.Errorf("ValidateSession(): error finding session: %v", err)
+		return nil, fmt.Errorf("ValidateSession() error finding session: %v", err)
 	}
 
 	// Check if expired
@@ -95,7 +95,7 @@ func ValidateSession(dbClient db.Database, key string) (*protos.User, error) {
 		if err != nil {
 			return nil, fmt.Errorf("ValidateSession() (session expired) error deleting session: %v", err)
 		}
-		return nil, errors.New("session expired")
+		return nil, errors.New("ValidateSession() session expired")
 	}
 
 	// calculate time to add to expiration
@@ -112,13 +112,13 @@ func ValidateSession(dbClient db.Database, key string) (*protos.User, error) {
 	// Find the user
 	u, err := user.FindUserByID(dbClient, sesh.UserID)
 	if err != nil {
-		return nil, fmt.Errorf("error (ValidateSession) finding user: %v", err)
+		return nil, fmt.Errorf("ValidateSession() error finding user: %v", err)
 	}
 
 	// check the upsertErr
 	err = <-upsertErr
 	if err != nil {
-		return nil, fmt.Errorf("error (ValidateSession) upsert new session: %v", err)
+		return nil, fmt.Errorf("ValidateSession() error upsert new session: %v", err)
 	}
 
 	return u, nil

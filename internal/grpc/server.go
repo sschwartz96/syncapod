@@ -60,18 +60,16 @@ func getTransportCreds(config *config.Config) grpc.ServerOption {
 
 func (s *Server) Intercept() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-		log.Println("grpc server interceptor method called:", info.FullMethod)
 		// if this is going to the Auth service allow through
 		if strings.Contains(info.FullMethod, "protos.Auth") {
 			return handler(ctx, req)
 		}
 
-		metadata, ok := metadata.FromIncomingContext(ctx)
+		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
 			return nil, errors.New("invalid metadata")
 		}
-		token := metadata.Get("token")
-		log.Println("token:", token)
+		token := md.Get("token")
 		if len(token) == 0 {
 			return nil, errors.New("no access token sent")
 		}
@@ -81,8 +79,11 @@ func (s *Server) Intercept() grpc.UnaryServerInterceptor {
 			return nil, fmt.Errorf("invalid access token: %v", err)
 		}
 
-		userCtx := context.WithValue(ctx, "user_id", user.Id)
+		//md.Set("user_id", user.Id.Hex) // causes errors
+		newMD := md.Copy()
+		newMD.Set("user_id", user.Id.Hex)
+		newCtx := metadata.NewIncomingContext(ctx, newMD)
 
-		return handler(userCtx, req)
+		return handler(newCtx, req)
 	}
 }

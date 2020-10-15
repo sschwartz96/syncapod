@@ -23,7 +23,6 @@ const bufSize = 1024 * 1024
 var lis *bufconn.Listener
 
 func bufDialer(ctx context.Context, s string) (net.Conn, error) {
-	log.Println("bufDialer ctx", ctx)
 	return lis.Dial()
 }
 
@@ -31,7 +30,7 @@ func bufDialer(ctx context.Context, s string) (net.Conn, error) {
 func createAuthServiceMockDB(t *testing.T) db.Database {
 	dbClient := mock.CreateDB()
 	user := &protos.User{
-		Id:       protos.NewObjectID(),
+		Id:       protos.ObjectIDFromHex("user_id"),
 		Username: "user",
 		Password: "$2a$04$Rxbh4f5cUjABPp2RE8o8PuvOafWNeYRsvYI/2t1lSL/DD/IYmWsfe",
 		DOB:      ptypes.TimestampNow(),
@@ -153,7 +152,7 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 				},
 			},
 			want:    &protos.AuthRes{Success: false},
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name:       "authorize_valid",
@@ -173,6 +172,9 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 			got, err := tt.authClient.Authorize(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AuthService.Authorize() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if err != nil {
 				return
 			}
 			if got.Success != tt.want.Success {
