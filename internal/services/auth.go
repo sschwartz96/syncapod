@@ -13,6 +13,7 @@ import (
 
 // AuthService is the gRPC service for authentication and authorization
 type AuthService struct {
+	*protos.UnimplementedAuthServer
 	dbClient db.Database
 }
 

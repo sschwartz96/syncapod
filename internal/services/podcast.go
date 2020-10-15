@@ -17,6 +17,7 @@ const (
 
 // PodcastService is the gRPC service for podcast
 type PodcastService struct {
+	*protos.UnimplementedPodServer
 	dbClient db.Database
 }
 

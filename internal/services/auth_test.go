@@ -67,7 +67,7 @@ func TestAuthService(t *testing.T) {
 
 	lis = bufconn.Listen(bufSize)
 	s := gogrpc.NewServer()
-	protos.RegisterAuthService(s, protos.NewAuthService(NewAuthService(mockDB)))
+	protos.RegisterAuthServer(s, NewAuthService(mockDB))
 
 	go func() {
 		if err := s.Serve(lis); err != nil {

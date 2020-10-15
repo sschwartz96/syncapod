@@ -25,24 +25,18 @@ type Server struct {
 	db     db.Database
 }
 
-func NewServer(config *config.Config, dbClient db.Database, authService *protos.AuthService, podService *protos.PodService) *Server {
+func NewServer(cfg *config.Config, dbClient db.Database, aS protos.AuthServer, pS protos.PodServer) *Server {
 	var grpcServer *grpc.Server
 	s := &Server{db: dbClient}
 	// setup server
-	gOptCreds := getTransportCreds(config)
+	gOptCreds := getTransportCreds(cfg)
 	gOptInter := grpc.UnaryInterceptor(s.Intercept())
 	grpcServer = grpc.NewServer(gOptCreds, gOptInter)
 	s.server = grpcServer
 	// register services
 	reflection.Register(grpcServer)
-	protos.RegisterAuthService(
-		grpcServer,
-		authService,
-	)
-	protos.RegisterPodService(
-		grpcServer,
-		podService,
-	)
+	protos.RegisterAuthServer(s.server, aS)
+	protos.RegisterPodServer(s.server, pS)
 	return s
 }
 

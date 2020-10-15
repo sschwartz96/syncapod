@@ -69,7 +69,7 @@ func TestPodcastService(t *testing.T) {
 	mockDB := createPodcastServiceMockDB(t)
 
 	lis = bufconn.Listen(bufSize)
-	s := grpc.NewServer(&config.Config{}, mockDB, protos.NewAuthService(nil), protos.NewPodService(NewPodcastService(mockDB)))
+	s := grpc.NewServer(&config.Config{}, mockDB, NewAuthService(mockDB), NewPodcastService(mockDB))
 
 	go func() {
 		if err := s.Start(lis); err != nil {
