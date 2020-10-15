@@ -16,6 +16,8 @@ import (
 	sGRPC "github.com/sschwartz96/syncapod/internal/grpc"
 	"github.com/sschwartz96/syncapod/internal/handler"
 	"github.com/sschwartz96/syncapod/internal/podcast"
+	"github.com/sschwartz96/syncapod/internal/protos"
+	"github.com/sschwartz96/syncapod/internal/services"
 )
 
 func main() {
@@ -35,7 +37,10 @@ func main() {
 	}
 
 	// setup & start gRPC server
-	grpcServer := sGRPC.NewServer(cfg, dbClient)
+	grpcServer := sGRPC.NewServer(cfg, dbClient,
+		protos.NewAuthService(services.NewAuthService(dbClient)),
+		protos.NewPodService(services.NewPodcastService(dbClient)),
+	)
 	go func() {
 		// setup listener
 		grpcListener, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.GRPCPort))
@@ -87,6 +92,7 @@ func updatePodcasts(dbClient db.Database) {
 		if err != nil {
 			log.Println("main/updatePodcasts() error:", err)
 		}
+		log.Println("finished updating podcasts waiting 15 minutes")
 		time.Sleep(time.Minute * 15)
 	}
 }

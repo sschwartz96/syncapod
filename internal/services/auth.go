@@ -24,14 +24,12 @@ func NewAuthService(dbClient db.Database) *AuthService {
 // Authenticate handles the authentication to syncapod and returns response
 func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
 	res := &protos.AuthRes{Success: false}
-
 	// find user from database
 	user, err := user.FindUser(a.dbClient, req.Username)
 	if err != nil {
 		res.Message = fmt.Sprint("failed on error: ", err)
 		return res, nil
 	}
-
 	// authenticate
 	if auth.Compare(user.Password, req.Password) {
 		// create session
@@ -71,10 +69,12 @@ func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*prot
 // Logout removes the given session key
 func (a *AuthService) Logout(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
 	success := true
+	message := ""
 	err := user.DeleteSessionByKey(a.dbClient, req.SessionKey)
 	if err != nil {
-		fmt.Println("error logging out:", err)
+		message = fmt.Sprintf("Logout() error deleting session: %v", err)
+		fmt.Println("Logout() error deleting session:", err)
 		success = false
 	}
-	return &protos.AuthRes{Success: success}, nil
+	return &protos.AuthRes{Success: success, Message: message}, nil
 }

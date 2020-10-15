@@ -32,10 +32,6 @@ func NewPodClient(cc grpc.ClientConnInterface) PodClient {
 	return &podClient{cc}
 }
 
-var podGetEpisodesStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetEpisodes",
-}
-
 func (c *podClient) GetEpisodes(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episodes, error) {
 	out := new(Episodes)
 	err := c.cc.Invoke(ctx, "/protos.Pod/GetEpisodes", in, out, opts...)
@@ -43,10 +39,6 @@ func (c *podClient) GetEpisodes(ctx context.Context, in *Request, opts ...grpc.C
 		return nil, err
 	}
 	return out, nil
-}
-
-var podGetUserEpisodeStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetUserEpisode",
 }
 
 func (c *podClient) GetUserEpisode(ctx context.Context, in *Request, opts ...grpc.CallOption) (*UserEpisode, error) {
@@ -58,10 +50,6 @@ func (c *podClient) GetUserEpisode(ctx context.Context, in *Request, opts ...grp
 	return out, nil
 }
 
-var podUpdateUserEpisodeStreamDesc = &grpc.StreamDesc{
-	StreamName: "UpdateUserEpisode",
-}
-
 func (c *podClient) UpdateUserEpisode(ctx context.Context, in *UserEpisodeReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/protos.Pod/UpdateUserEpisode", in, out, opts...)
@@ -69,10 +57,6 @@ func (c *podClient) UpdateUserEpisode(ctx context.Context, in *UserEpisodeReq, o
 		return nil, err
 	}
 	return out, nil
-}
-
-var podGetSubscriptionsStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetSubscriptions",
 }
 
 func (c *podClient) GetSubscriptions(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Subscriptions, error) {
@@ -84,10 +68,6 @@ func (c *podClient) GetSubscriptions(ctx context.Context, in *Request, opts ...g
 	return out, nil
 }
 
-var podGetUserLastPlayedStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetUserLastPlayed",
-}
-
 func (c *podClient) GetUserLastPlayed(ctx context.Context, in *Request, opts ...grpc.CallOption) (*LastPlayedRes, error) {
 	out := new(LastPlayedRes)
 	err := c.cc.Invoke(ctx, "/protos.Pod/GetUserLastPlayed", in, out, opts...)
@@ -97,207 +77,165 @@ func (c *podClient) GetUserLastPlayed(ctx context.Context, in *Request, opts ...
 	return out, nil
 }
 
-// PodService is the service API for Pod service.
-// Fields should be assigned to their respective handler implementations only before
-// RegisterPodService is called.  Any unassigned fields will result in the
-// handler for that method returning an Unimplemented error.
-type PodService struct {
-	GetEpisodes       func(context.Context, *Request) (*Episodes, error)
-	GetUserEpisode    func(context.Context, *Request) (*UserEpisode, error)
-	UpdateUserEpisode func(context.Context, *UserEpisodeReq) (*Response, error)
-	GetSubscriptions  func(context.Context, *Request) (*Subscriptions, error)
-	GetUserLastPlayed func(context.Context, *Request) (*LastPlayedRes, error)
-}
-
-func (s *PodService) getEpisodes(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.GetEpisodes(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Pod/GetEpisodes",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetEpisodes(ctx, req.(*Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-func (s *PodService) getUserEpisode(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.GetUserEpisode(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Pod/GetUserEpisode",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetUserEpisode(ctx, req.(*Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-func (s *PodService) updateUserEpisode(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserEpisodeReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.UpdateUserEpisode(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Pod/UpdateUserEpisode",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.UpdateUserEpisode(ctx, req.(*UserEpisodeReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-func (s *PodService) getSubscriptions(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.GetSubscriptions(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Pod/GetSubscriptions",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetSubscriptions(ctx, req.(*Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-func (s *PodService) getUserLastPlayed(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.GetUserLastPlayed(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Pod/GetUserLastPlayed",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetUserLastPlayed(ctx, req.(*Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// RegisterPodService registers a service implementation with a gRPC server.
-func RegisterPodService(s grpc.ServiceRegistrar, srv *PodService) {
-	srvCopy := *srv
-	if srvCopy.GetEpisodes == nil {
-		srvCopy.GetEpisodes = func(context.Context, *Request) (*Episodes, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetEpisodes not implemented")
-		}
-	}
-	if srvCopy.GetUserEpisode == nil {
-		srvCopy.GetUserEpisode = func(context.Context, *Request) (*UserEpisode, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetUserEpisode not implemented")
-		}
-	}
-	if srvCopy.UpdateUserEpisode == nil {
-		srvCopy.UpdateUserEpisode = func(context.Context, *UserEpisodeReq) (*Response, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method UpdateUserEpisode not implemented")
-		}
-	}
-	if srvCopy.GetSubscriptions == nil {
-		srvCopy.GetSubscriptions = func(context.Context, *Request) (*Subscriptions, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetSubscriptions not implemented")
-		}
-	}
-	if srvCopy.GetUserLastPlayed == nil {
-		srvCopy.GetUserLastPlayed = func(context.Context, *Request) (*LastPlayedRes, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetUserLastPlayed not implemented")
-		}
-	}
-	sd := grpc.ServiceDesc{
-		ServiceName: "protos.Pod",
-		Methods: []grpc.MethodDesc{
-			{
-				MethodName: "GetEpisodes",
-				Handler:    srvCopy.getEpisodes,
-			},
-			{
-				MethodName: "GetUserEpisode",
-				Handler:    srvCopy.getUserEpisode,
-			},
-			{
-				MethodName: "UpdateUserEpisode",
-				Handler:    srvCopy.updateUserEpisode,
-			},
-			{
-				MethodName: "GetSubscriptions",
-				Handler:    srvCopy.getSubscriptions,
-			},
-			{
-				MethodName: "GetUserLastPlayed",
-				Handler:    srvCopy.getUserLastPlayed,
-			},
-		},
-		Streams:  []grpc.StreamDesc{},
-		Metadata: "podcast.proto",
-	}
-
-	s.RegisterService(&sd, nil)
-}
-
-// NewPodService creates a new PodService containing the
-// implemented methods of the Pod service in s.  Any unimplemented
-// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
-// This includes situations where the method handler is misspelled or has the wrong
-// signature.  For this reason, this function should be used with great care and
-// is not recommended to be used by most users.
-func NewPodService(s interface{}) *PodService {
-	ns := &PodService{}
-	if h, ok := s.(interface {
-		GetEpisodes(context.Context, *Request) (*Episodes, error)
-	}); ok {
-		ns.GetEpisodes = h.GetEpisodes
-	}
-	if h, ok := s.(interface {
-		GetUserEpisode(context.Context, *Request) (*UserEpisode, error)
-	}); ok {
-		ns.GetUserEpisode = h.GetUserEpisode
-	}
-	if h, ok := s.(interface {
-		UpdateUserEpisode(context.Context, *UserEpisodeReq) (*Response, error)
-	}); ok {
-		ns.UpdateUserEpisode = h.UpdateUserEpisode
-	}
-	if h, ok := s.(interface {
-		GetSubscriptions(context.Context, *Request) (*Subscriptions, error)
-	}); ok {
-		ns.GetSubscriptions = h.GetSubscriptions
-	}
-	if h, ok := s.(interface {
-		GetUserLastPlayed(context.Context, *Request) (*LastPlayedRes, error)
-	}); ok {
-		ns.GetUserLastPlayed = h.GetUserLastPlayed
-	}
-	return ns
-}
-
-// UnstablePodService is the service API for Pod service.
-// New methods may be added to this interface if they are added to the service
-// definition, which is not a backward-compatible change.  For this reason,
-// use of this type is not recommended.
-type UnstablePodService interface {
+// PodServer is the server API for Pod service.
+// All implementations must embed UnimplementedPodServer
+// for forward compatibility
+type PodServer interface {
 	GetEpisodes(context.Context, *Request) (*Episodes, error)
 	GetUserEpisode(context.Context, *Request) (*UserEpisode, error)
 	UpdateUserEpisode(context.Context, *UserEpisodeReq) (*Response, error)
 	GetSubscriptions(context.Context, *Request) (*Subscriptions, error)
 	GetUserLastPlayed(context.Context, *Request) (*LastPlayedRes, error)
+	mustEmbedUnimplementedPodServer()
+}
+
+// UnimplementedPodServer must be embedded to have forward compatible implementations.
+type UnimplementedPodServer struct {
+}
+
+func (UnimplementedPodServer) GetEpisodes(context.Context, *Request) (*Episodes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEpisodes not implemented")
+}
+func (UnimplementedPodServer) GetUserEpisode(context.Context, *Request) (*UserEpisode, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserEpisode not implemented")
+}
+func (UnimplementedPodServer) UpdateUserEpisode(context.Context, *UserEpisodeReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserEpisode not implemented")
+}
+func (UnimplementedPodServer) GetSubscriptions(context.Context, *Request) (*Subscriptions, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSubscriptions not implemented")
+}
+func (UnimplementedPodServer) GetUserLastPlayed(context.Context, *Request) (*LastPlayedRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserLastPlayed not implemented")
+}
+func (UnimplementedPodServer) mustEmbedUnimplementedPodServer() {}
+
+// UnsafePodServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PodServer will
+// result in compilation errors.
+type UnsafePodServer interface {
+	mustEmbedUnimplementedPodServer()
+}
+
+func RegisterPodServer(s *grpc.Server, srv PodServer) {
+	s.RegisterService(&_Pod_serviceDesc, srv)
+}
+
+func _Pod_GetEpisodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PodServer).GetEpisodes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Pod/GetEpisodes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PodServer).GetEpisodes(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pod_GetUserEpisode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PodServer).GetUserEpisode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Pod/GetUserEpisode",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PodServer).GetUserEpisode(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pod_UpdateUserEpisode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserEpisodeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PodServer).UpdateUserEpisode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Pod/UpdateUserEpisode",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PodServer).UpdateUserEpisode(ctx, req.(*UserEpisodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pod_GetSubscriptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PodServer).GetSubscriptions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Pod/GetSubscriptions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PodServer).GetSubscriptions(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pod_GetUserLastPlayed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PodServer).GetUserLastPlayed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Pod/GetUserLastPlayed",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PodServer).GetUserLastPlayed(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Pod_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "protos.Pod",
+	HandlerType: (*PodServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetEpisodes",
+			Handler:    _Pod_GetEpisodes_Handler,
+		},
+		{
+			MethodName: "GetUserEpisode",
+			Handler:    _Pod_GetUserEpisode_Handler,
+		},
+		{
+			MethodName: "UpdateUserEpisode",
+			Handler:    _Pod_UpdateUserEpisode_Handler,
+		},
+		{
+			MethodName: "GetSubscriptions",
+			Handler:    _Pod_GetSubscriptions_Handler,
+		},
+		{
+			MethodName: "GetUserLastPlayed",
+			Handler:    _Pod_GetUserLastPlayed_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "podcast.proto",
 }

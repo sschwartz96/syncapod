@@ -22,7 +22,8 @@ const bufSize = 1024 * 1024
 
 var lis *bufconn.Listener
 
-func bufDialer(context.Context, string) (net.Conn, error) {
+func bufDialer(ctx context.Context, s string) (net.Conn, error) {
+	log.Println("bufDialer ctx", ctx)
 	return lis.Dial()
 }
 
@@ -86,6 +87,7 @@ func TestAuthService(t *testing.T) {
 	// go through tests
 	testAuthService_Authenticate(t, authClient)
 	testAuthService_Authorize(t, authClient)
+	testAuthService_Logout(t, authClient)
 }
 
 func testAuthService_Authenticate(t *testing.T, authClient protos.AuthClient) {
@@ -101,14 +103,14 @@ func testAuthService_Authenticate(t *testing.T, authClient protos.AuthClient) {
 		wantErr bool
 	}{
 		{
-			name:    "invalid",
+			name:    "authenticate_invalid",
 			args:    args{ctx: context.Background(), req: &protos.AuthReq{Username: "user", Password: "123wrong"}},
 			client:  authClient,
 			want:    &protos.AuthRes{Success: false},
 			wantErr: false,
 		},
 		{
-			name:    "valid",
+			name:    "authenticate_valid",
 			args:    args{ctx: context.Background(), req: &protos.AuthReq{Username: "user", Password: "password"}},
 			client:  authClient,
 			want:    &protos.AuthRes{Success: true},
@@ -142,7 +144,7 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 		wantErr    bool
 	}{
 		{
-			name:       "invalid",
+			name:       "authorize_invalid",
 			authClient: authClient,
 			args: args{
 				ctx: context.Background(),
@@ -154,7 +156,7 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 			wantErr: false,
 		},
 		{
-			name:       "valid",
+			name:       "authorize_valid",
 			authClient: authClient,
 			args: args{
 				ctx: context.Background(),
@@ -180,29 +182,41 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 	}
 }
 
-func testAuthService_Logout(t *testing.T) {
+func testAuthService_Logout(t *testing.T, authClient protos.AuthClient) {
 	type args struct {
 		ctx context.Context
 		req *protos.AuthReq
 	}
 	tests := []struct {
-		name    string
-		a       *AuthService
-		args    args
-		want    *protos.AuthRes
-		wantErr bool
+		name        string
+		authClient  protos.AuthClient
+		args        args
+		wantSuccess bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "logout_invalid",
+			args: args{
+				ctx: context.Background(),
+				req: &protos.AuthReq{SessionKey: "invalid_key"},
+			},
+			authClient:  authClient,
+			wantSuccess: false,
+		},
+		{
+			name: "logout_valid",
+			args: args{
+				ctx: context.Background(),
+				req: &protos.AuthReq{SessionKey: "secret"},
+			},
+			authClient:  authClient,
+			wantSuccess: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.a.Logout(tt.args.ctx, tt.args.req)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("AuthService.Logout() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("AuthService.Logout() = %v, want %v", got, tt.want)
+			got, _ := tt.authClient.Logout(tt.args.ctx, tt.args.req)
+			if !reflect.DeepEqual(got.Success, tt.wantSuccess) {
+				t.Errorf("AuthService.Logout() = %v, want %v", got, tt.wantSuccess)
 			}
 		})
 	}
