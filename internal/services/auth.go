@@ -52,7 +52,6 @@ func (a *AuthService) Authenticate(ctx context.Context, req *protos.AuthReq) (*p
 func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
 	user, err := auth.ValidateSession(a.dbClient, req.SessionKey)
 	if err != nil {
-		log.Println("error in authroize")
 		return nil, fmt.Errorf("Authorize() error validating user session: %v", err)
 	}
 	user.Password = ""
@@ -66,13 +65,9 @@ func (a *AuthService) Authorize(ctx context.Context, req *protos.AuthReq) (*prot
 
 // Logout removes the given session key
 func (a *AuthService) Logout(ctx context.Context, req *protos.AuthReq) (*protos.AuthRes, error) {
-	success := true
-	message := ""
 	err := user.DeleteSessionByKey(a.dbClient, req.SessionKey)
 	if err != nil {
-		message = fmt.Sprintf("Logout() error deleting session: %v", err)
-		fmt.Println("Logout() error deleting session:", err)
-		success = false
+		return nil, fmt.Errorf("Logout() error deleting session: %v", err)
 	}
-	return &protos.AuthRes{Success: success, Message: message}, nil
+	return &protos.AuthRes{Success: true}, nil
 }

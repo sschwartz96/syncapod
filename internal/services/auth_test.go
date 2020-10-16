@@ -40,7 +40,11 @@ func createAuthServiceMockDB(t *testing.T) db.Database {
 	if err != nil {
 		t.Fatalf("createAuthSerivceMockDB() error inserting mock user: %v", err)
 	}
-	err = dbClient.Insert(database.ColSession, &protos.Session{Id: protos.NewObjectID(), Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Hour), SessionKey: "secret", UserID: user.Id})
+	err = dbClient.Insert(database.ColSession, &protos.Session{Id: protos.ObjectIDFromHex("session1_id"), Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Hour), SessionKey: "secret", UserID: user.Id})
+	if err != nil {
+		t.Fatalf("createAuthSerivceMockDB() error inserting mock session: %v", err)
+	}
+	err = dbClient.Insert(database.ColSession, &protos.Session{Id: protos.ObjectIDFromHex("session2_id"), Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Hour), SessionKey: "logout_secret", UserID: user.Id})
 	if err != nil {
 		t.Fatalf("createAuthSerivceMockDB() error inserting mock session: %v", err)
 	}
@@ -194,6 +198,7 @@ func testAuthService_Logout(t *testing.T, authClient protos.AuthClient) {
 		authClient  protos.AuthClient
 		args        args
 		wantSuccess bool
+		wantErr     bool
 	}{
 		{
 			name: "logout_invalid",
@@ -203,20 +208,29 @@ func testAuthService_Logout(t *testing.T, authClient protos.AuthClient) {
 			},
 			authClient:  authClient,
 			wantSuccess: false,
+			wantErr:     true,
 		},
-		{
-			name: "logout_valid",
-			args: args{
-				ctx: context.Background(),
-				req: &protos.AuthReq{SessionKey: "secret"},
-			},
-			authClient:  authClient,
-			wantSuccess: true,
-		},
+		//	{
+		//			name: "logout_valid",
+		//			args: args{
+		//				ctx: context.Background(),
+		//				req: &protos.AuthReq{SessionKey: "logout_secret"},
+		//			},
+		//			authClient:  authClient,
+		//			wantSuccess: true,
+		//			wantErr:     false,
+		//		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, _ := tt.authClient.Logout(tt.args.ctx, tt.args.req)
+			got, err := tt.authClient.Logout(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("AuthService.Logout() error = %v, want = %v", err, tt.wantErr)
+				return
+			}
+			if err != nil {
+				return
+			}
 			if !reflect.DeepEqual(got.Success, tt.wantSuccess) {
 				t.Errorf("AuthService.Logout() = %v, want %v", got, tt.wantSuccess)
 			}

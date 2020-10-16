@@ -2,7 +2,6 @@ package user
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/golang/protobuf/ptypes"
@@ -16,9 +15,8 @@ import (
 func FindSession(dbClient db.Database, key string) (*protos.Session, error) {
 	session := &protos.Session{}
 	err := dbClient.FindOne(database.ColSession, session, &db.Filter{"sessionkey": key}, nil)
-
 	if err != nil {
-		return nil, fmt.Errorf("error finding session: %v", err)
+		return nil, fmt.Errorf("FindSession() error finding session: %v", err)
 	}
 	return session, nil
 }
@@ -111,6 +109,10 @@ func FindLatestUserEpisode(dbClient db.Database, userID *protos.ObjectID) (*prot
 }
 
 func UpsertUserEpisode(dbClient db.Database, userEpisode *protos.UserEpisode) error {
+	if userEpisode.Id == nil {
+		userEpisode.Id = protos.NewObjectID()
+	}
+	userEpisode.LastSeen = ptypes.TimestampNow()
 	err := dbClient.Upsert(database.ColUserEpisode, userEpisode, &db.Filter{"_id": userEpisode.Id})
 	if err != nil {
 		return fmt.Errorf("error upserting user episode: %v", err)
@@ -147,9 +149,8 @@ func FindUserLastPlayed(dbClient db.Database, userID *protos.ObjectID) (*protos.
 	// find the latest played user_episode
 	userEpi, err := FindLatestUserEpisode(dbClient, userID)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("FindUserLastPlayed() error finding last user played: %v", err)
+		return nil, nil, nil, fmt.Errorf("FindUserLastPlayed() error finding userEpi: %v", err)
 	}
-	log.Println("FindUserLastPlayed() userEpi:", userEpi)
 
 	// concurrently to optimize network requests
 	poderr := make(chan error)
@@ -175,11 +176,11 @@ func FindUserLastPlayed(dbClient db.Database, userID *protos.ObjectID) (*protos.
 
 	err = <-poderr
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("error finding last user episode: %v", err)
+		return nil, nil, nil, fmt.Errorf("FindUserLastPlayed() error finding podcast: %v", err)
 	}
 	err = <-epierr
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("error finding last user episode: %v", err)
+		return nil, nil, nil, fmt.Errorf("FindUserLastPlayed() error finding episode: %v", err)
 	}
 
 	return pod, epi, userEpi, nil

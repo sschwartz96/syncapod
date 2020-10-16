@@ -102,8 +102,7 @@ func (p *PodcastService) GetUserLastPlayed(ctx context.Context, req *protos.Requ
 
 	pod, epi, userEpi, err := user.FindUserLastPlayed(p.dbClient, userID)
 	if err != nil {
-		fmt.Println("GetUserLastPlayed() error getting podcast, episode and userEpi: ", err)
-		return nil, err
+		return nil, fmt.Errorf("GetUserLastPlayed() error: %v", err)
 	}
 
 	return &protos.LastPlayedRes{
