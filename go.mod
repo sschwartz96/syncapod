@@ -8,7 +8,7 @@ replace github.com/sschwartz96/stockpile => /home/sam/go/src/github.com/sschwart
 
 require (
 	github.com/golang/protobuf v1.4.2
-	github.com/sschwartz96/stockpile v0.2.3
+	github.com/sschwartz96/stockpile v0.2.4
 	github.com/tcolgate/mp3 v0.0.0-20170426193717-e79c5a46d300
 	go.mongodb.org/mongo-driver v1.4.2
 	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
