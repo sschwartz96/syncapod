@@ -4,6 +4,7 @@ package protos
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -30,10 +31,6 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-var authAuthenticateStreamDesc = &grpc.StreamDesc{
-	StreamName: "Authenticate",
-}
-
 func (c *authClient) Authenticate(ctx context.Context, in *AuthReq, opts ...grpc.CallOption) (*AuthRes, error) {
 	out := new(AuthRes)
 	err := c.cc.Invoke(ctx, "/protos.Auth/Authenticate", in, out, opts...)
@@ -41,10 +38,6 @@ func (c *authClient) Authenticate(ctx context.Context, in *AuthReq, opts ...grpc
 		return nil, err
 	}
 	return out, nil
-}
-
-var authAuthorizeStreamDesc = &grpc.StreamDesc{
-	StreamName: "Authorize",
 }
 
 func (c *authClient) Authorize(ctx context.Context, in *AuthReq, opts ...grpc.CallOption) (*AuthRes, error) {
@@ -56,10 +49,6 @@ func (c *authClient) Authorize(ctx context.Context, in *AuthReq, opts ...grpc.Ca
 	return out, nil
 }
 
-var authLogoutStreamDesc = &grpc.StreamDesc{
-	StreamName: "Logout",
-}
-
 func (c *authClient) Logout(ctx context.Context, in *AuthReq, opts ...grpc.CallOption) (*AuthRes, error) {
 	out := new(AuthRes)
 	err := c.cc.Invoke(ctx, "/protos.Auth/Logout", in, out, opts...)
@@ -69,141 +58,113 @@ func (c *authClient) Logout(ctx context.Context, in *AuthReq, opts ...grpc.CallO
 	return out, nil
 }
 
-// AuthService is the service API for Auth service.
-// Fields should be assigned to their respective handler implementations only before
-// RegisterAuthService is called.  Any unassigned fields will result in the
-// handler for that method returning an Unimplemented error.
-type AuthService struct {
-	Authenticate func(context.Context, *AuthReq) (*AuthRes, error)
-	Authorize    func(context.Context, *AuthReq) (*AuthRes, error)
-	Logout       func(context.Context, *AuthReq) (*AuthRes, error)
-}
-
-func (s *AuthService) authenticate(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.Authenticate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Auth/Authenticate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.Authenticate(ctx, req.(*AuthReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-func (s *AuthService) authorize(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.Authorize(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Auth/Authorize",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.Authorize(ctx, req.(*AuthReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-func (s *AuthService) logout(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.Logout(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/protos.Auth/Logout",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.Logout(ctx, req.(*AuthReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// RegisterAuthService registers a service implementation with a gRPC server.
-func RegisterAuthService(s grpc.ServiceRegistrar, srv *AuthService) {
-	srvCopy := *srv
-	if srvCopy.Authenticate == nil {
-		srvCopy.Authenticate = func(context.Context, *AuthReq) (*AuthRes, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
-		}
-	}
-	if srvCopy.Authorize == nil {
-		srvCopy.Authorize = func(context.Context, *AuthReq) (*AuthRes, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method Authorize not implemented")
-		}
-	}
-	if srvCopy.Logout == nil {
-		srvCopy.Logout = func(context.Context, *AuthReq) (*AuthRes, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
-		}
-	}
-	sd := grpc.ServiceDesc{
-		ServiceName: "protos.Auth",
-		Methods: []grpc.MethodDesc{
-			{
-				MethodName: "Authenticate",
-				Handler:    srvCopy.authenticate,
-			},
-			{
-				MethodName: "Authorize",
-				Handler:    srvCopy.authorize,
-			},
-			{
-				MethodName: "Logout",
-				Handler:    srvCopy.logout,
-			},
-		},
-		Streams:  []grpc.StreamDesc{},
-		Metadata: "auth.proto",
-	}
-
-	s.RegisterService(&sd, nil)
-}
-
-// NewAuthService creates a new AuthService containing the
-// implemented methods of the Auth service in s.  Any unimplemented
-// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
-// This includes situations where the method handler is misspelled or has the wrong
-// signature.  For this reason, this function should be used with great care and
-// is not recommended to be used by most users.
-func NewAuthService(s interface{}) *AuthService {
-	ns := &AuthService{}
-	if h, ok := s.(interface {
-		Authenticate(context.Context, *AuthReq) (*AuthRes, error)
-	}); ok {
-		ns.Authenticate = h.Authenticate
-	}
-	if h, ok := s.(interface {
-		Authorize(context.Context, *AuthReq) (*AuthRes, error)
-	}); ok {
-		ns.Authorize = h.Authorize
-	}
-	if h, ok := s.(interface {
-		Logout(context.Context, *AuthReq) (*AuthRes, error)
-	}); ok {
-		ns.Logout = h.Logout
-	}
-	return ns
-}
-
-// UnstableAuthService is the service API for Auth service.
-// New methods may be added to this interface if they are added to the service
-// definition, which is not a backward-compatible change.  For this reason,
-// use of this type is not recommended.
-type UnstableAuthService interface {
+// AuthServer is the server API for Auth service.
+// All implementations must embed UnimplementedAuthServer
+// for forward compatibility
+type AuthServer interface {
 	Authenticate(context.Context, *AuthReq) (*AuthRes, error)
 	Authorize(context.Context, *AuthReq) (*AuthRes, error)
 	Logout(context.Context, *AuthReq) (*AuthRes, error)
+	mustEmbedUnimplementedAuthServer()
+}
+
+// UnimplementedAuthServer must be embedded to have forward compatible implementations.
+type UnimplementedAuthServer struct {
+}
+
+func (UnimplementedAuthServer) Authenticate(context.Context, *AuthReq) (*AuthRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+}
+func (UnimplementedAuthServer) Authorize(context.Context, *AuthReq) (*AuthRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Authorize not implemented")
+}
+func (UnimplementedAuthServer) Logout(context.Context, *AuthReq) (*AuthRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
+
+// UnsafeAuthServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AuthServer will
+// result in compilation errors.
+type UnsafeAuthServer interface {
+	mustEmbedUnimplementedAuthServer()
+}
+
+func RegisterAuthServer(s *grpc.Server, srv AuthServer) {
+	s.RegisterService(&_Auth_serviceDesc, srv)
+}
+
+func _Auth_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).Authenticate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Auth/Authenticate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).Authenticate(ctx, req.(*AuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Auth_Authorize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).Authorize(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Auth/Authorize",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).Authorize(ctx, req.(*AuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Auth_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Auth/Logout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).Logout(ctx, req.(*AuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Auth_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "protos.Auth",
+	HandlerType: (*AuthServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Authenticate",
+			Handler:    _Auth_Authenticate_Handler,
+		},
+		{
+			MethodName: "Authorize",
+			Handler:    _Auth_Authorize_Handler,
+		},
+		{
+			MethodName: "Logout",
+			Handler:    _Auth_Logout_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "auth.proto",
 }

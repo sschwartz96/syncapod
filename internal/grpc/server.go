@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net"
 	"strings"
@@ -11,44 +12,31 @@ import (
 	"github.com/sschwartz96/syncapod/internal/auth"
 	"github.com/sschwartz96/syncapod/internal/config"
 	"github.com/sschwartz96/syncapod/internal/protos"
-	"github.com/sschwartz96/syncapod/internal/services"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 )
 
-// Server is truly needed for its Intercept method which authenticates users before
-// accessing services
+// Server is truly needed for its Intercept method which authenticates users before accessing services,
+// but also useful to have all the grpc server boilerplate contained within NewServer function
 type Server struct {
 	server *grpc.Server
 	db     db.Database
 }
 
-func NewServer(config *config.Config, dbClient db.Database) *Server {
+func NewServer(cfg *config.Config, dbClient db.Database, aS protos.AuthServer, pS protos.PodServer) *Server {
 	var grpcServer *grpc.Server
 	s := &Server{db: dbClient}
-
 	// setup server
-	gOptCreds := getTransportCreds(config)
+	gOptCreds := getTransportCreds(cfg)
 	gOptInter := grpc.UnaryInterceptor(s.Intercept())
 	grpcServer = grpc.NewServer(gOptCreds, gOptInter)
 	s.server = grpcServer
-
 	// register services
 	reflection.Register(grpcServer)
-
-	as := services.NewAuthService(dbClient)
-	protos.RegisterAuthService(
-		grpcServer,
-		protos.NewAuthService(as),
-	)
-
-	pd := services.NewPodcastService(dbClient)
-	protos.RegisterPodService(
-		grpcServer,
-		protos.NewPodService(pd),
-	)
-
+	protos.RegisterAuthServer(s.server, aS)
+	protos.RegisterPodServer(s.server, pS)
 	return s
 }
 
@@ -77,21 +65,25 @@ func (s *Server) Intercept() grpc.UnaryServerInterceptor {
 			return handler(ctx, req)
 		}
 
-		token, ok := ctx.Value("token").(string)
+		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
-			return nil, errors.New("invalid access token, not string format")
+			return nil, errors.New("invalid metadata")
 		}
-		if token == "" {
-			return nil, errors.New("invalid access token, empty")
+		token := md.Get("token")
+		if len(token) == 0 {
+			return nil, errors.New("no access token sent")
 		}
 
-		user, err := auth.ValidateAccessToken(s.db, token)
+		user, err := auth.ValidateSession(s.db, token[0])
 		if err != nil {
-			return nil, errors.New("invalid access token")
+			return nil, fmt.Errorf("invalid access token: %v", err)
 		}
 
-		userCtx := context.WithValue(ctx, "user_id", user.Id)
+		//md.Set("user_id", user.Id.Hex) // causes errors
+		newMD := md.Copy()
+		newMD.Set("user_id", user.Id.Hex)
+		newCtx := metadata.NewIncomingContext(ctx, newMD)
 
-		return handler(userCtx, req)
+		return handler(newCtx, req)
 	}
 }

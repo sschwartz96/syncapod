@@ -3,12 +3,14 @@ package services
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/sschwartz96/stockpile/db"
 	"github.com/sschwartz96/syncapod/internal/podcast"
 	"github.com/sschwartz96/syncapod/internal/protos"
 	"github.com/sschwartz96/syncapod/internal/user"
+	"google.golang.org/grpc/metadata"
 )
 
 const (
@@ -17,6 +19,7 @@ const (
 
 // PodcastService is the gRPC service for podcast
 type PodcastService struct {
+	*protos.UnimplementedPodServer
 	dbClient db.Database
 }
 
@@ -44,11 +47,10 @@ func (p *PodcastService) GetEpisodes(ctx context.Context, req *protos.Request) (
 
 // GetUserEpisode returns the user playback metadata via episode id & user id
 func (p *PodcastService) GetUserEpisode(ctx context.Context, req *protos.Request) (*protos.UserEpisode, error) {
-	userID, ok := ctx.Value(ctxUserIDVal).(*protos.ObjectID)
-	if !ok {
-		fmt.Println("error: empty userID from context")
+	userID, err := getUserIDFromContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("GetUserEpisode() error getting userID: %v", err)
 	}
-
 	userEpi, err := user.FindUserEpisode(p.dbClient, userID, req.EpisodeID)
 	if err != nil {
 		fmt.Println("error finding userEpi:", err)
@@ -77,14 +79,14 @@ func (p *PodcastService) UpdateUserEpisode(ctx context.Context, req *protos.User
 
 // GetSubscriptions returns a list of podcasts via user id
 func (p *PodcastService) GetSubscriptions(ctx context.Context, req *protos.Request) (*protos.Subscriptions, error) {
-	userID, ok := ctx.Value(ctxUserIDVal).(*protos.ObjectID)
-	if !ok {
-		fmt.Println("error: empty userID from context")
+	userID, err := getUserIDFromContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("GetSubscriptions() error getting user id: %v", err)
 	}
 
 	subs, err := user.FindSubscriptions(p.dbClient, userID)
 	if err != nil {
-		fmt.Println("error getting subs:", err)
+		log.Println("GetSubscriptions() error getting subs:", err)
 		return &protos.Subscriptions{}, nil
 	}
 
@@ -93,15 +95,14 @@ func (p *PodcastService) GetSubscriptions(ctx context.Context, req *protos.Reque
 
 // GetUserLastPlayed returns the last episode the user was playing & metadata
 func (p *PodcastService) GetUserLastPlayed(ctx context.Context, req *protos.Request) (*protos.LastPlayedRes, error) {
-	userID, ok := ctx.Value(ctxUserIDVal).(*protos.ObjectID)
-	if !ok {
-		fmt.Println("error: empty userID from context")
+	userID, err := getUserIDFromContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("GetUserLastPlayed() error getting user id: %v", err)
 	}
 
 	pod, epi, userEpi, err := user.FindUserLastPlayed(p.dbClient, userID)
 	if err != nil {
-		fmt.Println("error getting last play:", err)
-		return nil, err
+		return nil, fmt.Errorf("GetUserLastPlayed() error: %v", err)
 	}
 
 	return &protos.LastPlayedRes{
@@ -109,4 +110,16 @@ func (p *PodcastService) GetUserLastPlayed(ctx context.Context, req *protos.Requ
 		Episode: epi,
 		Millis:  userEpi.Offset,
 	}, nil
+}
+
+func getUserIDFromContext(ctx context.Context) (*protos.ObjectID, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("getUserIDFromContext() error: metadata not valid")
+	}
+	idHex := md.Get("user_id")
+	if len(idHex) == 0 {
+		return nil, fmt.Errorf("getUserIDFromContext() error: no user id")
+	}
+	return protos.ObjectIDFromHex(idHex[0]), nil
 }

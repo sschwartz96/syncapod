@@ -30,7 +30,7 @@ func bufDialer(context.Context, string) (net.Conn, error) {
 func createAuthServiceMockDB(t *testing.T) db.Database {
 	dbClient := mock.CreateDB()
 	user := &protos.User{
-		Id:       protos.NewObjectID(),
+		Id:       protos.ObjectIDFromHex("user_id"),
 		Username: "user",
 		Password: "$2a$04$Rxbh4f5cUjABPp2RE8o8PuvOafWNeYRsvYI/2t1lSL/DD/IYmWsfe",
 		DOB:      ptypes.TimestampNow(),
@@ -40,7 +40,11 @@ func createAuthServiceMockDB(t *testing.T) db.Database {
 	if err != nil {
 		t.Fatalf("createAuthSerivceMockDB() error inserting mock user: %v", err)
 	}
-	err = dbClient.Insert(database.ColSession, &protos.Session{Id: protos.NewObjectID(), Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Hour), SessionKey: "secret", UserID: user.Id})
+	err = dbClient.Insert(database.ColSession, &protos.Session{Id: protos.ObjectIDFromHex("session1_id"), Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Hour), SessionKey: "secret", UserID: user.Id})
+	if err != nil {
+		t.Fatalf("createAuthSerivceMockDB() error inserting mock session: %v", err)
+	}
+	err = dbClient.Insert(database.ColSession, &protos.Session{Id: protos.ObjectIDFromHex("session2_id"), Expires: util.AddToTimestamp(ptypes.TimestampNow(), time.Hour), SessionKey: "logout_secret", UserID: user.Id})
 	if err != nil {
 		t.Fatalf("createAuthSerivceMockDB() error inserting mock session: %v", err)
 	}
@@ -66,7 +70,7 @@ func TestAuthService(t *testing.T) {
 
 	lis = bufconn.Listen(bufSize)
 	s := gogrpc.NewServer()
-	protos.RegisterAuthService(s, protos.NewAuthService(NewAuthService(mockDB)))
+	protos.RegisterAuthServer(s, NewAuthService(mockDB))
 
 	go func() {
 		if err := s.Serve(lis); err != nil {
@@ -86,6 +90,7 @@ func TestAuthService(t *testing.T) {
 	// go through tests
 	testAuthService_Authenticate(t, authClient)
 	testAuthService_Authorize(t, authClient)
+	testAuthService_Logout(t, authClient)
 }
 
 func testAuthService_Authenticate(t *testing.T, authClient protos.AuthClient) {
@@ -101,14 +106,14 @@ func testAuthService_Authenticate(t *testing.T, authClient protos.AuthClient) {
 		wantErr bool
 	}{
 		{
-			name:    "invalid",
+			name:    "authenticate_invalid",
 			args:    args{ctx: context.Background(), req: &protos.AuthReq{Username: "user", Password: "123wrong"}},
 			client:  authClient,
 			want:    &protos.AuthRes{Success: false},
 			wantErr: false,
 		},
 		{
-			name:    "valid",
+			name:    "authenticate_valid",
 			args:    args{ctx: context.Background(), req: &protos.AuthReq{Username: "user", Password: "password"}},
 			client:  authClient,
 			want:    &protos.AuthRes{Success: true},
@@ -142,7 +147,7 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 		wantErr    bool
 	}{
 		{
-			name:       "invalid",
+			name:       "authorize_invalid",
 			authClient: authClient,
 			args: args{
 				ctx: context.Background(),
@@ -151,10 +156,10 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 				},
 			},
 			want:    &protos.AuthRes{Success: false},
-			wantErr: false,
+			wantErr: true,
 		},
 		{
-			name:       "valid",
+			name:       "authorize_valid",
 			authClient: authClient,
 			args: args{
 				ctx: context.Background(),
@@ -173,57 +178,61 @@ func testAuthService_Authorize(t *testing.T, authClient protos.AuthClient) {
 				t.Errorf("AuthService.Authorize() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			if err != nil {
+				return
+			}
 			if got.Success != tt.want.Success {
 				t.Errorf("AuthService.Authorize() = %v, want %v", got.Success, tt.want.Success)
 			}
 		})
 	}
 }
-
-func testAuthService_Logout(t *testing.T) {
+func testAuthService_Logout(t *testing.T, authClient protos.AuthClient) {
 	type args struct {
 		ctx context.Context
 		req *protos.AuthReq
 	}
 	tests := []struct {
-		name    string
-		a       *AuthService
-		args    args
-		want    *protos.AuthRes
-		wantErr bool
+		name        string
+		authClient  protos.AuthClient
+		args        args
+		wantSuccess bool
+		wantErr     bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "logout_invalid",
+			args: args{
+				ctx: context.Background(),
+				req: &protos.AuthReq{SessionKey: "invalid_key"},
+			},
+			authClient:  authClient,
+			wantSuccess: false,
+			wantErr:     true,
+		},
+		{
+			name: "logout_valid",
+			args: args{
+				ctx: context.Background(),
+				req: &protos.AuthReq{SessionKey: "logout_secret"},
+			},
+			authClient:  authClient,
+			wantSuccess: true,
+			wantErr:     false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.a.Logout(tt.args.ctx, tt.args.req)
+			got, err := tt.authClient.Logout(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("AuthService.Logout() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("AuthService.Logout() error = %v, want = %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("AuthService.Logout() = %v, want %v", got, tt.want)
+			if err != nil {
+				return
+			}
+			if !reflect.DeepEqual(got.Success, tt.wantSuccess) {
+				t.Errorf("AuthService.Logout() = %v, want %v", got, tt.wantSuccess)
 			}
 		})
 	}
-}
-
-func testAuthenticate_OLD(t *testing.T) {
-	ctx := context.Background()
-	conn, err := gogrpc.DialContext(ctx, "bufnet",
-		gogrpc.WithContextDialer(bufDialer),
-		gogrpc.WithInsecure(),
-	)
-	if err != nil {
-		t.Fatalf("Failed to dial bufnet: %v", err)
-	}
-	defer conn.Close()
-	client := protos.NewAuthClient(conn)
-	resp, err := client.Authenticate(ctx,
-		&protos.AuthReq{Username: "user", Password: "password"},
-	)
-	if err != nil {
-		t.Fatalf("TestAuthenticate() response error: %v", err)
-	}
-	log.Println("response:", resp)
 }
