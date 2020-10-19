@@ -40,13 +40,12 @@ func NewServer(cfg *config.Config, dbClient db.Database, aS protos.AuthServer, p
 	return s
 }
 
-func (s *Server) Start(list net.Listener) error {
-	return s.server.Serve(list)
+func (s *Server) Start(lis net.Listener) error {
+	return s.server.Serve(lis)
 }
 
 func getTransportCreds(config *config.Config) grpc.ServerOption {
 	var creds credentials.TransportCredentials
-
 	// whether or not we are running tls
 	if config.CertFile != "" {
 		creds, err := credentials.NewServerTLSFromFile(config.CertFile, config.KeyFile)
@@ -54,7 +53,6 @@ func getTransportCreds(config *config.Config) grpc.ServerOption {
 			log.Fatal("error setting up creds for grpc:", creds)
 		}
 	}
-
 	return grpc.Creds(creds)
 }
 

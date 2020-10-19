@@ -17,6 +17,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PodClient interface {
+	GetPodcast(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Podcast, error)
 	GetEpisodes(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episodes, error)
 	GetUserEpisode(ctx context.Context, in *Request, opts ...grpc.CallOption) (*UserEpisode, error)
 	UpdateUserEpisode(ctx context.Context, in *UserEpisodeReq, opts ...grpc.CallOption) (*Response, error)
@@ -30,6 +31,15 @@ type podClient struct {
 
 func NewPodClient(cc grpc.ClientConnInterface) PodClient {
 	return &podClient{cc}
+}
+
+func (c *podClient) GetPodcast(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Podcast, error) {
+	out := new(Podcast)
+	err := c.cc.Invoke(ctx, "/protos.Pod/GetPodcast", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *podClient) GetEpisodes(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Episodes, error) {
@@ -81,6 +91,7 @@ func (c *podClient) GetUserLastPlayed(ctx context.Context, in *Request, opts ...
 // All implementations must embed UnimplementedPodServer
 // for forward compatibility
 type PodServer interface {
+	GetPodcast(context.Context, *Request) (*Podcast, error)
 	GetEpisodes(context.Context, *Request) (*Episodes, error)
 	GetUserEpisode(context.Context, *Request) (*UserEpisode, error)
 	UpdateUserEpisode(context.Context, *UserEpisodeReq) (*Response, error)
@@ -93,6 +104,9 @@ type PodServer interface {
 type UnimplementedPodServer struct {
 }
 
+func (UnimplementedPodServer) GetPodcast(context.Context, *Request) (*Podcast, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPodcast not implemented")
+}
 func (UnimplementedPodServer) GetEpisodes(context.Context, *Request) (*Episodes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEpisodes not implemented")
 }
@@ -119,6 +133,24 @@ type UnsafePodServer interface {
 
 func RegisterPodServer(s *grpc.Server, srv PodServer) {
 	s.RegisterService(&_Pod_serviceDesc, srv)
+}
+
+func _Pod_GetPodcast_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PodServer).GetPodcast(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Pod/GetPodcast",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PodServer).GetPodcast(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Pod_GetEpisodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -215,6 +247,10 @@ var _Pod_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "protos.Pod",
 	HandlerType: (*PodServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetPodcast",
+			Handler:    _Pod_GetPodcast_Handler,
+		},
 		{
 			MethodName: "GetEpisodes",
 			Handler:    _Pod_GetEpisodes_Handler,

@@ -13,10 +13,6 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-const (
-	ctxUserIDVal = "user_id"
-)
-
 // PodcastService is the gRPC service for podcast
 type PodcastService struct {
 	*protos.UnimplementedPodServer
@@ -26,6 +22,15 @@ type PodcastService struct {
 // NewPodcastService creates a new *PodcastService
 func NewPodcastService(dbClient db.Database) *PodcastService {
 	return &PodcastService{dbClient: dbClient}
+}
+
+// GetPodcast returns a podcast via id
+func (p *PodcastService) GetPodcast(ctx context.Context, req *protos.Request) (*protos.Podcast, error) {
+	podcast, err := podcast.FindPodcastByID(p.dbClient, req.PodcastID)
+	if err != nil {
+		return nil, fmt.Errorf("GetPodcast() error finding podcast: %v", err)
+	}
+	return podcast, nil
 }
 
 // GetEpisodes returns a list of episodes via podcast id

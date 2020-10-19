@@ -26,10 +26,10 @@ func main() {
 		log.Fatal("Main() error, could not read config: ", err)
 	}
 
-	fmt.Println("Running syncapod version: ", cfg.Version)
+	log.Println("Running syncapod version: ", cfg.Version)
 
 	// connect to db
-	fmt.Println("connecting to db")
+	log.Println("connecting to db")
 	dbClient, err := database.NewMongoClient(cfg)
 	if err != nil {
 		log.Fatal("couldn't connect to db: ", err)
@@ -56,7 +56,7 @@ func main() {
 	// start updating podcasts
 	go updatePodcasts(dbClient)
 
-	fmt.Println("setting up handlers")
+	log.Println("setting up handlers")
 	// setup handler
 	handler, err := handler.CreateHandler(dbClient, cfg)
 	if err != nil {
@@ -64,7 +64,7 @@ func main() {
 	}
 
 	// start server
-	fmt.Println("starting server")
+	log.Println("starting server")
 	port := strings.TrimSpace(strconv.Itoa(cfg.Port))
 	if cfg.Port == 443 {
 		// setup redirect server
