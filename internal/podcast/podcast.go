@@ -39,6 +39,16 @@ func FindPodcastByID(dbClient db.Database, id *protos.ObjectID) (*protos.Podcast
 	return podcast, nil
 }
 
+func FindPodcastsByIDs(dbClient db.Database, ids []*protos.ObjectID) ([]*protos.Podcast, error) {
+	podcasts := []*protos.Podcast{}
+	filter := &db.Filter{"_id": db.Filter{"$in": ids}}
+	err := dbClient.FindAll(database.ColPodcast, &podcasts, filter, nil)
+	if err != nil {
+		return nil, fmt.Errorf("FindPodcastsByIDs() error: %v", err)
+	}
+	return podcasts, nil
+}
+
 // SearchPodcasts searches for a podcast given db and text string
 func SearchPodcasts(dbClient db.Database, search string) ([]*protos.Podcast, error) {
 	var results []*protos.Podcast

@@ -253,3 +253,43 @@ func TestFindLength(t *testing.T) {
 		})
 	}
 }
+
+func TestFindPodcastsByIDs(t *testing.T) {
+	mockDB := mock.CreateDB()
+	insertOrFail(t, mockDB, database.ColPodcast, &protos.Podcast{Id: protos.ObjectIDFromHex("pod_id1")})
+	insertOrFail(t, mockDB, database.ColPodcast, &protos.Podcast{Id: protos.ObjectIDFromHex("pod_id2")})
+	insertOrFail(t, mockDB, database.ColPodcast, &protos.Podcast{Id: protos.ObjectIDFromHex("pod_id3")})
+
+	type args struct {
+		dbClient db.Database
+		ids      []*protos.ObjectID
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []*protos.Podcast
+		wantErr bool
+	}{
+		{
+			name: "2&3",
+			args: args{
+				dbClient: mockDB,
+				ids:      []*protos.ObjectID{protos.ObjectIDFromHex("pod_id2"), protos.ObjectIDFromHex("pod_id3")},
+			},
+			want:    []*protos.Podcast{{Id: protos.ObjectIDFromHex("pod_id2")}, {Id: protos.ObjectIDFromHex("pod_id3")}},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := FindPodcastsByIDs(tt.args.dbClient, tt.args.ids)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindPodcastsByIDs() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FindPodcastsByIDs() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

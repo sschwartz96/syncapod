@@ -46,9 +46,10 @@ func (s *Server) Start(lis net.Listener) error {
 
 func getTransportCreds(config *config.Config) grpc.ServerOption {
 	var creds credentials.TransportCredentials
+	var err error
 	// whether or not we are running tls
 	if config.CertFile != "" {
-		creds, err := credentials.NewServerTLSFromFile(config.CertFile, config.KeyFile)
+		creds, err = credentials.NewServerTLSFromFile(config.CertFile, config.KeyFile)
 		if err != nil {
 			log.Fatal("error setting up creds for grpc:", creds)
 		}
